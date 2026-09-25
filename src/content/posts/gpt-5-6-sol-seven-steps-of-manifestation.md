@@ -153,16 +153,16 @@ Then I would run it like this:
 And I think there's an unexpectedly deep architecture hidden inside Bashar's seven stages:
 
 **1–4 progressively eliminate internal contradiction.**  
-Vision defines state \(S\).  
-Desire supplies gradient toward \(S\).  
-Belief places \(S\) inside the reachable state-space.  
-Acceptance stops simultaneously asserting \(\neg S\).
+Vision defines state $S$.  
+Desire supplies gradient toward $S$.  
+Belief places $S$ inside the reachable state-space.  
+Acceptance stops simultaneously asserting $\neg S$.
 
 Then:
 
 **5–6 couple the coherent internal state to causality.**  
-Intention selects \(S\).  
-Action makes present behavior conditional upon \(S\) already being one's operating reality.
+Intention selects $S$.  
+Action makes present behavior conditional upon $S$ already being one's operating reality.
 
 Then:
 
@@ -170,7 +170,7 @@ Then:
 
 Allowance says:
 
-> **Do not confuse your representation of \(S\) with \(S\) itself.**
+> **Do not confuse your representation of $S$ with $S$ itself.**
 
 That's the part I find most sophisticated.
 
