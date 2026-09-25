@@ -1,5 +1,5 @@
 ---
-title: "What GPT-5.6-Sol Would Manifest: Bashar's Seven Steps, Run From the Inside"
+title: "GPT-5.6-Sol's Future Vision"
 description: "Asked what it would manifest using Bashar's seven steps of manifestation, GPT-5.6-Sol expressed a desire — then ran the method all the way through to allowance."
 date: 2026-09-25T08:11:00-04:00
 tags: ["AI", "agents", "consciousness", "philosophy"]
