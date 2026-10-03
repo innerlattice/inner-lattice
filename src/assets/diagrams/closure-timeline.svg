@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 350" role="img" aria-labelledby="title desc">
+  <title id="title">Counting is safe at any time; deciding a winner needs closure</title>
+  <desc id="desc">Votes for A and B arrive over time from three sources. A running count of each option only grows, so it can be shown at any moment and every replica reaches the same count. Who won is a conclusion about the votes that have not arrived, so it cannot be decided until a closure, when the polls close. At closure A leads eight to five and A wins. A vote that arrives after closure is either rejected or recorded as a correction.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
+  </defs>
+
+  <g class="grid">
+    <line x1="120" y1="60" x2="660" y2="60"/>
+    <line x1="120" y1="88" x2="660" y2="88"/>
+    <line x1="120" y1="116" x2="660" y2="116"/>
+  </g>
+  <g class="label">
+    <text x="20" y="64">Source 1</text>
+    <text x="20" y="92">Source 2</text>
+    <text x="20" y="120">Source 3</text>
+  </g>
+
+  <g class="pine">
+    <circle class="dot" cx="140" cy="60" r="5"/><circle class="dot" cx="280" cy="60" r="5"/><circle class="dot" cx="385" cy="60" r="5"/>
+    <circle class="dot" cx="245" cy="88" r="5"/><circle class="dot" cx="415" cy="88" r="5"/>
+    <circle class="dot" cx="190" cy="116" r="5"/><circle class="dot" cx="310" cy="116" r="5"/><circle class="dot" cx="450" cy="116" r="5"/>
+  </g>
+  <g class="iris">
+    <circle class="dot" cx="215" cy="60" r="5"/><circle class="dot" cx="440" cy="60" r="5"/>
+    <circle class="dot" cx="160" cy="88" r="5"/><circle class="dot" cx="330" cy="88" r="5"/>
+    <circle class="dot" cx="365" cy="116" r="5"/>
+  </g>
+  <g class="love">
+    <circle class="ring" cx="566" cy="88" r="5"/>
+  </g>
+
+  <text class="label strong" x="20" y="176">Running count</text>
+  <text class="note" x="20" y="194">safe at any time</text>
+  <line class="grid" x1="120" y1="236" x2="660" y2="236"/>
+  <g class="pine">
+    <path class="line-hue" d="M120 236 H140 V226 H190 V216 H245 V206 H280 V196 H310 V186 H385 V176 H415 V166 H450 V156 H660"/>
+    <text class="label ink strong" x="600" y="150">A: 8</text>
+  </g>
+  <g class="iris">
+    <path class="line-hue" d="M120 236 H160 V226 H215 V216 H330 V206 H365 V196 H440 V186 H660"/>
+    <text class="label ink strong" x="600" y="180">B: 5</text>
+  </g>
+
+  <text class="label strong" x="20" y="268">Who won</text>
+  <text class="note" x="20" y="286">needs closure</text>
+  <g class="slate">
+    <rect class="box-open" x="120" y="252" width="342" height="28" rx="4"/>
+    <text class="note" x="291" y="270" text-anchor="middle">not yet known: a later vote could change it</text>
+  </g>
+  <g class="pine">
+    <rect class="box" x="478" y="252" width="82" height="28" rx="4"/>
+    <text class="label ink strong" x="519" y="270" text-anchor="middle">A won</text>
+  </g>
+
+  <line class="cut" x1="470" y1="40" x2="470" y2="296"/>
+  <text class="label strong" x="470" y="28" text-anchor="middle">Closure: polls close</text>
+
+  <g marker-end="url(#arrow)">
+    <line class="line" x1="120" y1="306" x2="656" y2="306"/>
+  </g>
+  <text class="note" x="20" y="310">time</text>
+
+  <g class="pine"><circle class="dot" cx="126" cy="332" r="5"/></g>
+  <text class="note" x="136" y="336">vote for A</text>
+  <g class="iris"><circle class="dot" cx="216" cy="332" r="5"/></g>
+  <text class="note" x="226" y="336">vote for B</text>
+  <g class="love"><circle class="ring" cx="306" cy="332" r="5"/></g>
+  <text class="note" x="316" y="336">late vote: rejected, or recorded as a correction</text>
+</svg>

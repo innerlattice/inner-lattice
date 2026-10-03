@@ -1,24 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 36 680 336" role="img" aria-labelledby="title desc">
-  <title id="title">One coupling graph, three uses</title>
-  <desc id="desc">A graph of entities whose edges mean that one entity's outcome depends on another's action. It forms three tightly coupled clusters joined by three dashed cut edges. Two clusters receive experiment arm A and one receives arm B. The same partition decides interest management, with sync inside a cluster; sharding, with one sequencer per cluster; and cluster randomization, with one arm per cluster.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 36 680 340" role="img" aria-labelledby="title desc">
+  <title id="title">One coupling graph, four uses</title>
+  <desc id="desc">Parties joined by two kinds of edge read off the rules. An influence edge means a rule producing one party's view or outcome reads the other's facts. A conflict edge, a subset of the influence edges, means a rule that needs closure depends on both. The graph is partitioned into three parts joined by three cut edges. Sync and presence deliver facts along influence edges. Sharding puts one closer on each part of the conflict graph. Experiments give each part of the influence graph one arm, and cut edges carry treatment between arms. Permissions can delete influence edges but not conflict edges.</desc>
 
-  <g class="pine">
+  <g class="slate">
     <ellipse class="box" cx="120" cy="118" rx="82" ry="62"/>
-    <text class="head" x="40" y="196">Arm A</text>
-  </g>
-  <g class="iris">
     <ellipse class="box" cx="312" cy="108" rx="72" ry="56"/>
-    <text class="head" x="312" y="184" text-anchor="middle">Arm B</text>
-  </g>
-  <g class="pine">
     <ellipse class="box" cx="205" cy="278" rx="102" ry="56"/>
-    <text class="head" x="322" y="282">Arm A</text>
   </g>
 
   <g class="line">
-    <line x1="90" y1="90" x2="150" y2="85"/><line x1="90" y1="90" x2="120" y2="140"/><line x1="150" y1="85" x2="120" y2="140"/><line x1="70" y1="150" x2="120" y2="140"/><line x1="165" y1="150" x2="120" y2="140"/><line x1="150" y1="85" x2="165" y2="150"/>
-    <line x1="272" y1="80" x2="332" y2="78"/><line x1="272" y1="80" x2="302" y2="138"/><line x1="332" y1="78" x2="302" y2="138"/><line x1="332" y1="78" x2="352" y2="132"/><line x1="302" y1="138" x2="352" y2="132"/>
-    <line x1="170" y1="252" x2="240" y2="247"/><line x1="170" y1="252" x2="205" y2="302"/><line x1="240" y1="247" x2="205" y2="302"/><line x1="240" y1="247" x2="262" y2="302"/><line x1="205" y1="302" x2="262" y2="302"/><line x1="148" y1="306" x2="205" y2="302"/><line x1="148" y1="306" x2="170" y2="252"/>
+    <line x1="90" y1="90" x2="120" y2="140"/><line x1="70" y1="150" x2="120" y2="140"/><line x1="165" y1="150" x2="120" y2="140"/><line x1="150" y1="85" x2="165" y2="150"/>
+    <line x1="272" y1="80" x2="302" y2="138"/><line x1="332" y1="78" x2="302" y2="138"/><line x1="332" y1="78" x2="352" y2="132"/>
+    <line x1="170" y1="252" x2="205" y2="302"/><line x1="240" y1="247" x2="205" y2="302"/><line x1="240" y1="247" x2="262" y2="302"/><line x1="148" y1="306" x2="205" y2="302"/><line x1="148" y1="306" x2="170" y2="252"/>
+  </g>
+  <g class="gold">
+    <line class="line-hue" x1="90" y1="90" x2="150" y2="85" style="stroke-width: 3"/>
+    <line class="line-hue" x1="150" y1="85" x2="120" y2="140" style="stroke-width: 3"/>
+    <line class="line-hue" x1="272" y1="80" x2="332" y2="78" style="stroke-width: 3"/>
+    <line class="line-hue" x1="302" y1="138" x2="352" y2="132" style="stroke-width: 3"/>
+    <line class="line-hue" x1="170" y1="252" x2="240" y2="247" style="stroke-width: 3"/>
+    <line class="line-hue" x1="205" y1="302" x2="262" y2="302" style="stroke-width: 3"/>
   </g>
   <g>
     <line class="cut" x1="165" y1="150" x2="272" y2="80"/>
@@ -31,18 +32,26 @@
     <circle class="dot" cx="170" cy="252" r="5"/><circle class="dot" cx="240" cy="247" r="5"/><circle class="dot" cx="205" cy="302" r="5"/><circle class="dot" cx="262" cy="302" r="5"/><circle class="dot" cx="148" cy="306" r="5"/>
   </g>
 
-  <line class="cut" x1="40" y1="352" x2="72" y2="352"/>
-  <text class="note" x="82" y="356">Cut edges need coordination and let one arm’s treatment reach the other</text>
+  <line class="line" x1="40" y1="358" x2="68" y2="358"/>
+  <text class="note" x="76" y="362">influence</text>
+  <g class="gold"><line class="line-hue" x1="150" y1="358" x2="178" y2="358" style="stroke-width: 3"/></g>
+  <text class="note" x="186" y="362">conflict</text>
+  <line class="cut" x1="254" y1="358" x2="282" y2="358"/>
+  <text class="note" x="290" y="362">cut between parts</text>
 
   <g class="slate">
-    <rect class="card" x="440" y="52" width="210" height="64" rx="6"/>
-    <text class="head" x="456" y="78">Interest management</text>
-    <text class="note" x="456" y="98">Sync within a cluster</text>
-    <rect class="card" x="440" y="136" width="210" height="64" rx="6"/>
-    <text class="head" x="456" y="162">Sharding</text>
-    <text class="note" x="456" y="182">One sequencer per cluster</text>
-    <rect class="card" x="440" y="220" width="210" height="64" rx="6"/>
-    <text class="head" x="456" y="246">Cluster randomization</text>
-    <text class="note" x="456" y="266">One experiment arm per cluster</text>
+    <rect class="card" x="430" y="48" width="230" height="64" rx="6"/>
+    <text class="head" x="446" y="74">Sync and presence</text>
+    <text class="note" x="446" y="94">Deliver facts along edges</text>
+    <rect class="card" x="430" y="124" width="230" height="64" rx="6"/>
+    <text class="head" x="446" y="150">Sharding</text>
+    <text class="note" x="446" y="170">One closer per conflict part</text>
+    <rect class="card" x="430" y="200" width="230" height="64" rx="6"/>
+    <text class="head" x="446" y="226">Experiment units</text>
+    <text class="note" x="446" y="246">One arm per influence part</text>
+    <rect class="card" x="430" y="276" width="230" height="82" rx="6"/>
+    <text class="head" x="446" y="302">Permissions</text>
+    <text class="note" x="446" y="322">Delete influence edges;</text>
+    <text class="note" x="446" y="340">conflict edges stay</text>
   </g>
 </svg>

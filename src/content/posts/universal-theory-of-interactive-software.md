@@ -1,164 +1,348 @@
 ---
 title: "Toward a universal theory of interactive software"
-description: "Four questions about each commit point place any part of a product in one of six regions, and one coupling graph sets its sync, sharding and experiment design."
+description: "Interactive software records decisions and derives everything else. Seven principles follow from that kernel, and experiments, sync, permissions, agents, analytics and live migration fall out of them."
 date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
 
-[GuidedTrack](https://www.guidedtrack.com) is a small language for writing surveys, studies and other interactive programs. A GuidedTrack program reads like a script. Plain lines appear on screen, `*question` waits for an answer, `*save` stores the answer under a name, and `*if` branches on what was stored. A typical teaching example is a sleep study that screens participants, measures how sleepy they feel, assigns each one to count sheep or picture a sunset, and measures sleepiness again.
+A typical product runs a separate system for each kind of interaction it contains. Forms post to request handlers. Shared editors sync through a merge library. Live features run on a game server. Beside these sit a feature-flag service, an experimentation platform, an analytics pipeline and a permissions engine. Each keeps its own state, and each academic field that studies one of them (distributed systems, experiment design, interface design, game networking) has named the same few structures differently.
 
-Two keywords in that study do more than their syntax suggests. `*experiment` assigns a participant to a group while keeping group sizes balanced across all participants, so the statement's meaning depends on every other run of the program as well as the current one. `*save` names a column in the dataset that the study produces. The same text therefore holds the interface, the experimental design and the data schema. Most products keep those three in a design file, a feature-flag service and an analytics tracking plan, maintained by different teams and free to disagree.
+This post derives those structures from one kernel and seven principles. The kernel says that interactive software records decisions and derives everything else. Each principle adds one fact about the world:
 
-Keeping the three together would help a checkout, an onboarding sequence or an approval workflow. Whether the same model can reach a dashboard, a shared whiteboard or a multiplayer game is less clear. Answering that requires a way to locate any part of a product and to say what changes in the software at each boundary.
+1. rules are deterministic;
+2. different parties can make the same decision;
+3. information takes time to travel;
+4. people need answers sooner than distance allows;
+5. rules connect parties;
+6. someone wants something;
+7. the program itself changes.
 
-## Eight primitives
+Experiments, offline mode, optimistic updates, sharding, permissions, analytics, agent delegation and live migration are usually built as separate products. Here they follow as consequences of the principles.
 
-Most GuidedTrack keywords reduce to eight operations:
+## The kernel
 
-```text
-say     text                        show content
-ask     schema -> value             wait for an answer; a handler decides who answers
-let     name = expression           keep durable state
-choose  name {branches} by policy   pick one branch
-wait    duration | event            pause until a time or an event
-goal    name = expression           declare what the program is trying to achieve
-call    module(inputs) -> outputs   run another program
-end     outcome                     finish and record why
-```
+Interactive software asks parties it does not control to make decisions, and derives from the decisions already made what each party sees and which decisions come next. Three parts are enough to say this:
 
-`*if`, `*randomize` and `*experiment` look like three features, but each one picks a branch from a set. The three differ only in what does the picking. Treating the picker as a policy makes the family explicit:
+- A **fact** records one decision: which decision it was, what was chosen, who chose, what they were looking at, and under which version of the program. Facts are never edited. A correction is a new fact.
+- A **rule** is a deterministic function from facts to further facts. Current state, the screen, permissions, search indexes, metrics and the list of open decisions are all rules.
+- A **decision** is opened by a rule. It has a view, a set of options and a deadline, and it is bound to a *chooser*. When the chooser picks, the decision becomes a fact.
 
-| Policy | GuidedTrack equivalent or common name |
+![A loop from facts to rules to open decisions to choosers and back to facts](../../assets/diagrams/decision-loop.svg "Rules derive views and open decisions from facts; a chooser fills each decision, and the result becomes a fact.")
+
+There are four kinds of chooser: people, programs, agents and the world. The world covers the clock, sensors, payment networks and every other system the program does not control, so a timer firing and a card being declined are decisions made by the world. Because rules are deterministic, everything new enters through a decision. Randomness counts too: it is a decision by a program that flips a coin.
+
+Two kinds of decision recur often enough to name. A *closure* decides that a set of facts is complete: a person pressing submit, a turn ending, a deadline passing, a database committing, polls closing. Its chooser is a *closer*. A *program change* decides that the rules themselves change.
+
+Each field that needed this kernel arrived at it on its own:
+
+- **Game theory.** An extensive-form game (Harold Kuhn, 1953) has a history of moves, a player function that says who moves next, information sets that say what each player can see, and Nature as a player who moves by chance.
+- **Software design.** Ben Moseley and Peter Marks's [*Out of the Tar Pit*](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006) argued that the only essential state in a system is the input its users supply, and that everything else should be derived. The Elm architecture folds messages into a model and derives the view from it, which is the kernel for one person on one device.
+- **Distributed systems.** Dedalus (Alvaro et al., 2011) writes distributed programs as Datalog with time, and treats nondeterministic message delivery as a choice made by the network.
+- **Accounting.** Double-entry bookkeeping has derived balances from a journal of entries for more than five centuries.
+
+## 1. Record decisions; derive everything else
+
+If rules are deterministic, the record of decisions fixes everything else, so it is the only state that must be kept. Every other store is a rule's output and can be recomputed. That includes the current row in a table, a cache, a search index and a dashboard's numbers. Any of them that disagrees with the record is wrong.
+
+A chess game shows how far this goes. The game is its list of moves. Every position is derived from that list, and the statistics of an opening across millions of games are rules over millions of lists. Real-time strategy games have shipped the same design since the 1990s. Mark Terrano and Paul Bettner's [account of Age of Empires](https://www.gamedeveloper.com/programming/1500-archers-on-a-28-8-network-programming-in-age-of-empires-and-beyond) (2001) describes a network protocol that sent only player commands, with every machine running an identical deterministic simulation. Replay files in such games are command logs.
+
+Several features follow without further design:
+
+- **The data schema is the decision schema.** Anything an analyst can ever ask about a product is a rule over its decisions. A tracking plan is a list of decisions, so it can be generated from the program.
+- **History, audit and debugging by replay** read the record. Undo is a new decision that inverts an earlier one.
+- **Caches and indexes** are rules whose results have been materialized. Invalidating them means keeping those results up to date incrementally.
+- **Sync** means shipping facts, and **working offline** means collecting facts locally.
+- **Corrections** are new facts, as reversing entries are in a ledger.
+
+The record needs only the decisions that some rule reads. A drag sampled at 120 Hz can be stored as its endpoint or as a thinned path. Thinning the path is itself a decision, made by a program and recorded as one.
+
+Erasure is the hard case: a request to delete a person's data collides with a record that never changes. Two answers are in use:
+
+- encrypt each person's facts under their own key, and destroy the key on request;
+- add a policy (principle 5) that removes the person's facts from every view.
+
+## 2. Separate each decision from its chooser
+
+The same decision can be made by different parties. Which story leads a news front page was once an editor's call. It can also be made by:
+
+- an A/B test that assigns readers to two headlines;
+- a bandit that shifts traffic toward the headline getting more clicks;
+- a model that picks per reader;
+- an agent that writes a new headline.
+
+The view, the options and the deadline stay the same, and only the chooser changes. The view is the candidate stories and what is known about the reader. If each decision has one contract and its chooser is bound separately, a list of features becomes one construct:
+
+| Chooser bound to the decision | Usual name |
 | --- | --- |
-| `fixed(condition)` | `*if` |
-| `uniform` | `*randomize` |
-| `balanced` | `*experiment` |
-| `bandit(goal)` | adaptive allocation toward a goal |
-| `contextual(goal, features)` | personalization |
-| `model(goal)` | a language model decides |
+| A fixed rule | conditional, feature flag |
+| Uniform or balanced randomization | A/B test |
+| A policy learning toward a goal | bandit |
+| A policy that reads context | personalization, recommendation |
+| A model | classification, routing |
+| An agent | delegation |
+| A person | the interface |
 
-The author declares which branches exist. The operator decides how they are chosen and can replace an experiment with a bandit, and later with the winning branch, without editing the program. A bandit needs something to optimize, which is why `goal` belongs in the core. The sleep study computes `postInterventionSleepiness` but never declares that score as the study's objective. Once a program declares a goal, every `choose` upstream of the goal can be credited against it.
+Changing the binding accounts for more features:
 
-`ask` is an effect in the programming-language sense: the program states what it needs, and a handler supplies the value. In production the handler is a person using a web form. In testing, the handler can be a language model playing a persona, a recorded session replayed against a new version of the program, or another agent filling in the form for its user. [Ia](https://github.com/innerlattice/ia-lang), a procedural language for work done by people and AI agents, builds the same idea into its grammar: only a named Agent executes a Function, and a person is one kind of Agent.
+- **Automation** moves a decision from a person to a program.
+- **Escalation** moves it back.
+- **Delegation** moves it from a person to an agent, under a policy the person sets.
+- **Testing** binds simulated choosers: scripted ones, random ones that search for failures, and models playing personas.
+- **Regression testing** replays recorded choosers against new rules.
+- **Presentation** depends on the chooser. The same decision can be drawn on a screen, read aloud by a voice assistant, or handed to an agent as a typed schema. An API for agents is a product's decisions with the rendering removed.
 
-A program that logs every `ask` answer and every `choose` decision can answer counterfactual questions by replay. Changing one recorded decision and re-running the log shows exactly what would have happened, up to the first later step where an Agent exercised judgment. The log records what that Agent decided in the actual run, not what it would have decided after the change.
+The decision that shapes a product most is what happens next:
 
-## Commit points
+- When the program fills it, the product is an interview, such as a tax-filing questionnaire, a checkout or an onboarding sequence.
+- When a person fills it, the product is a workspace, such as a spreadsheet.
+- When an agent fills it, the product is a delegated task, such as a coding agent working through a repository.
 
-Real products are composites. An online store has a catalog, a sizing quiz and a checkout. A design tool has a canvas, a file browser, sharing dialogs and an upgrade flow. A label for the whole product hides parts that work differently.
+Eric Horvitz's [principles of mixed-initiative interfaces](https://erichorvitz.com/chi99horvitz.pdf) (CHI 1999) describe products in which this binding passes back and forth within one session.
 
-A smaller unit works better: the *commit point*, a moment when an Agent's decision durably changes shared state. Placing an order, answering a screening question, moving a card on a board and releasing a dragged shape are commit points. Goals and experiments attach to commit points, permissions are checked at them, and the data a product keeps is a record of them.
+Agents differ from fixed programs mainly in discretion, which is the size of the option set. "Choose one of three refund amounts" is narrow; "reply to the customer" is wide. Splitting a wide decision into narrow ones lowers discretion and makes each piece checkable, so the depth of decomposition is how a designer sets an agent's autonomy. Raja Parasuraman, Thomas Sheridan and Christopher Wickens (2000) proposed a separate level of automation for each stage of a task: acquiring information, analyzing it, selecting an action and carrying it out. That amounts to a binding per decision. Authority belongs to the binding rather than to the chooser's ability, a point developed in [Old Foundations, New Agents](/durable-universals-agentic-ai-engineering).
 
-Coverage then has a precise meaning. A language covers a product to the extent that it can express the product's commit points, regardless of how much screen area it can draw. A design tool's canvas is hard to write in GuidedTrack's model, but sign-up, onboarding, sharing, publishing and upgrading are flows, and those commit points produce most of the design tool's retention and revenue events.
+In programming-language terms, the decision is an algebraic effect (Plotkin and Pretnar, ESOP 2009). The program performs `ask`, and a handler supplies the answer. The handler is the chooser.
 
-## Nine dimensions
+![Six choosers under one decision contract, compared by whether propensities are known and how far replay reaches](../../assets/diagrams/choosers.svg "Any chooser can fill a decision. They differ in what the record can hold about them.")
 
-Commit points vary along nine dimensions:
+Choosers differ in what the record can hold about them, and principle 6 depends on the difference. A program that randomizes can log the probability it gave each option, called its *propensity*. A person's propensities are unknown. A model can be asked again if the model, its context and its random seed are pinned. A person cannot be asked again.
 
-| Group | Dimension | Low | Middle | High |
-| --- | --- | --- | --- | --- |
-| Control | Initiative: who decides what happens next | program | mixed | person |
-| | Determinism: how fully each step is specified | scripted | interpreted within bounds | open |
-| | Participants in one instance | one | handoff, one after another | concurrent |
-| Structure | Composition | sequence in time | sequence of screens | arrangement in space |
-| | Granularity of input | discrete commit | field edit | continuous gesture |
-| | Cardinality of data in view | one item | bounded set | unbounded collection |
-| Persistence | State scope | session | one person, durable | shared |
-| | Horizon | minutes | days to months | indefinite |
-| Purpose | Goal shape | terminal outcome | metric over a window | open-ended |
+## 3. Conclusions about absence need a closer
 
-Several dimensions move together. Initiative, composition and cardinality rise together: a program-led step usually shows one thing at a time, while a person-led screen arranges a collection in space. Granularity and participants vary independently: a solo drawing app has continuous input and one participant, while a ticket sale has a hundred thousand concurrent buyers who never see each other. State scope and horizon are nearly independent of the rest, since a coaching program is a narrow, program-led flow that lasts six months.
+Facts reach different places at different times. Some rules only add conclusions as facts arrive, such as "these people have voted" or "this document contains these edits". Such a rule reaches the same answer everywhere once the facts have spread, whatever order they arrived in. Other rules conclude something from the absence of facts:
 
-Determinism and goal shape do not place a commit point. They decide how much of a flow language's advantage survives there. A step whose behavior is open cannot be replayed exactly, and a product with no declared goal gives `choose` nothing to optimize.
+- "the seat is free";
+- "the latest price is $40";
+- "this username is available";
+- "candidate A won".
 
-## Four questions
+Each claims that no other relevant fact exists, and one late fact can make it false. Such conclusions are safe only after a closure, a decision that the relevant facts are complete.
 
-The nine dimensions describe a commit point but do not say what software it needs. A theory of interactive software has to derive its regions from thresholds where the cheapest correct architecture changes. Four questions, asked in order, find those thresholds.
+Joseph Hellerstein and Peter Alvaro's [CALM theorem](https://arxiv.org/abs/1901.01930) states this precisely. A problem has a consistent distributed implementation that needs no coordination if and only if it is monotone. Coordination is needed exactly where a conclusion about absence is drawn (CACM 2020, building on Ameloot, Neven and Van den Bussche, PODS 2011). Even "the current value" is such a conclusion. Last-writer-wins therefore hands closure to timestamps.
 
-![Four questions in sequence, with exits to scripted flow, adaptive flow, workspace, instrument, canvas and arena](../../assets/diagrams/region-tests.svg "Each question marks a threshold where the cheapest correct architecture changes.")
+![Facts arriving over time, a running tally that is safe at any moment, and a winner that is known only after closure](../../assets/diagrams/closure-timeline.svg "A monotone rule is safe at any moment; a conclusion about absence waits for closure.")
 
-**1. Who chooses the next step?** If the program chooses, the commit point belongs to a flow, and the runtime needs a program counter, a record of where each participant is. Fixed rules make a scripted flow. A policy that learns toward a declared goal makes an adaptive flow, which also needs durable state, timers and a log of assignments. If the person chooses, the screen shows views over data, and each action the person takes starts a short flow. No program counter spans the session.
+Closure appears at every scale under different names:
 
-**2. Must the screen show state before it is committed?** Two conditions force a yes. The first is an unfinished gesture: a dragged shape has to follow the pointer before the drag ends. The second is an undecided order: in a shooter, a player's shot has to appear before the server has ordered it against other players' shots.
+| Who closes | What they close |
+| --- | --- |
+| A person pressing submit | their own answers |
+| A clock | a hold, when it expires |
+| A database | a transaction, at commit |
+| A replicated log | an entry, at consensus |
+| A stream processor | an event-time window, at its watermark |
+| An experimenter | the data, at the analysis cutoff |
+| An accountant | the books, at period end |
+| An election authority | the ballot, when polls close |
 
-Both conditions reduce to one comparison. Each interaction has a *feedback deadline*, the longest delay before the response feels broken. Robert Miller's 1968 study of conversational response times put the limit for a response that feels immediate at about 0.1 s, and continuous input needs a new frame every 16.7 ms at 60 Hz. Each write also has a *commit time*, the time needed to reach whatever orders the write. When the feedback deadline is shorter than the commit time, the client has to render uncommitted state and reconcile it later. A form submission can show a spinner for half a second; a drag cannot. Optimistic updates in an ordinary web application also show uncommitted state, but the application still works without them, and question 2 asks whether the interaction fails without speculation.
+The way closure is decided changes how people choose. Alvin Roth and Axel Ockenfels ([AER 2002](https://www.cs.princeton.edu/courses/archive/spr08/cos444/papers/roth_ockenfels02.pdf)) compared eBay auctions, which ended at a fixed time, with Amazon auctions, which continued until ten minutes passed without a bid. eBay bidders bid in the closing seconds far more often. Experience made eBay bidders bid later and Amazon bidders bid earlier. The closure rule was a mechanism, and bidders optimized against it.
 
-**3. Does anyone else see the change as it happens?** If not, the commit point is part of an instrument: one writer, a local frame loop, and commits sent to shared state at the end of a gesture or a session. If others see the change, it has to reach them within their feedback deadline too.
+There are two ways to avoid waiting for a closer:
 
-**4. Do concurrent writes keep every invariant?** Peter Bailis, Alan Fekete, Michael Franklin, Ali Ghodsi, Joseph Hellerstein and Ion Stoica named this property [invariant confluence](https://arxiv.org/abs/1402.2237) (PVLDB 8(3), 2014). If any two states that satisfy an invariant merge into a state that still satisfies it, replicas can accept writes without coordinating. Text inserted into a shared document by two people merges into a valid document. Two bids for one lot cannot both win. By coordinating only on the invariants that failed the test, the authors ran the TPC-C New-Order transaction 25 times faster on 200 servers than prior results. A yes makes a canvas, where writes merge without a sequencer. A no makes an arena, where a *sequencer*, whichever party decides the order, has to order conflicting writes.
+- **Make the decision confluent.** Peter Bailis and colleagues ([PVLDB 2014](https://arxiv.org/abs/1402.2237)) call operations *invariant-confluent* when any two valid states merge into a valid state. Likes on a post are confluent; seats in a theater are not.
+- **Move the closure.** Patrick O'Neil's escrow method (TODS 1986) splits a contested quantity into shares so that each holder can decide locally within its share. A box office holding a block of seats can sell them without asking the central system, and a warehouse can promise its own stock.
 
-Question 4 applies to every shared write, not only to live ones. A ticket sale is a flow by questions 1 and 2, but its purchase step fails question 4, so the purchase commits as a transaction at a sequencer.
+Offline capability follows from the two: a disconnected device can decide whatever is confluent or escrowed to it.
 
-Each answer changes the runtime. Question 1 decides between a program counter and views. Question 2 decides whether the client runs a speculative frame loop. Question 3 decides whether changes are broadcast before they commit. Question 4 decides whether a write waits for a sequencer.
+The same structure explains a familiar statistical error. A test analyzed with a fixed-horizon p-value is valid only at its declared cutoff. Checking the result every day and stopping once it looks significant draws a conclusion before closure, and false positives multiply. Ramesh Johari, Pete Koomen, Leonid Pekelis and David Walsh's [always-valid inference](https://arxiv.org/abs/1512.04922) (Operations Research) makes the conclusion valid at whatever moment the experimenter stops.
 
-The questions have a precedent. Robert Johansen's 1988 groupware matrix sorted collaboration tools by whether participants worked at the same or different times and in the same or different places. The four questions keep the matrix's shape and replace both axes. Place becomes coupling: whether one participant's outcome depends on another's action. Time becomes the comparison between a feedback deadline and a commit time.
+## 4. When feedback must come before closure, predict
 
-## Six regions
+Every decision has two times. The *feedback deadline* is the longest its chooser can wait for a response before the interaction fails. The *commit time* is the round trip to its closer, or to the people who must see it.
 
-![Products placed in six regions by who owns the screen and whether the screen shows uncommitted state](../../assets/diagrams/regions-plane.svg "Products placed by who owns the screen and whether the screen must show uncommitted state.")
+On the deadline side:
 
-**Scripted flows** are what GuidedTrack covers today: quizzes, surveys, intake forms and eligibility screeners. A flow language *authors* scripted flows. Every path through one can be enumerated, so a property such as "no participant under 18 reaches the consent form" can be checked before launch.
+- Robert Miller's 1968 study put the limit for a response that feels immediate at about 0.1 s.
+- Animation needs a new frame every 16.7 ms at 60 Hz.
+- For telephone conversation, ITU-T Recommendation G.114 recommends no more than 150 ms of one-way delay.
 
-**Adaptive flows** add policies, declared goals, handoffs between people and agents, and horizons of days or months: onboarding, checkout, approval workflows, a coaching program, an agent that follows a defined procedure. A flow language *orchestrates* adaptive flows.
+On the commit side, light in optical fiber travels about 200,000 km/s. Each 100 km of fiber therefore adds about 1 ms to a round trip, before any routing or processing. A contested decision confirmed within one 60 Hz frame needs its closer within about 1,700 km of fiber, and a round trip between London and Sydney takes at least 170 ms.
 
-**Workspaces** are screens the person drives: catalogs, inboxes, work queues, dashboards, admin tables and settings. A flow language *binds* views to shared state, and each button that changes something starts a short flow. A dashboard with create, update and delete actions looks like a poor fit for a flow language, but it is a workspace whose actions are flows.
+When the deadline is shorter than the commit time, the view has to show facts before they are closed. These *predicted facts* are reconciled when closure arrives. Several familiar features are this one mechanism:
 
-**Live spaces** show uncommitted state. A flow language *hosts* live spaces through a commit contract, a typed interface through which the embedded component hands a decision back to the surrounding flow. Questions 3 and 4 split live spaces three ways. *Instruments* have one writer and a local frame loop, as in a drawing app, a rhythm game or a music sequencer. *Canvases* let several people write at once with merges that keep every invariant, as in a shared document, a whiteboard or a design file. *Arenas* let several people contest the same state, so a sequencer orders their writes, as in shooters, live auctions, live quiz shows and MMO zones.
+- optimistic updates in a web app;
+- characters appearing as they are typed into a shared document;
+- a shooter's client moving the player before the server agrees;
+- rollback netcode in fighting games;
+- the "pending" line in a banking app after a card is tapped.
 
-The spreadsheet sits on the commit boundary. A single-user spreadsheet commits cell edits and recomputes formulas as views over cells, which places it among workspaces. Google Sheets shows other editors' cursors and edits as they happen, which moves the same grid into canvases.
+The card case shows the mechanism plainly. The authorization is a predicted fact, labeled pending. Settlement days later is the closure that posts it.
 
-## Inside live spaces
+![A log-log plot of commit time against feedback deadline, with a diagonal separating decisions that can wait from decisions that must show predictions](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the deadline is shorter than the round trip to the closer, so the view must show predicted facts.")
 
-![Live space products placed by mergeable or contested writes and by feedback deadline](../../assets/diagrams/live-spaces.svg "Live spaces placed by whether writes merge or contest and by how quickly feedback must arrive.")
+For confluent decisions the local result is already final; only other people's view of it waits. For contested decisions the local result can be wrong. The cost of prediction grows with how often it is wrong, because each wrong prediction is a correction someone sees.
 
-The left half of the diagram held few products before conflict-free replicated data types (CRDTs) and their relatives. Shared editing meant locks or a fragile operational-transform server. A CRDT merge is commutative, associative and idempotent, which makes the CRDT's own invariants confluent by construction. [Figma's multiplayer design](https://www.figma.com/blog/how-figmas-multiplayer-technology-works/) shows how little of that machinery a product may need. A central server keeps each property of each object under last-writer-wins, and the scheme works because two people rarely change the same property of the same object at the same moment.
+Designers have three levers:
 
-The dashed line is a physical floor. Light in optical fiber travels at about 200,000 km/s, so a round trip between London and Sydney along a great-circle path takes about 170 ms before any routing or processing. A product above the line cannot let a distant server order every write. Shooters and fighting games therefore match players by region, while document editors serve the world from one place.
+1. **Shorten the distance by moving the closer.** Trading firms colocate their servers in the exchange's data center, and a drawing app makes the device its own closer.
+2. **Lengthen the deadline.** Age of Empires scheduled each command to execute two 200 ms communication turns after it was issued. Turn-based games make the deadline a whole turn. [EVE Online](https://www.eveonline.com/news/view/introducing-time-dilation-tidi) slows its simulation clock to as little as 10% of normal speed during large battles.
+3. **Make the decision confluent,** so that it needs no closure (principle 3).
 
-Arenas survive by trading one constraint for another. Interest management syncs only what is near each player, which lowers the number of participants each update reaches. Sharding and layering duplicate the world to cap density. EVE Online's time dilation slows the simulation to as little as 10% of normal speed during large battles, giving up responsiveness to keep one consistent battle. Tab targeting and global cooldowns lengthen a game's feedback deadline until a server round trip fits inside it, which makes combat design a networking decision. Rollback netcode in fighting games predicts the opponent's input and rewrites recent history when the prediction was wrong. The upper right of the diagram, with large rings, is still open: no production shooter runs a thousand players in one area of interest.
+David Jefferson's Time Warp (TOPLAS 1985) is the general form of prediction. A simulation runs ahead optimistically, and when a message arrives with an earlier timestamp, it rolls back.
 
-## Coupling
+## 5. Coupling follows from the rules
 
-The economists' distinction between rival goods, which only one party can hold, and non-rival goods, which anyone can copy, seems to separate arenas from canvases. The economic framing inverts the computational one. Non-rival information needs no contact between its copies, because each copy can be read and extended alone. Rival goods need contact, because every claimant has to meet at a sequencer. The dimension underneath is *coupling*: whether one entity's outcome depends on another entity's action.
+Rules connect the decisions of different parties, and two graphs can be read off them:
 
-Coupling appears under a different name in each of three fields:
+- **Influence.** An edge runs from A to B when some rule that produces B's view or B's outcome reads A's facts.
+- **Conflict.** A and B are joined when a rule that needs closure depends on both, so their decisions cannot both stand without a closer.
 
-| Field | Name for coupling | Standard response |
+Two people booking the same seat conflict. Two people commenting on the same post only influence each other. Every conflict edge is also an influence edge.
+
+![A graph with influence and conflict edges, partitioned into three parts; cut edges are marked, and the partition sets sync, closer placement and experiment arms](../../assets/diagrams/coupling-graph.svg "One partition of the coupling graph sets what syncs live, where closers sit and which units share an experiment arm.")
+
+Most of what a product does about other people is a use of one of these graphs:
+
+| Feature | Graph | What the feature does |
 | --- | --- | --- |
-| Distributed systems | coordination | put coupled writes behind one sequencer |
-| Experiment design | interference, a violation of SUTVA | randomize coupled units together |
-| Interface design | co-presence | sync coupled participants live |
+| Subscriptions, interest management | influence | deliver facts along edges |
+| Presence, live cursors | influence | deliver along edges with short deadlines |
+| Notifications | influence | deliver along edges with long deadlines |
+| Permissions, privacy settings, blocking | influence | delete edges; Dorothy Denning's lattice model of information flow (CACM 1976) is the general form |
+| Sharding | conflict | partition so that each closer handles one part; cut edges become distributed transactions |
+| Experiment units | influence | partition so that each part gets one arm; cut edges carry treatment between arms |
 
-Donald Rubin's stable unit treatment value assumption, SUTVA, holds that one unit's outcome does not depend on another unit's treatment. Physical experiments rarely get that assumption for free: laboratories build shielding, controls and isolation to approximate it. Software experiments get it only where coupling is low. Once users can see each other, a treatment given to one user reaches the others, and a per-user A/B test misstates the treatment's effect.
+The last row is where statisticians and systems engineers meet, often without noticing. Donald Rubin's stable unit treatment value assumption (SUTVA) holds that one unit's outcome does not depend on another unit's treatment. Equivalently, no influence edge crosses between arms. Software rarely gets SUTVA for free, so it has to be engineered. Three methods are in use:
 
-![A coupling graph cut into three clusters, with cut edges marked and the three uses of the partition listed](../../assets/diagrams/coupling-graph.svg "One cut of the coupling graph decides interest management, sharding and the experiment unit.")
+- **Partition the graph.** In 2013 Johan Ugander and Lars Backstrom published [balanced label propagation](https://web.stanford.edu/~jugander/papers/wsdm13-blp.pdf), which partitioned Facebook's social graph across servers (WSDM). In the same year Ugander, Brian Karrer, Backstrom and Jon Kleinberg published graph cluster randomization, which assigns treatment to clusters of the same graph (KDD). Both papers partition one graph.
+- **Randomize over time.** When coupling runs through a shared pool, as when every rider in a city competes for the same drivers, the graph has no useful clusters. [Switchback designs](https://arxiv.org/abs/2009.00148) randomize time periods instead (Bojinov, Simchi-Levi and Zhao, Management Science 2023).
+- **Change the rules to cut edges.** LinkedIn's [budget-split design](https://arxiv.org/abs/2012.08724) (Liu, Mao and Kang, KDD 2021) gives each arm of an ads experiment its own share of every advertiser's budget, so the arms cannot compete for it. That is escrow from principle 3, used to buy statistical independence rather than writes that need no coordination.
 
-The three standard responses are partitions of one graph, with entities as nodes and coupling as weighted edges. Johan Ugander and Lars Backstrom's [balanced label propagation](https://web.stanford.edu/~jugander/papers/wsdm13-blp.pdf) (WSDM 2013) partitioned Facebook's social graph across servers so that most friend lookups stayed on one machine. In the same year, Ugander, Brian Karrer, Backstrom and Jon Kleinberg published graph cluster randomization (KDD 2013), which assigns treatment to whole clusters of the social graph so that most of a user's friends share that user's treatment. Davide Viviano, Lihua Lei, Guido Imbens, Brian Karrer, Okke Schrijvers and Liang Shi's [causal clustering](https://arxiv.org/abs/2310.14983) (2023) states the trade-off: fewer, larger clusters cut fewer edges and so reduce bias, but leave fewer independent units and so increase variance.
+Policies cannot remove conflict edges. If two people try to register the same email address, the second learns that the first exists, whatever the policy says about what each can see. Every conflict edge is an information channel. That is why a sign-up form that reports "this email is already registered" lets anyone test whether a person has an account. The standard fix moves the outcome into a channel that only the address's owner controls: "If an account exists, we've sent a link."
 
-Coupling can also run through time. In a ride-hailing marketplace every rider competes for the same drivers, so riders cannot be randomized independently. Iavor Bojinov, David Simchi-Levi and Jinglong Zhao's [switchback experiments](https://arxiv.org/abs/2009.00148) (Management Science, 2023) randomize whole time periods instead.
+Economists distinguish rival goods, which only one party can hold, from non-rival goods, which anyone can copy. The distinction looks like the same axis, but for computing it runs backwards. Non-rival information spreads without coordination and needs no closer. Rival goods need every claimant to meet at a closer. The underlying quantity is coupling.
 
-A runtime that records which entities each write touches can compute one coupling graph and derive all three partitions from it: live sync within a cluster, one sequencer per cluster and one experiment arm per cluster. Cut edges are where each partition pays, in coordination across sequencers and in treatment that crosses between arms.
+## 6. Goals are rules with a direction
 
-## Walls
+A goal is a rule over facts with a direction, such as more conversions, fewer cancellations or shorter waits. It also carries constraints that must hold while it is pursued. Program choosers can pursue a goal, and people and agents can be shown one. Several practices follow:
 
-The regions are bounded by walls of three kinds.
+- **Analytics** evaluates goal rules and their inputs over the record. A dashboard is a view of goal rules.
+- **Attribution** follows provenance from a goal back to the decisions that produced it.
+- **An experiment** combines four earlier parts: a program chooser with known propensities, a goal, a unit taken from the influence partition, and a closure for analysis.
+- **Bandits and personalization models** are choosers that read a goal while they run.
+- **Pre-registration** records the goal and the analysis plan as facts before any outcome exists. Medical journals have required registration of clinical trials before enrollment since a 2004 statement by the International Committee of Medical Journal Editors.
 
-Soft walls are crossed by adding constructs. Moving from scripted to adaptive flows takes policies, goals and timers. Moving from flows to workspaces takes views, events that start flows, and shared state. None of these changes how the program is evaluated.
+Logged propensities make it possible to evaluate a chooser that was never deployed. Lihong Li, Wei Chu, John Langford and Xuanhui Wang ([WSDM 2011](https://arxiv.org/abs/1003.5956)) evaluated news-recommendation policies for the Yahoo! front page offline. They replayed a log of randomly chosen articles and kept only the events where the candidate policy would have chosen the same article. Microsoft's [Decision Service](https://arxiv.org/abs/1606.03966) (Agarwal et al., 2016) built the requirement into infrastructure: it logs each decision with its probability at the moment the decision is made.
 
-Hard walls need different runtime semantics. Continuous granularity needs a frame loop and gesture streams in place of a program counter waiting for commits. Concurrent participants need merge semantics or a sequencer in place of one participant's sequential updates. A flow language does not cross the hard walls; it hosts the components behind them and receives their commits.
+Counterfactual replay generalizes the method. Hold the rules fixed, change one recorded decision, and recompute everything after it. The result is exact until the first later chooser whose view would have changed. A pinned model can be asked again. A person cannot, so beyond that point the replay needs a model of the person.
 
-Value walls leave the program running but remove its advantages. A step with open determinism, such as a language model drafting a reply, cannot be verified in advance, and counterfactual replay stops being exact after that step. A product with only open-ended goals gives `choose` nothing to optimize, so adaptive allocation falls back to random assignment.
+A goal without constraints invites a capable chooser to find the gap between the rule and what the rule was meant to measure. Experimentation practice handles this with guardrail metrics (Kohavi, Tang and Xu, *Trustworthy Online Controlled Experiments*, 2020). A conversion goal, for example, is pursued only while refund rate, latency and complaint rate stay within bounds. In the kernel, guardrails are invariants on a goal, and the same goal and guardrails can steer a bandit or an agent.
+
+## 7. The program is a fact
+
+Programs change while decisions are in progress. Some people still run last year's version of an app. An insurance claim may be halfway through a review that takes weeks. An agent may be partway through a task. If each program change is recorded as a decision, every fact can be read by the rules in force when it was made. Tax law treats transactions the same way: a sale is taxed under the law at the time of the sale, and retroactive change is exceptional and explicit.
+
+- **A release is a closure:** an epoch at which pending decisions move to the new version.
+- **Migrations change interpretations, not facts.** Old facts stay as they were, and translation between versions is a rule.
+- **Pending decisions move by stable decision id.** A flow can be edited while thousands of people are partway through it, provided every pending decision maps to a decision in the new version or to a recorded fallback.
+- **Changing an agent's model is a program change,** because it changes what a pinned agent would answer.
+
+Rewriting stored state with a codemod is an optimization of the same idea, and its correctness has an exact form. Let *derive* map the record to state under a given version. A migration of stored state is correct when migrating the old derived state gives the same result as deriving under the new version: `migrate(derive_old(record)) = derive_new(record)`. Where replicas merge state, the migration must also commute with the merge.
+
+Because the record holds real histories, this condition can be tested by replaying them through both paths. A finite library of migration operators, each with a known inverse or complement, satisfies the condition by construction. Three versions of such a library exist:
+
+- the schema modification operators in Carlo Curino, Hyun Jin Moon and Carlo Zaniolo's PRISM (VLDB 2008);
+- bidirectional lenses (Foster et al., TOPLAS 2007);
+- David Spivak's functorial data migration (Information and Computation 2012).
+
+One requirement has no exception. Suppose a change alters what an earlier view showed, after someone acted on that view. The change must itself be recorded, as a restatement is in accounting. Otherwise the decision loses the context that gave it meaning.
+
+## What falls out
+
+| Feature | Principles | What it is in the kernel |
+| --- | --- | --- |
+| History, audit, undo | 1 | views over the record; undo is a new decision |
+| Caches, indexes, search | 1 | materialized rules |
+| Analytics, funnels, attribution | 1, 6 | goal rules and provenance over the record |
+| Feature flags, A/B tests, rollouts | 2, 5, 6 | a program chooser with logged propensities, a unit from the partition, a goal |
+| Personalization, recommendation | 2, 6 | a learned chooser that reads a goal |
+| Automation, escalation, delegation | 2, 5 | rebinding a decision, with a policy on the binding |
+| Simulated users, regression replay | 1, 2 | substituted or recorded choosers |
+| Voice, accessibility, agent APIs | 2 | one decision rendered per chooser |
+| Durable workflows, reminders | 1, 2 | pending decisions are facts; the clock is a chooser |
+| Submit buttons, turns, commits | 3 | closure |
+| Inventory, quotas, rate limits | 3 | escrow |
+| Offline mode | 3 | decisions that are confluent or escrowed to the device |
+| Optimistic UI, prediction, rollback | 4 | predicted facts |
+| Presence, live cursors, notifications | 4, 5 | influence edges, by deadline |
+| Permissions, privacy, blocking | 5 | deleted influence edges |
+| Sharding | 5 | a partition of the conflict graph |
+| Experiments under interference | 5 | a partition of the influence graph, or rules that cut edges |
+| Off-policy evaluation, counterfactuals | 1, 2, 6 | propensities and replay |
+| Live updates, schema migration, old clients | 7 | versioned interpretation |
+
+## Where familiar architectures sit
+
+Three coordinates locate any decision:
+
+- who fills the next decision;
+- whether its feedback deadline is short or long compared with a network round trip;
+- whether it is uncoupled, coupled by influence only, or contested.
+
+Deadline and coupling form a grid of six cells. The machinery a decision needs grows from the top-left cell to the bottom-right one.
+
+![A grid of six cells by deadline and coupling, with the mechanism each cell needs and example decisions colored by who picks next](../../assets/diagrams/decision-grid.svg "Familiar architectures are cells of a grid derived from principles 3 to 5; who picks next varies within every cell.")
+
+The names in the cells are shorthand; the coordinates carry the theory. Two of the cells are hidden by the usual taxonomy of forms, editors and games:
+
+- **Commons**, such as comment threads, wikis and mail, are coupled by influence and can wait.
+- **Registries**, such as bookings, username claims and bank transfers, are contested but not live. They wait for a closer rather than predicting.
+
+Who picks next runs through every cell. A rhythm game is an instrument whose program chooses the next note. A booking agent works in the registry cell on its owner's behalf.
+
+Products are composites, and the grid describes their decisions, not their categories. A ride-hailing trip spreads across five of the six cells:
+
+| Decision | Chooser | Deadline | Coupling | Cell |
+| --- | --- | --- | --- | --- |
+| Set the destination | rider | long | none | private work |
+| Quote a price | program pursuing market balance | long | influence through shared supply | commons; experiments need switchbacks |
+| Match rider to driver | dispatch program | seconds | conflict over drivers | registry, with a closer per zone |
+| Accept the trip | driver | about 15 s | conflict | registry |
+| Show the car on the map | world (GPS) | short | influence | canvas: the view predicts positions between samples |
+| Message the driver | rider or driver | long | influence | commons |
+| Pay | world (card network) | long | conflict over funds | registry: authorization is predicted, capture closes it |
+| Rate the trip | rider | long | none | private work |
+
+Robert Johansen's 1988 groupware matrix sorted collaboration tools by whether people worked at the same or different times, and in the same or different places. The grid keeps the matrix's shape and replaces both axes with quantities that decide the architecture. Place becomes coupling, and time becomes deadline against commit time.
+
+## One structure, five vocabularies
+
+| Kernel | Game theory | Databases and distributed systems | Interface design | Experiment design |
+| --- | --- | --- | --- | --- |
+| Fact | move in the history | log record | event | recorded assignment or outcome |
+| Rule | rules of the game | query, view, state machine | render function, reducer | metric definition |
+| Decision | move | operation, transaction | action | treatment assignment |
+| Chooser | player, Nature | client, process, network | user | assignment mechanism |
+| View | information set | snapshot, read set | screen | covariates |
+| Closure | end of turn, terminal history | commit, consensus, watermark | submit | analysis cutoff |
+| Coupling | strategic interdependence | conflict | co-presence | interference |
+| Goal | payoff | objective | task success | estimand |
+| Program change | rule change | schema or protocol version | release | protocol amendment |
+
+Each field has proved results about its own column, and the table carries those results across:
+
+- The CALM theorem explains to an experimenter why peeking fails.
+- Budget-split shows a database engineer that escrow can buy statistical independence.
+- Extensive-form games tell an interface designer that the information set, meaning what a chooser could see when it chose, belongs in the record.
+
+## What the theory rules out
+
+1. **Confirmed feedback on a contested decision faster than the round trip to its closer.** Confirmation within one 60 Hz frame requires a closer within about 1,700 km of fiber. Anything faster is a prediction.
+2. **A conclusion about absence without coordination.** This is the CALM theorem.
+3. **An unbiased per-person estimate of an effect when outcomes are coupled across arms.** Randomizing per person then measures a mixture of direct effects and spillover.
+4. **Exact counterfactual replay past a chooser who would have seen a different view and cannot be asked again.**
+5. **Hiding the outcome of a contested decision from the party that lost it.** A policy can coarsen a conflict edge or reroute it, but cannot delete it.
+6. **Reinterpreting a view someone acted on without recording the change.**
 
 ## Open problems
 
-The four questions turn the regions into consequences of quantities that can be measured: who chooses, the feedback deadline against the commit time, who sees a change, and whether writes are invariant-confluent. A classification that only describes products after the fact is a taxonomy. A theory should take a product's measured coordinates and derive a design such as "this write needs a sequencer per room, randomization per team and client prediction at 30 Hz." Four problems stand between the current account and that standard.
+The principles turn architecture into consequences of measurable quantities. Six problems stand between that and a tool that derives a design from a product's decisions.
 
-**Measuring the coordinates.** Products do not record feedback deadlines or coupling weights per commit point. A runtime that logs which entities each write touches could compute coupling, but feedback deadlines still have to come from designers or from usability studies.
+1. **Inferring closure.** A compiler could read rules and invariants and report which decisions need closers, at what scope, and where escrow would remove the need. [Indigo](https://www.dpss.inesc-id.pt/~rodrigo/indigo_eurosys15.pdf) (Balegas et al., EuroSys 2015) and Hamsaz (Houshmand and Lesani, POPL 2019) do this for invariants written in restricted logics.
+2. **Estimating coupling.** Influence and conflict edges can be derived from rules and weighted from the record. No published rule says when a runtime may re-partition a moving graph without invalidating experiments already running.
+3. **Declaring deadlines.** Products do not record a feedback deadline per decision. Without one, principle 4 cannot be applied mechanically.
+4. **Contracts for agent choosers.** An agent's decision needs a specification. It should state what the view includes, which options exist, what budget applies, which outcomes must be handed back to a person to close, and what must be logged for replay.
+5. **Models of people.** Counterfactual replay past a person needs a stand-in, and no accepted method yet validates one.
+6. **Closure as mechanism design.** The auction comparison shows that closure rules change behavior. No catalog yet maps closure rules to the behavior each induces.
 
-**Deciding question 4 automatically.** [Indigo](https://www.dpss.inesc-id.pt/~rodrigo/indigo_eurosys15.pdf) (Balegas et al., EuroSys 2015) and Hamsaz (Houshmand and Lesani, POPL 2019) use an SMT solver to find which pairs of operations can break an invariant, and Hamsaz synthesizes the coordination those pairs need. Both handle invariants written in restricted logics, such as "no two bookings overlap." Invariants that call arbitrary code are outside both tools.
-
-**Re-partitioning a moving graph.** Teams form, matches end and friendships change. A partition that suits sharding today can bias an experiment that began yesterday, and no published rule says when a runtime may re-partition without invalidating running experiments.
-
-**Bounding agent steps.** Each step handed to a language model moves a commit point behind a value wall. Logging the model's inputs and outputs restores replay. Counterfactual questions still stop at the first step where the model would have received different input.
-
-The cheapest test of the account is mechanical: compile the GuidedTrack sleep study by hand into a runtime with entities, tables, transactions and subscriptions, and check whether every keyword lowers cleanly. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes that runtime, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes languages that would compile to it. Both rely on older results collected in [Old Foundations, New Agents](/durable-universals-agentic-ai-engineering), including finite state machines, logs, consensus and information hiding.
+[Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the kernel as four runtime components. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) gives each part of the kernel the least powerful language that can express it.
