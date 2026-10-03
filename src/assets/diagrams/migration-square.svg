@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" role="img" aria-labelledby="title desc">
+  <title id="title">A migration as a commuting square and an epoch</title>
+  <desc id="desc">Top: two paths lead from the record to the state under version 2. One derives the state under version 1 and then migrates it. The other derives under version 2 directly. A migration is correct when both paths give the same state, and the paths must also commute with merge. Bottom: a timeline of the record. A release is a program-change fact at an epoch. Facts before it were made under version 1 and facts after it under version 2, except a fact from an old client, which is still read under version 1. A pending decision at step q7 under version 1 moves to step q7 under version 2 at the epoch, keeping its stable id.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
+  </defs>
+
+  <g class="pine">
+    <rect class="box" x="40" y="80" width="160" height="50" rx="6"/>
+    <text class="head" x="120" y="110" text-anchor="middle">Record</text>
+  </g>
+  <g class="iris">
+    <rect class="box" x="440" y="20" width="200" height="50" rx="6"/>
+    <text class="head" x="540" y="50" text-anchor="middle">State under v1</text>
+    <rect class="box" x="440" y="140" width="200" height="50" rx="6"/>
+    <text class="head" x="540" y="170" text-anchor="middle">State under v2</text>
+  </g>
+  <g class="line" marker-end="url(#arrow)">
+    <line x1="202" y1="94" x2="436" y2="48"/>
+    <line x1="202" y1="116" x2="436" y2="162"/>
+    <line x1="540" y1="72" x2="540" y2="136"/>
+  </g>
+  <g class="label">
+    <text x="216" y="62">derive under v1</text>
+    <text x="216" y="152">derive under v2</text>
+    <text x="550" y="110">migrate</text>
+  </g>
+  <g class="note" text-anchor="middle">
+    <text x="330" y="104">both paths must agree,</text>
+    <text x="330" y="120">and commute with merge</text>
+  </g>
+
+  <text class="axis" x="40" y="236">Record</text>
+  <line class="grid" x1="40" y1="256" x2="640" y2="256"/>
+  <g class="pine">
+    <circle class="dot" cx="80" cy="256" r="5"/><circle class="dot" cx="130" cy="256" r="5"/><circle class="dot" cx="180" cy="256" r="5"/><circle class="dot" cx="240" cy="256" r="5"/><circle class="dot" cx="290" cy="256" r="5"/><circle class="dot" cx="330" cy="256" r="5"/>
+    <circle class="ring" cx="480" cy="256" r="5"/>
+    <text class="note" x="480" y="280" text-anchor="middle">old client, read under v1</text>
+  </g>
+  <g class="iris">
+    <circle class="dot" cx="400" cy="256" r="5"/><circle class="dot" cx="440" cy="256" r="5"/><circle class="dot" cx="530" cy="256" r="5"/><circle class="dot" cx="590" cy="256" r="5"/>
+  </g>
+  <g class="note" text-anchor="middle">
+    <text x="205" y="240">facts under v1</text>
+    <text x="500" y="240">facts under v2</text>
+  </g>
+
+  <g class="gold">
+    <line class="line-hue" x1="360" y1="216" x2="360" y2="330"/>
+    <rect class="box" x="353" y="249" width="14" height="14" rx="2" transform="rotate(45 360 256)"/>
+    <text class="label ink strong" x="360" y="208" text-anchor="middle">Release: a program-change fact</text>
+  </g>
+
+  <g class="pine">
+    <rect class="box" x="210" y="296" width="146" height="22" rx="4"/>
+    <text class="note ink" x="283" y="311" text-anchor="middle">pending at q7, v1</text>
+  </g>
+  <g class="iris">
+    <rect class="box" x="364" y="296" width="146" height="22" rx="4"/>
+    <text class="note ink" x="437" y="311" text-anchor="middle">pending at q7, v2</text>
+  </g>
+  <text class="note" x="360" y="346" text-anchor="middle">a pending decision keeps its stable id across the epoch</text>
+</svg>
