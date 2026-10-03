@@ -1,84 +1,89 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 424" role="img" aria-labelledby="title desc">
   <title id="title">Runtime components</title>
-  <desc id="desc">A server runs four components. The record holds facts with their chooser, view, propensity, program version and causal position. The rules engine derives views from the record and maintains subscriptions, policies, goals and provenance. The gateway receives open decisions from the rules engine, binds each to a chooser, checks policy, enforces deadlines, logs propensities and stores pending decisions as facts. Confluent facts go straight from the gateway to the record; contested decisions go as claims to closers, one per conflict scope, which record the closed facts. Programs, agents and the world answer the server's gateway. A client replica runs a local gateway, local rules and a local record; the person answers the local gateway, which predicts and then reconciles. The client syncs facts with the server record and receives views from the rules engine.</desc>
+  <desc id="desc">A server runs four components. The record store holds records with their id, choice, value, resolver, snapshot, program version, probability and time. The evaluator computes views, open choices and goals from the history. The dispatcher receives the open choices, delivers each to its bound resolver, checks the value against the options, runs timeouts and records probabilities. Records of order-coupled choices go from the dispatcher to the sequencers, one per scope, which append admissions and seals to the record store; other records go directly to the record store. Functions, AI models and external systems resolve choices through the server's dispatcher. A device runs replicas of the dispatcher, evaluator and record store and sequences its own private scopes; a person resolves choices through the device's dispatcher. The device syncs records with the server and receives views from the server's evaluator.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
   </defs>
 
   <g class="rose">
-    <rect class="box" x="64" y="12" width="92" height="28" rx="14"/>
-    <text class="label ink" x="110" y="31" text-anchor="middle">person</text>
-    <rect class="box" x="300" y="12" width="92" height="28" rx="14"/>
-    <text class="label ink" x="346" y="31" text-anchor="middle">program</text>
-    <rect class="box" x="420" y="12" width="92" height="28" rx="14"/>
-    <text class="label ink" x="466" y="31" text-anchor="middle">agent</text>
-    <rect class="box" x="540" y="12" width="92" height="28" rx="14"/>
-    <text class="label ink" x="586" y="31" text-anchor="middle">world</text>
+    <rect class="box" x="126" y="12" width="84" height="28" rx="14"/>
+    <text class="label ink" x="168" y="31" text-anchor="middle">person</text>
+    <rect class="box" x="270" y="12" width="100" height="28" rx="14"/>
+    <text class="label ink" x="320" y="31" text-anchor="middle">function</text>
+    <rect class="box" x="390" y="12" width="100" height="28" rx="14"/>
+    <text class="label ink" x="440" y="31" text-anchor="middle">AI model</text>
+    <rect class="box" x="510" y="12" width="130" height="28" rx="14"/>
+    <text class="label ink" x="575" y="31" text-anchor="middle">external system</text>
   </g>
-  <g class="line">
-    <line x1="110" y1="40" x2="110" y2="54"/>
-    <line x1="346" y1="40" x2="346" y2="110"/>
-    <line x1="466" y1="40" x2="466" y2="110"/>
-    <line x1="586" y1="40" x2="586" y2="110"/>
+  <g class="line" marker-start="url(#arrow)" marker-end="url(#arrow)">
+    <line x1="168" y1="44" x2="168" y2="114"/>
+    <line x1="320" y1="44" x2="320" y2="106"/>
+    <line x1="440" y1="44" x2="440" y2="106"/>
+    <line x1="575" y1="44" x2="575" y2="106"/>
   </g>
-  <text class="note" x="352" y="80">ask, answer</text>
+  <text class="note" x="328" y="80">choices, values</text>
 
   <g class="slate">
-    <rect class="box-open" x="20" y="54" width="180" height="356" rx="8"/>
-    <text class="head" x="36" y="78">Client replica</text>
-    <text class="note" x="36" y="96">predicts, then reconciles</text>
+    <rect class="box-open" x="12" y="54" width="196" height="356" rx="8"/>
   </g>
   <g class="gold">
-    <rect class="box" x="36" y="110" width="148" height="60" rx="6"/>
-    <text class="head" x="110" y="145" text-anchor="middle">Local gateway</text>
+    <rect class="box" x="28" y="118" width="164" height="56" rx="6"/>
+    <text class="head" x="110" y="142" text-anchor="middle">Dispatcher</text>
+    <text class="note" x="110" y="162" text-anchor="middle">records at once</text>
   </g>
   <g class="iris">
-    <rect class="box" x="36" y="222" width="148" height="60" rx="6"/>
-    <text class="head" x="110" y="257" text-anchor="middle">Local rules</text>
+    <rect class="box" x="28" y="222" width="164" height="60" rx="6"/>
+    <text class="head" x="110" y="248" text-anchor="middle">Evaluator</text>
+    <text class="note" x="110" y="268" text-anchor="middle">provisional values</text>
   </g>
   <g class="pine">
-    <rect class="box" x="36" y="330" width="148" height="70" rx="6"/>
-    <text class="head" x="110" y="370" text-anchor="middle">Local record</text>
+    <rect class="box" x="28" y="330" width="164" height="70" rx="6"/>
+    <text class="head" x="110" y="356" text-anchor="middle">Record store</text>
+    <text class="note" x="110" y="376" text-anchor="middle">own records and</text>
+    <text class="note" x="110" y="392" text-anchor="middle">subscribed records</text>
   </g>
+  <text class="label strong" x="28" y="76">Device replica</text>
+  <text class="note" x="28" y="94">sequences its</text>
+  <text class="note" x="28" y="110">private scopes</text>
 
   <g class="gold">
     <rect class="box" x="250" y="110" width="410" height="60" rx="6"/>
-    <text class="head" x="266" y="134">Gateway</text>
-    <text class="note" x="266" y="154">binds choosers, checks policy, enforces deadlines, logs propensities</text>
+    <text class="head" x="266" y="134">Dispatcher</text>
+    <text class="note" x="266" y="154">bindings, option checks, timeouts, probabilities</text>
   </g>
   <g class="iris">
     <rect class="box" x="250" y="222" width="190" height="60" rx="6"/>
-    <text class="head" x="266" y="246">Rules engine</text>
-    <text class="note" x="266" y="266">views, subscriptions, goals</text>
+    <text class="head" x="266" y="246">Evaluator</text>
+    <text class="note" x="266" y="266">views, open choices, goals</text>
   </g>
   <g class="love">
-    <rect class="box" x="520" y="222" width="140" height="60" rx="6"/>
-    <text class="head" x="536" y="246">Closers</text>
-    <text class="note" x="536" y="266">one per scope</text>
+    <rect class="box" x="500" y="222" width="160" height="60" rx="6"/>
+    <text class="head" x="516" y="246">Sequencers</text>
+    <text class="note" x="516" y="266">one per ordered scope</text>
   </g>
   <g class="pine">
     <rect class="box" x="250" y="330" width="410" height="70" rx="6"/>
-    <text class="head" x="266" y="354">Record</text>
-    <text class="note" x="266" y="374">facts with chooser, view, propensity,</text>
-    <text class="note" x="266" y="390">program version and causal position</text>
+    <text class="head" x="266" y="354">Record store</text>
+    <text class="note" x="266" y="374">id, choice, value, resolver, snapshot,</text>
+    <text class="note" x="266" y="390">version, probability, time</text>
   </g>
 
   <g class="line" marker-end="url(#arrow)">
     <line x1="330" y1="328" x2="330" y2="286"/>
     <line x1="330" y1="220" x2="330" y2="174"/>
-    <line x1="590" y1="172" x2="590" y2="218"/>
-    <line x1="590" y1="284" x2="590" y2="326"/>
-    <line x1="480" y1="172" x2="480" y2="326"/>
-    <line x1="248" y1="252" x2="190" y2="252"/>
+    <line x1="580" y1="172" x2="580" y2="218"/>
+    <line x1="580" y1="284" x2="580" y2="326"/>
+    <line x1="465" y1="172" x2="465" y2="326"/>
+    <line x1="248" y1="252" x2="196" y2="252"/>
   </g>
-  <line class="line" x1="188" y1="365" x2="246" y2="365" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line class="line" x1="194" y1="365" x2="246" y2="365" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <g class="label">
-    <text x="338" y="310">derive</text>
-    <text x="338" y="200">open</text>
-    <text x="598" y="200">claim</text>
-    <text x="598" y="310">close</text>
-    <text x="219" y="244" text-anchor="middle">views</text>
-    <text x="219" y="356" text-anchor="middle">sync</text>
+    <text x="338" y="310">history</text>
+    <text x="338" y="200">open choices</text>
+    <text x="572" y="200" text-anchor="end">order-coupled</text>
+    <text x="222" y="244" text-anchor="middle">views</text>
+    <text x="220" y="356" text-anchor="middle">sync</text>
   </g>
-  <text class="note" text-anchor="middle" transform="translate(474 250) rotate(-90)">confluent facts</text>
+  <text class="note" x="572" y="310" text-anchor="end">admissions, seals</text>
+  <text class="note" text-anchor="middle" transform="translate(459 250) rotate(-90)">other records</text>
 </svg>
