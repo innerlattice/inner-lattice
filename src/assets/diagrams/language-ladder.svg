@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 372" role="img" aria-labelledby="title desc">
+  <title id="title">Languages ordered by what their restrictions guarantee</title>
+  <desc id="desc">Five languages stacked from least to most expressive. Values allow no ordering or functions, so they merge in any order and conflicts fail the build. Policies allow no loops or recursion, so a solver can check every permission. Rules allow recursion over finite facts, so they terminate and update incrementally. Flows are finite graphs of steps between commit points, so every path can be listed and replayed. Procedures declare effects and leave holes for Agents, so every step is logged and replayable. Laws and proofs attach to module boundaries at every level.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/>
+    </marker>
+  </defs>
+
+  <text class="axis" x="62" y="22">Language</text>
+  <text class="axis" x="236" y="22">Restriction and what it buys</text>
+
+  <g class="slate">
+    <rect class="card" x="52" y="34" width="520" height="56" rx="6"/>
+    <text class="head" x="68" y="58">Values</text>
+    <text class="note" x="68" y="76">CUE, design tokens</text>
+    <text class="label" x="236" y="58">No ordering and no functions</text>
+    <text class="label ink strong" x="236" y="76">Merges in any order; conflicts fail the build</text>
+
+    <rect class="card" x="52" y="98" width="520" height="56" rx="6"/>
+    <text class="head" x="68" y="122">Policies</text>
+    <text class="note" x="68" y="140">Cedar</text>
+    <text class="label" x="236" y="122">No loops and no recursion</text>
+    <text class="label ink strong" x="236" y="140">A solver can check every permission</text>
+
+    <rect class="card" x="52" y="162" width="520" height="56" rx="6"/>
+    <text class="head" x="68" y="186">Rules</text>
+    <text class="note" x="68" y="204">Datalog with time</text>
+    <text class="label" x="236" y="186">Recursion over finite facts</text>
+    <text class="label ink strong" x="236" y="204">Terminates and updates incrementally</text>
+
+    <rect class="card" x="52" y="226" width="520" height="56" rx="6"/>
+    <text class="head" x="68" y="250">Flows</text>
+    <text class="note" x="68" y="268">GuidedTrack, priority guides</text>
+    <text class="label" x="236" y="250">Finite steps between commit points</text>
+    <text class="label ink strong" x="236" y="268">Every path can be listed and replayed</text>
+
+    <rect class="card" x="52" y="290" width="520" height="56" rx="6"/>
+    <text class="head" x="68" y="314">Procedures</text>
+    <text class="note" x="68" y="332">Reducers, Ia</text>
+    <text class="label" x="236" y="314">Declared effects; Agents fill holes</text>
+    <text class="label ink strong" x="236" y="332">Every step is logged and replayable</text>
+  </g>
+
+  <line class="line" x1="36" y1="40" x2="36" y2="340" marker-end="url(#arrow)"/>
+  <text class="axis" x="18" y="40" transform="rotate(90 18 40)">More expressive, fewer guarantees</text>
+
+  <g class="pine">
+    <rect class="box-open" x="588" y="34" width="72" height="312" rx="6"/>
+    <text class="head" x="628" y="190" text-anchor="middle" transform="rotate(-90 628 190)">Laws and proofs</text>
+    <text class="note" x="646" y="190" text-anchor="middle" transform="rotate(-90 646 190)">at module boundaries</text>
+  </g>
+</svg>
