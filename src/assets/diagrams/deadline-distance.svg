@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 350" role="img" aria-labelledby="title desc">
-  <title id="title">Feedback deadline against commit time</title>
-  <desc id="desc">A log-log plot. The horizontal axis is commit time, the round trip to the closer, from 1 millisecond to a week. The vertical axis is the feedback deadline, from 1 millisecond to a day. The diagonal marks where they are equal. Above it, a decision can wait for closure: a pen stroke closed on the device in about 2 milliseconds against a one-frame deadline, a form submit, a card authorization, and a move in daily chess. Below it, the view must show predicted facts: a fighting-game input, a keystroke in a shared document, and card settlement, which takes days and is shown as pending. Three levers move a decision out of the lower region: move the closer closer, lengthen the deadline, or make the decision confluent.</desc>
+  <title id="title">Response deadline against sealing latency</title>
+  <desc id="desc">A log-log plot. The horizontal axis is sealing latency, at least the round trip to the sequencer, from 1 millisecond to a week. The vertical axis is the response deadline, from 1 millisecond to a day. The diagonal marks where they are equal. Above it, a choice can wait for the seal: a pen stroke sealed on the device in about 2 milliseconds against a one-frame deadline, a form submit, a card authorization, and a move in daily chess. Below it, the view must show provisional values: a fighting-game input, a keystroke in a shared document, and card settlement, which takes days and is shown as pending. Three levers move a choice out of the lower region: move the sequencer closer, lengthen the deadline, or make the choice invariant-confluent.</desc>
 
   <polygon class="rose box" points="110,300 586,42 650,42 650,300" style="stroke: none"/>
 
@@ -10,19 +10,19 @@
     <line x1="110" y1="267.5" x2="650" y2="267.5"/><line x1="110" y1="235" x2="650" y2="235"/><line x1="110" y1="202.5" x2="650" y2="202.5"/><line x1="110" y1="170" x2="650" y2="170"/><line x1="110" y1="144.7" x2="650" y2="144.7"/><line x1="110" y1="86.9" x2="650" y2="86.9"/><line x1="110" y1="42" x2="650" y2="42"/>
   </g>
   <line class="line" x1="110" y1="300" x2="586" y2="42"/>
-  <text class="note" x="0" y="0" text-anchor="middle" transform="translate(468 96) rotate(-28.4)">deadline = commit time</text>
+  <text class="note" x="0" y="0" text-anchor="middle" transform="translate(468 96) rotate(-28.4)">deadline = sealing latency</text>
 
   <g class="note" text-anchor="end">
-    <text x="102" y="304">1 ms</text><text x="102" y="271.5">10 ms</text><text x="102" y="239">100 ms</text><text x="102" y="206.5">1 s</text><text x="102" y="174">10 s</text><text x="102" y="148.7">1 min</text><text x="102" y="90.9">1 h</text><text x="102" y="46">1 day</text>
+    <text x="102" y="300">1 ms</text><text x="102" y="271.5">10 ms</text><text x="102" y="239">100 ms</text><text x="102" y="206.5">1 s</text><text x="102" y="174">10 s</text><text x="102" y="148.7">1 min</text><text x="102" y="90.9">1 h</text><text x="102" y="46">1 day</text>
   </g>
   <g class="note" text-anchor="middle">
     <text x="110" y="318">1 ms</text><text x="170" y="318">10 ms</text><text x="230" y="318">100 ms</text><text x="290" y="318">1 s</text><text x="350" y="318">10 s</text><text x="397" y="318">1 min</text><text x="503" y="318">1 h</text><text x="586" y="318">1 day</text>
   </g>
-  <text class="axis" x="20" y="24">Feedback deadline</text>
-  <text class="axis" x="380" y="342" text-anchor="middle">Commit time: round trip to the closer</text>
+  <text class="axis" x="20" y="24">Response deadline</text>
+  <text class="axis" x="380" y="342" text-anchor="middle">Sealing latency: at least the round trip to the sequencer</text>
 
-  <text class="axis" x="120" y="70">Wait for closure</text>
-  <g class="rose"><text class="axis ink" x="640" y="290" text-anchor="end">Show predicted facts</text></g>
+  <text class="axis" x="120" y="70">Wait for the seal</text>
+  <g class="rose"><text class="axis ink" x="640" y="290" text-anchor="end">Show provisional values</text></g>
 
   <line class="line dashed" x1="313" y1="179.8" x2="598" y2="179.8"/>
   <g class="pine">
@@ -48,8 +48,8 @@
   <text class="note" x="644" y="198" text-anchor="end">shown as pending</text>
 
   <g class="note">
-    <text x="436" y="236">← move the closer</text>
+    <text x="436" y="236">← move the sequencer closer</text>
     <text x="436" y="254">↑ lengthen the deadline</text>
-    <text x="436" y="272">or make it confluent</text>
+    <text x="436" y="272">or make it invariant-confluent</text>
   </g>
 </svg>
