@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 290" role="img" aria-labelledby="title desc">
+  <title id="title">Every region compiles to one substrate</title>
+  <desc id="desc">Four surfaces, scripted flows, adaptive flows, workspaces and live spaces, compile to a substrate of entities, tables, reducers and subscriptions. Reducers append to an append-only log, and a sequencer orders the entries that contested decisions depend on.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/>
+    </marker>
+  </defs>
+
+  <g class="foam"><rect class="box" x="20" y="20" width="150" height="56" rx="6"/><text class="head" x="95" y="44" text-anchor="middle">Scripted flows</text><text class="note" x="95" y="63" text-anchor="middle">Program counter</text></g>
+  <g class="pine"><rect class="box" x="180" y="20" width="150" height="56" rx="6"/><text class="head" x="255" y="44" text-anchor="middle">Adaptive flows</text><text class="note" x="255" y="63" text-anchor="middle">Policies and goals</text></g>
+  <g class="iris"><rect class="box" x="340" y="20" width="150" height="56" rx="6"/><text class="head" x="415" y="44" text-anchor="middle">Workspaces</text><text class="note" x="415" y="63" text-anchor="middle">Views over tables</text></g>
+  <g class="rose"><rect class="box" x="500" y="20" width="150" height="56" rx="6"/><text class="head" x="575" y="44" text-anchor="middle">Live spaces</text><text class="note" x="575" y="63" text-anchor="middle">Client frame loop</text></g>
+
+  <line class="line" x1="335" y1="80" x2="335" y2="106" marker-end="url(#arrow)"/>
+  <text class="note" x="345" y="98">compile to</text>
+
+  <g class="slate">
+    <rect class="card" x="20" y="112" width="150" height="56" rx="6"/><text class="head" x="95" y="136" text-anchor="middle">Entities</text><text class="note" x="95" y="155" text-anchor="middle">Identity only</text>
+    <rect class="card" x="180" y="112" width="150" height="56" rx="6"/><text class="head" x="255" y="136" text-anchor="middle">Tables</text><text class="note" x="255" y="155" text-anchor="middle">Components and state</text>
+    <rect class="card" x="340" y="112" width="150" height="56" rx="6"/><text class="head" x="415" y="136" text-anchor="middle">Reducers</text><text class="note" x="415" y="155" text-anchor="middle">Transactions by Agents</text>
+    <rect class="card" x="500" y="112" width="150" height="56" rx="6"/><text class="head" x="575" y="136" text-anchor="middle">Subscriptions</text><text class="note" x="575" y="155" text-anchor="middle">Live queries</text>
+  </g>
+
+  <line class="line" x1="335" y1="172" x2="335" y2="198" marker-end="url(#arrow)"/>
+  <text class="note" x="345" y="190">append and order</text>
+
+  <g class="slate">
+    <rect class="box" x="20" y="204" width="310" height="56" rx="6"/><text class="head" x="175" y="228" text-anchor="middle">Append-only log</text><text class="note" x="175" y="247" text-anchor="middle">Monotonic and replayable</text>
+    <rect class="box" x="340" y="204" width="310" height="56" rx="6"/><text class="head" x="495" y="228" text-anchor="middle">Sequencer</text><text class="note" x="495" y="247" text-anchor="middle">Placed per contested decision</text>
+  </g>
+</svg>
