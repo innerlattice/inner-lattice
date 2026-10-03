@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 500" role="img" aria-labelledby="title desc">
+  <title id="title">Regions of interactive software</title>
+  <desc id="desc">Surfaces placed by who owns the screen, from program to person, and by whether the screen shows only committed state or also uncommitted state. Below a dashed commit boundary sit adaptive flows, which contain scripted flows, and workspaces. Above it sit live spaces, whose products are marked as instruments, canvases or arenas. A spreadsheet sits on the boundary.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/>
+    </marker>
+  </defs>
+
+  <g class="rose">
+    <rect class="box" x="80" y="24" width="560" height="176" rx="6"/>
+    <text class="head" x="94" y="48">Live spaces</text>
+    <text class="note" x="94" y="66">The screen shows state before it is committed</text>
+  </g>
+  <g class="gold"><circle class="ring" cx="432" cy="44" r="4.5"/><text class="note" x="442" y="48">Instrument</text></g>
+  <g class="rose"><circle class="dot" cx="516" cy="44" r="4.5"/><text class="note" x="526" y="48">Canvas</text></g>
+  <g class="love"><circle class="dot" cx="583" cy="44" r="4.5"/><text class="note" x="593" y="48">Arena</text></g>
+
+  <g class="gold">
+    <circle class="ring" cx="128" cy="110" r="4.5"/><text class="label" x="138" y="114">Rhythm game</text>
+    <circle class="ring" cx="598" cy="90" r="4.5"/><text class="label" x="588" y="94" text-anchor="end">Drawing app</text>
+  </g>
+  <g class="rose">
+    <circle class="dot" cx="500" cy="118" r="4.5"/><text class="label" x="510" y="122">Whiteboard</text>
+    <circle class="dot" cx="466" cy="150" r="4.5"/><text class="label" x="476" y="154">Collaborative doc</text>
+    <circle class="dot" cx="566" cy="178" r="4.5"/><text class="label" x="556" y="182" text-anchor="end">Design canvas</text>
+  </g>
+  <g class="love">
+    <circle class="dot" cx="172" cy="160" r="4.5"/><text class="label" x="182" y="164">Live quiz show</text>
+    <circle class="dot" cx="282" cy="124" r="4.5"/><text class="label" x="292" y="128">Live auction</text>
+    <circle class="dot" cx="398" cy="96" r="4.5"/><text class="label" x="408" y="100">Shooter</text>
+    <circle class="dot" cx="366" cy="170" r="4.5"/><text class="label" x="376" y="174">MMO zone</text>
+  </g>
+
+  <line class="line dashed" x1="80" y1="222" x2="640" y2="222"/>
+  <text class="note" x="94" y="215">Commit boundary</text>
+  <circle cx="540" cy="222" r="4.5" fill="var(--diagram-bg)" stroke="var(--diagram-slate)" stroke-width="1.5"/>
+  <text class="label" x="550" y="215">Spreadsheet</text>
+
+  <g class="pine">
+    <rect class="box" x="80" y="244" width="270" height="208" rx="6"/>
+    <text class="head" x="94" y="268">Adaptive flows</text>
+    <text class="note" x="94" y="286">Policies, goals, handoffs</text>
+    <circle class="dot" cx="322" cy="308" r="4.5"/><text class="label" x="312" y="312" text-anchor="end">Approval workflow</text>
+    <circle class="dot" cx="110" cy="334" r="4.5"/><text class="label" x="120" y="338">Agent on rails</text>
+    <circle class="dot" cx="296" cy="352" r="4.5"/><text class="label" x="286" y="356" text-anchor="end">Onboarding</text>
+    <circle class="dot" cx="270" cy="404" r="4.5"/><text class="label" x="280" y="408">Checkout</text>
+  </g>
+  <g class="foam">
+    <rect class="box" x="92" y="364" width="150" height="78" rx="5"/>
+    <text class="head" x="104" y="386">Scripted flows</text>
+    <circle class="dot" cx="114" cy="406" r="4.5"/><text class="label" x="124" y="410">Quiz funnel</text>
+    <circle class="dot" cx="114" cy="428" r="4.5"/><text class="label" x="124" y="432">Survey</text>
+  </g>
+
+  <g class="iris">
+    <rect class="box" x="350" y="244" width="290" height="208" rx="6"/>
+    <text class="head" x="364" y="268">Workspaces</text>
+    <text class="note" x="364" y="286">Views over shared tables</text>
+    <circle class="dot" cx="612" cy="312" r="4.5"/><text class="label" x="602" y="316" text-anchor="end">Catalog and search</text>
+    <circle class="dot" cx="388" cy="340" r="4.5"/><text class="label" x="398" y="344">Work queue</text>
+    <circle class="dot" cx="520" cy="366" r="4.5"/><text class="label" x="530" y="370">CRUD admin</text>
+    <circle class="dot" cx="432" cy="398" r="4.5"/><text class="label" x="442" y="402">Settings</text>
+    <circle class="dot" cx="380" cy="430" r="4.5"/><text class="label" x="390" y="434">Inbox</text>
+    <circle class="dot" cx="556" cy="426" r="4.5"/><text class="label" x="566" y="430">Dashboard</text>
+  </g>
+
+  <text class="axis" x="80" y="482">Program owns the screen</text>
+  <text class="axis" x="640" y="482" text-anchor="end">Person owns the screen</text>
+  <line class="line" x1="242" y1="478" x2="480" y2="478" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text class="axis" x="62" y="452" transform="rotate(-90 62 452)">Committed state</text>
+  <text class="axis" x="62" y="24" transform="rotate(-90 62 24)" text-anchor="end">Uncommitted state</text>
+  <line class="line" x1="58" y1="346" x2="58" y2="140" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+</svg>
