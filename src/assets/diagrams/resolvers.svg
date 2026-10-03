@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 350" role="img" aria-labelledby="title desc">
+  <title id="title">Resolvers ordered by determinacy</title>
+  <desc id="desc">One choice, with its view, options and timeout, can be bound to any of five resolvers, ordered from most to least determinate. A deterministic function and a randomizer sit inside the system boundary, as versioned code. An AI model, a person and an external system sit outside it, in the environment. A function's probability for its selection is 1, it repeats exactly and it responds in microseconds. A randomizer's probability is known and recorded, it repeats with its seed and it responds in microseconds. An AI model's probability for a whole selection is unknown, it repeats only approximately even when the model and context are pinned, and it responds in seconds. A person's probability is unknown, a person cannot be asked again with nothing else changed, and a person responds in seconds to days. An external system's probability is unknown, its selections can only be read back from the record, and its latency varies.</desc>
+
+  <g class="gold">
+    <rect class="box" x="130" y="16" width="530" height="40" rx="6"/>
+    <text class="head" x="395" y="41" text-anchor="middle">One choice: view, options, timeout</text>
+  </g>
+  <g class="line">
+    <line x1="183" y1="56" x2="183" y2="80"/>
+    <line x1="289" y1="56" x2="289" y2="80"/>
+    <line x1="395" y1="56" x2="395" y2="80"/>
+    <line x1="501" y1="56" x2="501" y2="80"/>
+    <line x1="607" y1="56" x2="607" y2="80"/>
+  </g>
+  <text class="axis" x="20" y="41">Bound to</text>
+
+  <g text-anchor="middle">
+    <g class="iris">
+      <text class="head" x="183" y="100">Function</text>
+      <text class="head" x="289" y="100">Randomizer</text>
+      <text class="note" x="236" y="128">inside: versioned code</text>
+    </g>
+    <g class="gold">
+      <text class="head" x="395" y="100">AI model</text>
+    </g>
+    <g class="pine">
+      <text class="head" x="501" y="100">Person</text>
+    </g>
+    <g class="slate">
+      <text class="head" x="607" y="100">External system</text>
+      <text class="note" x="501" y="128">outside: the environment</text>
+    </g>
+  </g>
+  <line class="cut" x1="342" y1="84" x2="342" y2="300"/>
+  <text class="note" x="348" y="296">system boundary</text>
+
+  <g class="grid">
+    <line x1="20" y1="146" x2="660" y2="146"/>
+    <line x1="20" y1="200" x2="660" y2="200"/>
+    <line x1="20" y1="254" x2="660" y2="254"/>
+  </g>
+  <text class="axis" x="20" y="170">Probability</text>
+  <text class="note" x="20" y="186">in the record</text>
+  <text class="axis" x="20" y="224">Repeatable</text>
+  <text class="note" x="20" y="240">ask again</text>
+  <text class="axis" x="20" y="278">Latency</text>
+
+  <g class="pine"><circle class="dot" cx="183" cy="164" r="5"/><circle class="dot" cx="289" cy="164" r="5"/><circle class="dot" cx="183" cy="218" r="5"/><circle class="dot" cx="289" cy="218" r="5"/></g>
+  <g class="gold"><circle class="dot" cx="395" cy="218" r="5"/></g>
+  <g class="love"><circle class="dot" cx="395" cy="164" r="5"/><circle class="dot" cx="501" cy="164" r="5"/><circle class="dot" cx="607" cy="164" r="5"/><circle class="dot" cx="501" cy="218" r="5"/><circle class="dot" cx="607" cy="218" r="5"/></g>
+
+  <g class="note" text-anchor="middle">
+    <text x="183" y="186">1</text>
+    <text x="289" y="186">known</text>
+    <text x="395" y="186">unknown</text>
+    <text x="501" y="186">unknown</text>
+    <text x="607" y="186">unknown</text>
+    <text x="183" y="240">exactly</text>
+    <text x="289" y="240">with the seed</text>
+    <text x="395" y="240">roughly, if pinned</text>
+    <text x="501" y="240">no</text>
+    <text x="607" y="240">read back only</text>
+  </g>
+  <g class="label" text-anchor="middle">
+    <text x="183" y="278">µs</text>
+    <text x="289" y="278">µs</text>
+    <text x="395" y="278">seconds</text>
+    <text x="501" y="278">seconds to days</text>
+    <text x="607" y="278">varies</text>
+  </g>
+
+  <g class="pine"><circle class="dot" cx="136" cy="330" r="5"/></g>
+  <text class="note" x="146" y="334">yes</text>
+  <g class="gold"><circle class="dot" cx="196" cy="330" r="5"/></g>
+  <text class="note" x="206" y="334">partly, or under conditions</text>
+  <g class="love"><circle class="dot" cx="380" cy="330" r="5"/></g>
+  <text class="note" x="390" y="334">no</text>
+</svg>

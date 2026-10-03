@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" role="img" aria-labelledby="title desc">
+  <title id="title">Where a sequencer runs and how long admission takes</title>
+  <desc id="desc">Five placements of a sequencer, with the typical time to admit one record on a logarithmic scale. Each placement survives more failures or less trust than the one above it. The device admits its own records in under a millisecond, as drawing apps and local-first edits do. One server per scope costs one round trip, about 1 to 50 milliseconds, and stops admitting while that server is down; Durable Objects and game servers work this way. A quorum of replicas in one region takes about 3 to 60 milliseconds and survives the failure of a minority of replicas. A quorum across regions takes about 80 to 300 milliseconds and survives the loss of a region. Byzantine fault-tolerant, permissionless consensus takes from about one second to about an hour and survives participants that send false messages.</desc>
+
+  <text class="axis" x="20" y="24">Sequencer</text>
+  <text class="axis" x="300" y="24">Time to admit one record</text>
+
+  <g class="grid">
+    <line x1="334" y1="36" x2="334" y2="300"/>
+    <line x1="382" y1="36" x2="382" y2="300"/>
+    <line x1="430" y1="36" x2="430" y2="300"/>
+    <line x1="477" y1="36" x2="477" y2="300"/>
+    <line x1="525" y1="36" x2="525" y2="300"/>
+    <line x1="562" y1="36" x2="562" y2="300"/>
+    <line x1="647" y1="36" x2="647" y2="300"/>
+  </g>
+
+  <g class="love">
+    <text class="head" x="20" y="62">The device</text>
+    <text class="note" x="20" y="80">only the device's own records</text>
+    <rect class="box" x="296" y="58" width="38" height="16" rx="3"/>
+    <text class="note" x="288" y="70" text-anchor="end">under 1 ms</text>
+
+    <text class="head" x="20" y="114">One server per scope</text>
+    <text class="note" x="20" y="132">stops while the server is down</text>
+    <rect class="box" x="334" y="110" width="81" height="16" rx="3"/>
+    <text class="note" x="423" y="122">1–50 ms</text>
+
+    <text class="head" x="20" y="166">Quorum in one region</text>
+    <text class="note" x="20" y="184">survives a minority of failures</text>
+    <rect class="box" x="357" y="162" width="62" height="16" rx="3"/>
+    <text class="note" x="427" y="174">3–60 ms</text>
+
+    <text class="head" x="20" y="218">Quorum across regions</text>
+    <text class="note" x="20" y="236">survives the loss of a region</text>
+    <rect class="box" x="425" y="214" width="27" height="16" rx="3"/>
+    <text class="note" x="460" y="226">80–300 ms</text>
+
+    <text class="head" x="20" y="270">Byzantine fault-tolerant</text>
+    <text class="note" x="20" y="288">survives false messages</text>
+    <rect class="box" x="477" y="266" width="171" height="16" rx="3"/>
+    <text class="note" x="469" y="278" text-anchor="end">1 s to 1 h</text>
+  </g>
+
+  <g class="note" text-anchor="middle">
+    <text x="334" y="320">1 ms</text>
+    <text x="382" y="320">10 ms</text>
+    <text x="430" y="320">100 ms</text>
+    <text x="477" y="320">1 s</text>
+    <text x="525" y="320">10 s</text>
+    <text x="562" y="320">1 min</text>
+    <text x="647" y="320">1 h</text>
+  </g>
+</svg>

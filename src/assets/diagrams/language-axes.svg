@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 416" role="img" aria-labelledby="title desc">
+  <title id="title">Two axes of code: computational power and the choose effect</title>
+  <desc id="desc">A grid. Columns are five levels of computational power, each containing the previous one. Level 0, constraints: combination in any order; CUE, design tokens, copy and types. Level 1, queries: termination in polynomial time; SQL, Cedar, access rules and views; interactive examples are GuidedTrack, Ink, BPMN and booking flows. Level 2, recursive queries: incremental evaluation and monotonicity visible in the syntax; Datalog, availability and partitions; interactive code with one step per guest or item. Level 3, total functions: termination and machine-checked proofs; Lean, Dhall, step functions and migrations; verified interactive programs. Level 4, general recursion: tests, monitors and per-program proofs; general-purpose code; Temporal, Elm, DSPy and agent loops. Rows separate pure code from interactive code, which performs choose. Brackets below show that control at levels 0 and 1 has finitely many locations and can be model-checked, and that control at levels 0 to 3 terminates between choices.</desc>
+
+  <g class="axis">
+    <text x="120" y="22">Level 0</text>
+    <text x="230" y="22">Level 1</text>
+    <text x="340" y="22">Level 2</text>
+    <text x="450" y="22">Level 3</text>
+    <text x="560" y="22">Level 4</text>
+  </g>
+  <g class="label strong">
+    <text x="120" y="40">Constraints</text>
+    <text x="230" y="40">Queries</text>
+    <text x="340" y="40">Recursive</text>
+    <text x="340" y="56">queries</text>
+    <text x="450" y="40">Total</text>
+    <text x="450" y="56">functions</text>
+    <text x="560" y="40">General</text>
+    <text x="560" y="56">recursion</text>
+  </g>
+  <g class="note">
+    <text x="120" y="78">combine in</text>
+    <text x="120" y="94">any order</text>
+    <text x="230" y="78">terminates in</text>
+    <text x="230" y="94">polynomial time</text>
+    <text x="340" y="78">incremental;</text>
+    <text x="340" y="94">monotonicity</text>
+    <text x="340" y="110">in the syntax</text>
+    <text x="450" y="78">terminates;</text>
+    <text x="450" y="94">checked proofs</text>
+    <text x="560" y="78">tests, monitors,</text>
+    <text x="560" y="94">program proofs</text>
+  </g>
+  <text class="note" x="20" y="78">guarantee</text>
+
+  <text class="axis" x="20" y="164">Pure</text>
+  <text class="note" x="20" y="182">no choose</text>
+  <g class="iris">
+    <rect class="box" x="114" y="128" width="104" height="96" rx="6"/>
+    <rect class="box" x="224" y="128" width="104" height="96" rx="6"/>
+    <rect class="box" x="334" y="128" width="104" height="96" rx="6"/>
+    <rect class="box" x="444" y="128" width="104" height="96" rx="6"/>
+    <rect class="box" x="554" y="128" width="104" height="96" rx="6"/>
+  </g>
+  <g class="label">
+    <text x="122" y="154">CUE, design</text>
+    <text x="122" y="174">tokens, copy,</text>
+    <text x="122" y="194">types</text>
+    <text x="232" y="154">SQL, Cedar,</text>
+    <text x="232" y="174">access rules,</text>
+    <text x="232" y="194">views</text>
+    <text x="342" y="154">Datalog,</text>
+    <text x="342" y="174">availability,</text>
+    <text x="342" y="194">partitions</text>
+    <text x="452" y="154">Lean, Dhall,</text>
+    <text x="452" y="174">step functions,</text>
+    <text x="452" y="194">migrations</text>
+    <text x="562" y="154">general-</text>
+    <text x="562" y="174">purpose code</text>
+  </g>
+
+  <text class="axis" x="20" y="270">Interactive</text>
+  <text class="note" x="20" y="288">performs</text>
+  <text class="note" x="20" y="304">choose</text>
+  <g class="gold">
+    <rect class="box" x="114" y="234" width="104" height="96" rx="6"/>
+    <rect class="box" x="224" y="234" width="104" height="96" rx="6"/>
+    <rect class="box" x="334" y="234" width="104" height="96" rx="6"/>
+    <rect class="box" x="444" y="234" width="104" height="96" rx="6"/>
+    <rect class="box" x="554" y="234" width="104" height="96" rx="6"/>
+  </g>
+  <g class="label">
+    <text x="122" y="260">a fixed form</text>
+    <text x="232" y="260">GuidedTrack,</text>
+    <text x="232" y="280">Ink, BPMN,</text>
+    <text x="232" y="300">booking flows</text>
+    <text x="342" y="260">one step per</text>
+    <text x="342" y="280">guest or item</text>
+    <text x="452" y="260">verified</text>
+    <text x="452" y="280">interactive</text>
+    <text x="452" y="300">programs</text>
+    <text x="562" y="260">Temporal, Elm,</text>
+    <text x="562" y="280">DSPy, agent</text>
+    <text x="562" y="300">loops</text>
+  </g>
+
+  <g class="slate">
+    <line class="line-hue" x1="114" y1="350" x2="328" y2="350"/>
+    <line class="line-hue" x1="114" y1="344" x2="114" y2="356"/>
+    <line class="line-hue" x1="328" y1="344" x2="328" y2="356"/>
+    <line class="line-hue" x1="114" y1="382" x2="548" y2="382"/>
+    <line class="line-hue" x1="114" y1="376" x2="114" y2="388"/>
+    <line class="line-hue" x1="548" y1="376" x2="548" y2="388"/>
+  </g>
+  <text class="note" x="336" y="354">finite control: model checking</text>
+  <text class="note" x="556" y="386">every step between</text>
+  <text class="note" x="556" y="402">choices terminates</text>
+  <text class="note" x="20" y="354">interactive</text>
+  <text class="note" x="20" y="370">control</text>
+</svg>

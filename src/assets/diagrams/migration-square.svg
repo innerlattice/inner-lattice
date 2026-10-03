@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" role="img" aria-labelledby="title desc">
+  <title id="title">A migration as a commuting square, and a release in the history</title>
+  <desc id="desc">Top: two paths lead from the history to the state under version 2. One computes the state under version 1 and then applies the migration. The other computes the state under version 2 directly. A migration is correct when both paths give the same state, and it must also preserve merges. Bottom: a timeline of the history. A release record changes the program version. Records before it were made under version 1 and records after it under version 2, except a record from a client still running version 1, which is read under version 1. An open choice with stable identifier q7 under version 1 moves to the choice q7 under version 2 at the release.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
+  </defs>
+
+  <g class="pine">
+    <rect class="box" x="40" y="80" width="160" height="50" rx="6"/>
+    <text class="head" x="120" y="110" text-anchor="middle">History</text>
+  </g>
+  <g class="iris">
+    <rect class="box" x="440" y="20" width="200" height="50" rx="6"/>
+    <text class="head" x="540" y="50" text-anchor="middle">State under v1</text>
+    <rect class="box" x="440" y="140" width="200" height="50" rx="6"/>
+    <text class="head" x="540" y="170" text-anchor="middle">State under v2</text>
+  </g>
+  <g class="line" marker-end="url(#arrow)">
+    <line x1="202" y1="94" x2="436" y2="48"/>
+    <line x1="202" y1="116" x2="436" y2="162"/>
+    <line x1="540" y1="72" x2="540" y2="136"/>
+  </g>
+  <g class="label">
+    <text x="216" y="62">compute under v1</text>
+    <text x="216" y="152">compute under v2</text>
+    <text x="550" y="110">migrate: μ</text>
+  </g>
+  <g class="note" text-anchor="middle">
+    <text x="330" y="104">both paths must agree,</text>
+    <text x="330" y="120">and μ must preserve merges</text>
+  </g>
+
+  <text class="axis" x="40" y="236">History</text>
+  <line class="grid" x1="40" y1="256" x2="640" y2="256"/>
+  <g class="pine">
+    <circle class="dot" cx="80" cy="256" r="5"/><circle class="dot" cx="130" cy="256" r="5"/><circle class="dot" cx="180" cy="256" r="5"/><circle class="dot" cx="240" cy="256" r="5"/><circle class="dot" cx="290" cy="256" r="5"/><circle class="dot" cx="330" cy="256" r="5"/>
+    <circle class="ring" cx="480" cy="256" r="5"/>
+    <text class="note" x="480" y="280" text-anchor="middle">client on v1, read under v1</text>
+  </g>
+  <g class="iris">
+    <circle class="dot" cx="400" cy="256" r="5"/><circle class="dot" cx="440" cy="256" r="5"/><circle class="dot" cx="530" cy="256" r="5"/><circle class="dot" cx="590" cy="256" r="5"/>
+  </g>
+  <g class="note" text-anchor="middle">
+    <text x="205" y="240">records under v1</text>
+    <text x="500" y="240">records under v2</text>
+  </g>
+
+  <g class="gold">
+    <line class="line-hue" x1="360" y1="216" x2="360" y2="330"/>
+    <rect class="box" x="353" y="249" width="14" height="14" rx="2" transform="rotate(45 360 256)"/>
+    <text class="label ink strong" x="360" y="208" text-anchor="middle">Release record</text>
+  </g>
+
+  <g class="pine">
+    <rect class="box" x="210" y="296" width="146" height="22" rx="4"/>
+    <text class="note ink" x="283" y="311" text-anchor="middle">open choice q7, v1</text>
+  </g>
+  <g class="iris">
+    <rect class="box" x="364" y="296" width="146" height="22" rx="4"/>
+    <text class="note ink" x="437" y="311" text-anchor="middle">open choice q7, v2</text>
+  </g>
+  <text class="note" x="360" y="346" text-anchor="middle">an open choice moves across the release by stable identifier</text>
+</svg>

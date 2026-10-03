@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" role="img" aria-labelledby="title desc">
+  <title id="title">The interaction loop</title>
+  <desc id="desc">Four parts in a clockwise loop. The history, a set of records that are appended and never modified, is the input to functions. Functions are deterministic and compute state, views, indexes, access rules and goals, including the set of open choices. Each open choice has a view, options, a timeout with a default, and a binding. The choice is presented to its resolver, which is a function, a random number generator, a person, an AI model, a sensor or an external service. The selected value is appended to the history as a record. In the middle, two kinds of record with special roles: a seal, which states that a scope is complete, and a release, which changes the program version.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
+  </defs>
+
+  <g class="pine">
+    <rect class="box" x="20" y="130" width="190" height="100" rx="6"/>
+    <text class="head" x="36" y="156">History</text>
+    <text class="note" x="36" y="178">records: value, choice,</text>
+    <text class="note" x="36" y="196">resolver, snapshot, version</text>
+    <text class="note" x="36" y="214">appended, never modified</text>
+  </g>
+  <g class="iris">
+    <rect class="box" x="245" y="20" width="190" height="100" rx="6"/>
+    <text class="head" x="261" y="46">Functions</text>
+    <text class="note" x="261" y="68">state, views, indexes,</text>
+    <text class="note" x="261" y="86">access rules, goals</text>
+    <text class="note" x="261" y="104">deterministic</text>
+  </g>
+  <g class="gold">
+    <rect class="box" x="470" y="130" width="190" height="100" rx="6"/>
+    <text class="head" x="486" y="156">Open choices</text>
+    <text class="note" x="486" y="178">view, options,</text>
+    <text class="note" x="486" y="196">timeout and default,</text>
+    <text class="note" x="486" y="214">binding</text>
+  </g>
+  <g class="rose">
+    <rect class="box" x="225" y="240" width="230" height="104" rx="6"/>
+    <text class="head" x="241" y="264">Resolvers</text>
+  </g>
+  <g class="slate">
+    <rect class="card" x="241" y="276" width="64" height="26" rx="4"/>
+    <text class="label" x="273" y="293" text-anchor="middle">function</text>
+    <rect class="card" x="308" y="276" width="64" height="26" rx="4"/>
+    <text class="label" x="340" y="293" text-anchor="middle">random</text>
+    <rect class="card" x="375" y="276" width="64" height="26" rx="4"/>
+    <text class="label" x="407" y="293" text-anchor="middle">person</text>
+    <rect class="card" x="241" y="308" width="64" height="26" rx="4"/>
+    <text class="label" x="273" y="325" text-anchor="middle">AI model</text>
+    <rect class="card" x="308" y="308" width="64" height="26" rx="4"/>
+    <text class="label" x="340" y="325" text-anchor="middle">sensor</text>
+    <rect class="card" x="375" y="308" width="64" height="26" rx="4"/>
+    <text class="label" x="407" y="325" text-anchor="middle">service</text>
+  </g>
+
+  <g class="line" marker-end="url(#arrow)">
+    <path d="M115 128 C115 75 180 70 241 70"/>
+    <path d="M439 70 C500 70 565 75 565 126"/>
+    <path d="M565 234 C565 285 520 292 459 292"/>
+    <path d="M221 292 C160 292 115 285 115 234"/>
+  </g>
+  <g class="label" text-anchor="middle">
+    <text x="150" y="58">input to</text>
+    <text x="530" y="58">compute</text>
+    <text x="548" y="318">present</text>
+    <text x="132" y="318">append</text>
+  </g>
+
+  <g class="slate">
+    <rect class="card" x="224" y="140" width="232" height="84" rx="6"/>
+    <text class="head" x="240" y="164">Records with special roles</text>
+    <text class="label strong" x="240" y="186">Seal</text>
+    <text class="note" x="276" y="186">a scope is complete</text>
+    <text class="label strong" x="240" y="208">Release</text>
+    <text class="note" x="296" y="208">the program version changes</text>
+  </g>
+</svg>
