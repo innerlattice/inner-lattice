@@ -53,6 +53,31 @@
   --color-table-header-bg: #f7f7f7;
   --color-table-header-text: #5f5a5a;
 
+  /* Diagram hues come from Rosé Pine Dawn, the code-block theme. */
+  --diagram-bg: #fdfdfc;
+  --diagram-line: #8a96a3;
+  --diagram-foam: #56949f;
+  --diagram-foam-ink: #2f6b75;
+  --diagram-foam-tint: #e6f0f1;
+  --diagram-pine: #286983;
+  --diagram-pine-ink: #1f5568;
+  --diagram-pine-tint: #e1ebef;
+  --diagram-iris: #907aa9;
+  --diagram-iris-ink: #66518a;
+  --diagram-iris-tint: #efebf4;
+  --diagram-gold: #ea9d34;
+  --diagram-gold-ink: #95601a;
+  --diagram-gold-tint: #fcf1e0;
+  --diagram-rose: #d7827e;
+  --diagram-rose-ink: #a4524f;
+  --diagram-rose-tint: #f9ebe8;
+  --diagram-love: #b4637a;
+  --diagram-love-ink: #8c4258;
+  --diagram-love-tint: #f5e6ea;
+  --diagram-slate: #5a6b7c;
+  --diagram-slate-ink: #3a4a5a;
+  --diagram-slate-tint: #edf2f4;
+
   --font-sans: 'Instrument Sans', sans-serif;
   --font-serif: 'Newsreader', serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -500,6 +525,156 @@ time {
   opacity: 0.25;
 }
 
+/* Inline SVG diagrams. Each group sets a hue; shapes and text read it. */
+.post-content figure.diagram {
+  margin-bottom: var(--spacing-xl);
+}
+
+.post-content .diagram-frame {
+  padding: var(--spacing-md);
+  overflow-x: auto;
+  overflow-y: hidden;
+  background-color: var(--diagram-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-content .diagram-frame::-webkit-scrollbar {
+  height: var(--spacing-sm);
+}
+
+.post-content .diagram-frame::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 999px;
+}
+
+.post-content figure.diagram figcaption {
+  margin-top: var(--spacing-sm);
+  font-family: var(--font-sans);
+  font-feature-settings: var(--sans-features);
+  font-size: 0.83rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.diagram svg {
+  --hue: var(--diagram-slate);
+  --hue-ink: var(--diagram-slate-ink);
+  --hue-tint: var(--diagram-slate-tint);
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+  font-feature-settings: var(--sans-features);
+}
+
+.diagram .foam { --hue: var(--diagram-foam); --hue-ink: var(--diagram-foam-ink); --hue-tint: var(--diagram-foam-tint); }
+.diagram .pine { --hue: var(--diagram-pine); --hue-ink: var(--diagram-pine-ink); --hue-tint: var(--diagram-pine-tint); }
+.diagram .iris { --hue: var(--diagram-iris); --hue-ink: var(--diagram-iris-ink); --hue-tint: var(--diagram-iris-tint); }
+.diagram .gold { --hue: var(--diagram-gold); --hue-ink: var(--diagram-gold-ink); --hue-tint: var(--diagram-gold-tint); }
+.diagram .rose { --hue: var(--diagram-rose); --hue-ink: var(--diagram-rose-ink); --hue-tint: var(--diagram-rose-tint); }
+.diagram .love { --hue: var(--diagram-love); --hue-ink: var(--diagram-love-ink); --hue-tint: var(--diagram-love-tint); }
+.diagram .slate { --hue: var(--diagram-slate); --hue-ink: var(--diagram-slate-ink); --hue-tint: var(--diagram-slate-tint); }
+
+.diagram .box {
+  fill: var(--hue-tint);
+  stroke: var(--hue);
+  stroke-width: 1;
+}
+
+.diagram .box-open {
+  fill: none;
+  stroke: var(--hue);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.diagram .card {
+  fill: var(--diagram-bg);
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.diagram .dot {
+  fill: var(--hue);
+}
+
+.diagram .ring {
+  fill: var(--diagram-bg);
+  stroke: var(--hue);
+  stroke-width: 1;
+}
+
+.diagram .line {
+  fill: none;
+  stroke: var(--diagram-line);
+  stroke-width: 1.25;
+}
+
+.diagram .line-hue {
+  fill: none;
+  stroke: var(--hue);
+  stroke-width: 1.25;
+}
+
+.diagram .grid {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.diagram .dashed {
+  stroke-dasharray: 5 4;
+}
+
+.diagram .cut {
+  fill: none;
+  stroke: var(--diagram-love);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.diagram .arrowhead {
+  fill: var(--diagram-line);
+}
+
+.diagram text {
+  fill: var(--color-text);
+  font-size: 13px;
+}
+
+.diagram .head {
+  fill: var(--hue-ink);
+  font-size: 15px;
+  font-weight: var(--heading-weight);
+}
+
+.diagram .label {
+  fill: var(--color-text);
+  font-size: 13px;
+}
+
+.diagram .strong {
+  font-weight: var(--emphasis-weight);
+}
+
+.diagram .ink {
+  fill: var(--hue-ink);
+}
+
+.diagram .note {
+  fill: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.diagram .axis {
+  fill: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
 .post-content table {
   display: block;
   width: max-content;
@@ -586,6 +761,15 @@ time {
 
   :root {
     --page-gutter: calc(var(--spacing-md) + var(--spacing-xs));
+  }
+
+  .post-content .diagram-frame {
+    padding: var(--spacing-sm);
+  }
+
+  /* Wide diagrams scroll rather than shrinking their labels below 11px. */
+  .post-content .diagram-frame svg {
+    min-width: 36rem;
   }
 
   .post-content table {
