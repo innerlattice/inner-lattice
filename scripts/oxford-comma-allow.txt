@@ -1,0 +1,38 @@
+# Phrases the serial-comma check flags but that are not lists of three or more.
+# One snippet per line; a flagged clause containing the snippet is skipped.
+
+# universal-theory-of-interactive-software.md
+as a resolver, so a function and a
+supplies a value, later computation reads the record and does
+is an interview, such as a tax questionnaire or a
+into the scope, one at a time and in
+an earlier timestamp, the part rolls back and recomputes
+graph across servers, so experiment units and shards
+Rewriting stored state, as a database migration or a
+of migration operators, each with a known inverse or complement
+one for functions, one for choices and their
+
+# universal-runtime-for-interactive-software.md
+not yet sealed, shown before the seal and replaced
+the analytics warehouse, contains outputs of functions and can
+a function version, an AI model and its
+a new admission, as when polls close or a
+the card network, with a timeout at 20:10 and the
+reply arrives first, the dispatcher records the reply and the
+names the record, the outcome (admitted or refused
+
+# universal-languages-for-interactive-software.md
+any data type, including trees and higher-order
+the sketch syntax, defines interactive code and starts
+down the side, with example languages and the
+is not invariant-confluent, the compiler derives a scope and requires
+view are data, so a small-screen layout or a
+Laws, which are inward and universal
+a concrete page, which is outward and individual
+inward and universal, functions and flows
+records for choice, each carrying the choice's arguments and the
+the slot first, the hold is refused and the
+merge of edits, a level-0 unification for text and a
+the record schema, the ordered scopes and their
+and their sequencers, final and provisional
+on every view, model-checking and solver
