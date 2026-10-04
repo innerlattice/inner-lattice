@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 702" class="wide" role="img" aria-labelledby="title desc">
+  <title id="title">How the terms of the theory relate</title>
+  <desc id="desc">A matrix with twelve terms of the theory as rows (from) and columns (to): Choice, Resolver, Record, Function, Binding, View, Scope, Sequencer, Seal, Provisional value, Goal, and Version. Each filled cell holds a verb that reads from the row term to the column term. Cells on the diagonal relate two instances of one term. Dashed lines separate the four primitives from the other terms. A choice couples with other choices, constrains the records made at it, and specifies its view. A resolver resolves choices, can replace another resolver, supplies records, and can optimize a goal. A record answers one choice, names its resolver, supersedes an earlier record, includes the view that was shown, and carries the program version. A function opens and couples choices, can serve as a resolver, reads records, composes with other functions, computes views, picks out scopes, and outputs provisional values. A binding routes a choice to the resolver it names. A view informs a resolver. A scope contains records and can split into smaller scopes. A sequencer admits records, orders its scope, and writes seals. A seal closes a scope up to a position, extends earlier seals, and finalizes provisional values. A provisional value appears in a view. A goal steers resolvers, scores records, bounds guardrail functions, and evaluates bindings. A version declares choices, translates old records, defines functions, includes bindings, and supersedes the previous version.</desc>
+
+  <text class="axis" x="582" y="16" text-anchor="middle">To</text>
+  <text class="axis" transform="translate(18 418) rotate(-90)" text-anchor="middle">From</text>
+  <line class="grid dashed" x1="430" y1="136" x2="430" y2="694"/>
+  <line class="grid dashed" x1="126" y1="324" x2="1032" y2="324"/>
+  <g class="label strong">
+    <text transform="translate(164 132) rotate(-60)">Choice</text>
+    <text transform="translate(238 132) rotate(-60)">Resolver</text>
+    <text transform="translate(314 132) rotate(-60)">Record</text>
+    <text transform="translate(388 132) rotate(-60)">Function</text>
+    <text transform="translate(464 132) rotate(-60)">Binding</text>
+    <text transform="translate(538 132) rotate(-60)">View</text>
+    <text transform="translate(614 132) rotate(-60)">Scope</text>
+    <text transform="translate(688 132) rotate(-60)">Sequencer</text>
+    <text transform="translate(764 132) rotate(-60)">Seal</text>
+    <text transform="translate(838 132) rotate(-60)">Provisional value</text>
+    <text transform="translate(914 132) rotate(-60)">Goal</text>
+    <text transform="translate(988 132) rotate(-60)">Version</text>
+    <text x="122" y="168" text-anchor="end">Choice</text>
+    <text x="122" y="214" text-anchor="end">Resolver</text>
+    <text x="122" y="260" text-anchor="end">Record</text>
+    <text x="122" y="306" text-anchor="end">Function</text>
+    <text x="122" y="352" text-anchor="end">Binding</text>
+    <text x="122" y="398" text-anchor="end">View</text>
+    <text x="122" y="444" text-anchor="end">Scope</text>
+    <text x="122" y="490" text-anchor="end">Sequencer</text>
+    <text x="122" y="536" text-anchor="end">Seal</text>
+    <text x="122" y="574" text-anchor="end">Provisional</text>
+    <text x="122" y="590" text-anchor="end">value</text>
+    <text x="122" y="628" text-anchor="end">Goal</text>
+    <text x="122" y="674" text-anchor="end">Version</text>
+  </g>
+  <g class="slate">
+    <rect class="box" x="282" y="142" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="167" text-anchor="middle" style="font-style: italic; font-size: 12px">constrains</text>
+    <rect class="box" x="507" y="142" width="71" height="42" rx="4"/>
+    <text class="ink" x="542" y="167" text-anchor="middle" style="font-style: italic; font-size: 12px">specifies</text>
+    <rect class="box" x="132" y="188" width="71" height="42" rx="4"/>
+    <text class="ink" x="168" y="213" text-anchor="middle" style="font-style: italic; font-size: 12px">resolves</text>
+    <rect class="box" x="282" y="188" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="213" text-anchor="middle" style="font-style: italic; font-size: 12px">supplies</text>
+    <rect class="box" x="882" y="188" width="71" height="42" rx="4"/>
+    <text class="ink" x="918" y="213" text-anchor="middle" style="font-style: italic; font-size: 12px">optimizes</text>
+    <rect class="box" x="132" y="234" width="71" height="42" rx="4"/>
+    <text class="ink" x="168" y="259" text-anchor="middle" style="font-style: italic; font-size: 12px">answers</text>
+    <rect class="box" x="207" y="234" width="71" height="42" rx="4"/>
+    <text class="ink" x="242" y="259" text-anchor="middle" style="font-style: italic; font-size: 12px">names</text>
+    <rect class="box" x="507" y="234" width="71" height="42" rx="4"/>
+    <text class="ink" x="542" y="259" text-anchor="middle" style="font-style: italic; font-size: 12px">includes</text>
+    <rect class="box" x="957" y="234" width="71" height="42" rx="4"/>
+    <text class="ink" x="992" y="259" text-anchor="middle" style="font-style: italic; font-size: 12px">carries</text>
+    <rect class="box" x="132" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="168" y="298" text-anchor="middle" style="font-style: italic; font-size: 12px">opens /</text>
+    <text class="ink" x="168" y="313" text-anchor="middle" style="font-style: italic; font-size: 12px">couples</text>
+    <rect class="box" x="207" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="242" y="298" text-anchor="middle" style="font-style: italic; font-size: 12px">serves</text>
+    <text class="ink" x="242" y="313" text-anchor="middle" style="font-style: italic; font-size: 12px">as</text>
+    <rect class="box" x="282" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="305" text-anchor="middle" style="font-style: italic; font-size: 12px">reads</text>
+    <rect class="box" x="507" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="542" y="305" text-anchor="middle" style="font-style: italic; font-size: 12px">computes</text>
+    <rect class="box" x="582" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="618" y="305" text-anchor="middle" style="font-style: italic; font-size: 12px">picks out</text>
+    <rect class="box" x="807" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="842" y="305" text-anchor="middle" style="font-style: italic; font-size: 12px">outputs</text>
+    <rect class="box" x="132" y="326" width="71" height="42" rx="4"/>
+    <text class="ink" x="168" y="351" text-anchor="middle" style="font-style: italic; font-size: 12px">routes</text>
+    <rect class="box" x="207" y="326" width="71" height="42" rx="4"/>
+    <text class="ink" x="242" y="351" text-anchor="middle" style="font-style: italic; font-size: 12px">names</text>
+    <rect class="box" x="207" y="372" width="71" height="42" rx="4"/>
+    <text class="ink" x="242" y="397" text-anchor="middle" style="font-style: italic; font-size: 12px">informs</text>
+    <rect class="box" x="282" y="418" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="443" text-anchor="middle" style="font-style: italic; font-size: 12px">contains</text>
+    <rect class="box" x="282" y="464" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="489" text-anchor="middle" style="font-style: italic; font-size: 12px">admits</text>
+    <rect class="box" x="582" y="464" width="71" height="42" rx="4"/>
+    <text class="ink" x="618" y="489" text-anchor="middle" style="font-style: italic; font-size: 12px">orders</text>
+    <rect class="box" x="732" y="464" width="71" height="42" rx="4"/>
+    <text class="ink" x="768" y="489" text-anchor="middle" style="font-style: italic; font-size: 12px">writes</text>
+    <rect class="box" x="582" y="510" width="71" height="42" rx="4"/>
+    <text class="ink" x="618" y="535" text-anchor="middle" style="font-style: italic; font-size: 12px">closes</text>
+    <rect class="box" x="807" y="510" width="71" height="42" rx="4"/>
+    <text class="ink" x="842" y="535" text-anchor="middle" style="font-style: italic; font-size: 12px">finalizes</text>
+    <rect class="box" x="507" y="556" width="71" height="42" rx="4"/>
+    <text class="ink" x="542" y="574" text-anchor="middle" style="font-style: italic; font-size: 12px">appears</text>
+    <text class="ink" x="542" y="589" text-anchor="middle" style="font-style: italic; font-size: 12px">in</text>
+    <rect class="box" x="207" y="602" width="71" height="42" rx="4"/>
+    <text class="ink" x="242" y="627" text-anchor="middle" style="font-style: italic; font-size: 12px">steers</text>
+    <rect class="box" x="282" y="602" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="627" text-anchor="middle" style="font-style: italic; font-size: 12px">scores</text>
+    <rect class="box" x="357" y="602" width="71" height="42" rx="4"/>
+    <text class="ink" x="392" y="627" text-anchor="middle" style="font-style: italic; font-size: 12px">bounds</text>
+    <rect class="box" x="432" y="602" width="71" height="42" rx="4"/>
+    <text class="ink" x="468" y="627" text-anchor="middle" style="font-style: italic; font-size: 12px">evaluates</text>
+    <rect class="box" x="132" y="648" width="71" height="42" rx="4"/>
+    <text class="ink" x="168" y="673" text-anchor="middle" style="font-style: italic; font-size: 12px">declares</text>
+    <rect class="box" x="282" y="648" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="673" text-anchor="middle" style="font-style: italic; font-size: 12px">translates</text>
+    <rect class="box" x="357" y="648" width="71" height="42" rx="4"/>
+    <text class="ink" x="392" y="673" text-anchor="middle" style="font-style: italic; font-size: 12px">defines</text>
+    <rect class="box" x="432" y="648" width="71" height="42" rx="4"/>
+    <text class="ink" x="468" y="673" text-anchor="middle" style="font-style: italic; font-size: 12px">includes</text>
+  </g>
+  <g class="foam">
+    <rect class="box" x="132" y="142" width="71" height="42" rx="4"/>
+    <text class="ink" x="168" y="160" text-anchor="middle" style="font-style: italic; font-size: 12px">couples</text>
+    <text class="ink" x="168" y="175" text-anchor="middle" style="font-style: italic; font-size: 12px">with</text>
+    <rect class="box" x="207" y="188" width="71" height="42" rx="4"/>
+    <text class="ink" x="242" y="213" text-anchor="middle" style="font-style: italic; font-size: 12px">replaces</text>
+    <rect class="box" x="282" y="234" width="71" height="42" rx="4"/>
+    <text class="ink" x="318" y="259" text-anchor="middle" style="font-style: italic; font-size: 12px">supersedes</text>
+    <rect class="box" x="357" y="280" width="71" height="42" rx="4"/>
+    <text class="ink" x="392" y="298" text-anchor="middle" style="font-style: italic; font-size: 12px">composes</text>
+    <text class="ink" x="392" y="313" text-anchor="middle" style="font-style: italic; font-size: 12px">with</text>
+    <rect class="box" x="582" y="418" width="71" height="42" rx="4"/>
+    <text class="ink" x="618" y="436" text-anchor="middle" style="font-style: italic; font-size: 12px">splits</text>
+    <text class="ink" x="618" y="451" text-anchor="middle" style="font-style: italic; font-size: 12px">into</text>
+    <rect class="box" x="732" y="510" width="71" height="42" rx="4"/>
+    <text class="ink" x="768" y="535" text-anchor="middle" style="font-style: italic; font-size: 12px">extends</text>
+    <rect class="box" x="957" y="648" width="71" height="42" rx="4"/>
+    <text class="ink" x="992" y="673" text-anchor="middle" style="font-style: italic; font-size: 12px">supersedes</text>
+  </g>
+</svg>

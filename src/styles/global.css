@@ -530,6 +530,19 @@ time {
   margin-bottom: var(--spacing-xl);
 }
 
+/* A diagram whose svg has class="wide" breaks out to the width of wide tables.
+   Below that width it scrolls inside its frame, keeping labels near 11px. */
+.post-content figure.diagram:has(svg.wide) {
+  width: min(calc(100vw - 2 * var(--page-gutter)), var(--wide-content-width));
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.post-content .diagram-frame svg.wide {
+  min-width: 60rem;
+}
+
 .post-content .diagram-frame {
   padding: var(--spacing-md);
   overflow-x: auto;

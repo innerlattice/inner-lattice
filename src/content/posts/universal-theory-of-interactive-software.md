@@ -385,6 +385,22 @@ The records contain real past runs, so the condition can be tested by replaying 
 
 One requirement has no exception. If a release changes what an earlier view showed, after someone selected a value based on that view, the change must itself be recorded, as a restatement is in accounting. Otherwise the selection loses the context that gave it meaning.
 
+## How the terms of the theory relate
+
+The four primitives and the seven principles introduce twelve terms. The matrix below states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record. An empty cell means the two terms have no direct relation.
+
+![A matrix of twelve terms, from choice to version, with a verb in each cell where the row term acts on the column term](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives from the terms the principles add.")
+
+The top-left block, above and left of the dashed lines, contains the four primitives. Its cells trace the interaction loop: a function opens a choice, a resolver resolves the choice and supplies a record, the record answers the choice, and a function reads the record. The rows below the dashed line show what each principle adds to that loop:
+
+- **Binding** routes a choice to the resolver that a binding names.
+- **Sealing** adds a scope that a function picks out, a sequencer that admits records and orders the scope, and a seal that closes the scope.
+- **Prediction** adds provisional values, which a function outputs, a view includes, and a seal finalizes.
+- **Goals** add functions that steer resolvers, score records, and evaluate bindings.
+- **Versions** add a version that each record carries and that defines the functions used to read the record.
+
+Coupling appears in two cells of the top-left block: a function couples choices, and one choice couples with another. Derivation appears as an absence: no term in the matrix denotes stored state.
+
 ## Features built from the principles
 
 | Feature | Principles | Construction in the theory |
