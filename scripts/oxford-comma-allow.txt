@@ -36,5 +36,3 @@ merge of edits, a level-0 unification for text and a
 the record schema, the ordered scopes and their
 and their sequencers, final and provisional
 on every view, model-checking and solver
-The top-left block, above and left
-function picks out, a sequencer that admits records and orders

@@ -1,11 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 890 580" class="wide" role="img" aria-labelledby="title desc">
   <title id="title">How the terms of the theory relate</title>
-  <desc id="desc">A matrix with ten terms of the theory as rows (from) and columns (to): Choice, Resolver, Record, Function, Binding, Scope, Sequencer, Seal, Goal, and Version. Each filled cell holds a verb that reads from the row term to the column term. Cells on the diagonal relate two instances of one term. Dashed lines separate the four primitives from the other terms. A choice couples with other choices, constrains the records made at it, and specifies its view and option functions. A resolver resolves choices and can substitute for another resolver. A record answers one choice, names its resolver, supersedes an earlier record, and carries the program version. A function opens and couples choices, can serve as a resolver, reads records, composes with other functions, and picks out scopes. A binding maps a choice to the resolver it names. A scope contains records and can split into smaller scopes. A sequencer admits records, orders its scope, and writes seals. A seal closes a scope up to a position and extends earlier seals. A goal steers resolvers, scores sets of records, bounds guardrail functions, and evaluates bindings. A version defines choices and functions, translates old records, includes bindings, and supersedes the previous version.</desc>
+  <desc id="desc">A matrix with ten terms of the theory as rows (from) and columns (to): Choice, Resolver, Record, Function, Binding, Scope, Sequencer, Seal, Goal, and Version. Each filled cell holds a verb that reads from the row term to the column term. Cells on the diagonal relate two instances of one term. Dashed lines separate the four primitives and the terms added by each principle. The terms are ordered so that every relation points from a later term to an earlier one, and the row for choice is empty. A resolver resolves choices. A record answers one choice, names its resolver, and can supersede an earlier record. A function opens and couples choices, can serve as a resolver, reads records, and composes with other functions. A binding maps a choice to the resolver it names. A scope contains records and can split into smaller scopes. A sequencer admits records and orders its scope. A seal closes a scope up to a position, names its sequencer, and extends earlier seals. A goal steers resolvers, scores sets of records, bounds guardrail functions, and evaluates bindings. A version defines choices and functions, marks and translates records, includes bindings, and supersedes the previous version.</desc>
 
   <text class="axis" x="490" y="16" text-anchor="middle">To</text>
   <text class="axis" transform="translate(18 342) rotate(-90)" text-anchor="middle">From</text>
   <line class="grid dashed" x1="410" y1="106" x2="410" y2="572"/>
   <line class="grid dashed" x1="94" y1="294" x2="880" y2="294"/>
+  <line class="grid dashed" x1="488" y1="106" x2="488" y2="572"/>
+  <line class="grid dashed" x1="94" y1="340" x2="880" y2="340"/>
+  <line class="grid dashed" x1="722" y1="106" x2="722" y2="572"/>
+  <line class="grid dashed" x1="94" y1="478" x2="880" y2="478"/>
+  <line class="grid dashed" x1="800" y1="106" x2="800" y2="572"/>
+  <line class="grid dashed" x1="94" y1="524" x2="880" y2="524"/>
   <g class="label strong">
     <text transform="translate(133 102) rotate(-60)">Choice</text>
     <text transform="translate(211 102) rotate(-60)">Resolver</text>
@@ -29,18 +35,12 @@
     <text x="90" y="552" text-anchor="end">Version</text>
   </g>
   <g class="slate">
-    <rect class="box" x="256" y="112" width="74" height="42" rx="4"/>
-    <text class="ink" x="293" y="137" text-anchor="middle" style="font-style: italic; font-size: 12px">constrains</text>
-    <rect class="box" x="334" y="112" width="74" height="42" rx="4"/>
-    <text class="ink" x="371" y="137" text-anchor="middle" style="font-style: italic; font-size: 12px">specifies</text>
     <rect class="box" x="100" y="158" width="74" height="42" rx="4"/>
     <text class="ink" x="137" y="183" text-anchor="middle" style="font-style: italic; font-size: 12px">resolves</text>
     <rect class="box" x="100" y="204" width="74" height="42" rx="4"/>
     <text class="ink" x="137" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">answers</text>
     <rect class="box" x="178" y="204" width="74" height="42" rx="4"/>
     <text class="ink" x="215" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">names</text>
-    <rect class="box" x="802" y="204" width="74" height="42" rx="4"/>
-    <text class="ink" x="839" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">carries</text>
     <rect class="box" x="100" y="250" width="74" height="42" rx="4"/>
     <text class="ink" x="137" y="268" text-anchor="middle" style="font-style: italic; font-size: 12px">opens /</text>
     <text class="ink" x="137" y="283" text-anchor="middle" style="font-style: italic; font-size: 12px">couples</text>
@@ -49,8 +49,6 @@
     <text class="ink" x="215" y="283" text-anchor="middle" style="font-style: italic; font-size: 12px">as</text>
     <rect class="box" x="256" y="250" width="74" height="42" rx="4"/>
     <text class="ink" x="293" y="275" text-anchor="middle" style="font-style: italic; font-size: 12px">reads</text>
-    <rect class="box" x="490" y="250" width="74" height="42" rx="4"/>
-    <text class="ink" x="527" y="275" text-anchor="middle" style="font-style: italic; font-size: 12px">picks out</text>
     <rect class="box" x="100" y="296" width="74" height="42" rx="4"/>
     <text class="ink" x="137" y="321" text-anchor="middle" style="font-style: italic; font-size: 12px">maps</text>
     <rect class="box" x="178" y="296" width="74" height="42" rx="4"/>
@@ -61,8 +59,8 @@
     <text class="ink" x="293" y="413" text-anchor="middle" style="font-style: italic; font-size: 12px">admits</text>
     <rect class="box" x="490" y="388" width="74" height="42" rx="4"/>
     <text class="ink" x="527" y="413" text-anchor="middle" style="font-style: italic; font-size: 12px">orders</text>
-    <rect class="box" x="646" y="388" width="74" height="42" rx="4"/>
-    <text class="ink" x="683" y="413" text-anchor="middle" style="font-style: italic; font-size: 12px">writes</text>
+    <rect class="box" x="568" y="434" width="74" height="42" rx="4"/>
+    <text class="ink" x="605" y="459" text-anchor="middle" style="font-style: italic; font-size: 12px">names</text>
     <rect class="box" x="490" y="434" width="74" height="42" rx="4"/>
     <text class="ink" x="527" y="459" text-anchor="middle" style="font-style: italic; font-size: 12px">closes</text>
     <rect class="box" x="178" y="480" width="74" height="42" rx="4"/>
@@ -76,19 +74,14 @@
     <rect class="box" x="100" y="526" width="74" height="42" rx="4"/>
     <text class="ink" x="137" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">defines</text>
     <rect class="box" x="256" y="526" width="74" height="42" rx="4"/>
-    <text class="ink" x="293" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">translates</text>
+    <text class="ink" x="293" y="544" text-anchor="middle" style="font-style: italic; font-size: 12px">marks /</text>
+    <text class="ink" x="293" y="559" text-anchor="middle" style="font-style: italic; font-size: 12px">translates</text>
     <rect class="box" x="334" y="526" width="74" height="42" rx="4"/>
     <text class="ink" x="371" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">defines</text>
     <rect class="box" x="412" y="526" width="74" height="42" rx="4"/>
     <text class="ink" x="449" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">includes</text>
   </g>
   <g class="foam">
-    <rect class="box" x="100" y="112" width="74" height="42" rx="4"/>
-    <text class="ink" x="137" y="130" text-anchor="middle" style="font-style: italic; font-size: 12px">couples</text>
-    <text class="ink" x="137" y="145" text-anchor="middle" style="font-style: italic; font-size: 12px">with</text>
-    <rect class="box" x="178" y="158" width="74" height="42" rx="4"/>
-    <text class="ink" x="215" y="176" text-anchor="middle" style="font-style: italic; font-size: 12px">substitutes</text>
-    <text class="ink" x="215" y="191" text-anchor="middle" style="font-style: italic; font-size: 12px">for</text>
     <rect class="box" x="256" y="204" width="74" height="42" rx="4"/>
     <text class="ink" x="293" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">supersedes</text>
     <rect class="box" x="334" y="250" width="74" height="42" rx="4"/>

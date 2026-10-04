@@ -387,20 +387,26 @@ One requirement has no exception. If a release changes what an earlier view show
 
 ## How the terms of the theory relate
 
-The four primitives and the seven principles introduce ten terms. The matrix below states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record. Each relation appears once, in the direction of its verb, so a filled cell can face an empty one: a resolver resolves a choice, and the cell from choice to resolver is empty.
+The four primitives and the seven principles introduce ten terms. Each term after the first is needed because the terms before it leave something undetermined:
 
-![A matrix of ten terms, from choice to version, with a verb in each cell where the row term acts on the column term](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives from the terms the principles add.")
+1. A **choice** is a point where a run needs a value that its code does not determine.
+2. The value has to come from outside the code, so each choice needs a **resolver**.
+3. Later computation depends on the value, so the value has to stay fixed, and it is stored as a **record**.
+4. Each record holds one value. What the records mean together, such as the current state, the next view, and the next open choice, is computed by a **function**.
+5. Functions are deterministic, so what a program does depends on which resolver supplies each choice. A **binding** states that dependence.
+6. Functions combine records from different resolvers, which couples choices. When two records cannot both be admitted, one resolver has to put them in order: a **sequencer** orders a **scope** of records, and a **seal** states that the scope is complete up to a position.
+7. Bindings can be compared only against a direction, which a **goal** states.
+8. Choices, functions, bindings, and goals change as the program changes, and each change is a new **version**.
 
-The top-left block, above and left of the dashed lines, contains the four primitives. Its cells trace the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows below the dashed line show what each principle adds to that loop:
+The matrix below lists the terms in that order and states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record.
 
-- **Binding** maps a choice to the resolver that the binding names.
-- **Sealing** adds a scope that a function picks out, a sequencer that admits records and orders the scope, and a seal that closes the scope.
-- **Goals** add functions that steer resolvers, score records, evaluate bindings, and bound other functions as guardrails.
-- **Versions** add a version that each record carries. The version defines the choices and functions, includes the bindings, and translates records made under earlier versions.
+![A matrix of ten terms, from choice to version, with a verb in each cell where the row term acts on the column term, and every filled cell on or below the diagonal](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives and the terms added by each principle.")
 
-Three of the terms are cases of others: a sequencer is a resolver, a seal is a record, and a goal is a function. Their rows show only what each case adds. A release is also a record, the record that a new version is in force, so the matrix shows it through the version.
+Every filled cell lies on or below the diagonal. Each relation runs from a later term to an earlier one, so no term depends on a term that comes after it. The row for *Choice* is empty, because everything that gives a choice its content comes later: a function computes its view and options, a resolver supplies its value, and a record stores the value.
 
-Three principles add no term. Coupling appears in two cells of the top-left block: a function couples choices, and one choice couples with another. Prediction needs no term, because a provisional value is the output of a function over a scope that is not yet sealed. Derivation appears as an absence: no term in the matrix denotes stored state.
+The top-left block traces the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows for scope, sequencer, and seal repeat the first three primitives with records as their subject. A sequencer orders a scope as a resolver resolves a choice, and a seal closes the scope and names its sequencer as a record answers a choice and names its resolver. Two of these terms are cases of the primitives they repeat: a sequencer is a resolver, and a seal is a record. A goal is also a function, and a release is a record.
+
+Three principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is the output of a function over a scope that is not yet sealed. Derivation appears as an absence: no term in the matrix denotes stored state.
 
 ## Features built from the principles
 
