@@ -371,7 +371,7 @@ Programs change while choices are open. Some people still run last year's versio
 - **A release is a record.** Choices opened after the release use the new version.
 - **Migrations change how records are read.** Old records stay as they are, and translation between versions is a function.
 - **Open choices move by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
-- **Changing an AI agent's model is a release,** because the change alters the values the agent would supply.
+- **Changing a binding is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
 
 Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{R} \to S_v$ compute state of type $S_v$ from a set of records under version $v$, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
 
@@ -387,19 +387,20 @@ One requirement has no exception. If a release changes what an earlier view show
 
 ## How the terms of the theory relate
 
-The four primitives and the seven principles introduce twelve terms. The matrix below states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record. An empty cell means the two terms have no direct relation.
+The four primitives and the seven principles introduce ten terms. The matrix below states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record. Each relation appears once, in the direction of its verb, so a filled cell can face an empty one: a resolver resolves a choice, and the cell from choice to resolver is empty.
 
-![A matrix of twelve terms, from choice to version, with a verb in each cell where the row term acts on the column term](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives from the terms the principles add.")
+![A matrix of ten terms, from choice to version, with a verb in each cell where the row term acts on the column term](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives from the terms the principles add.")
 
-The top-left block, above and left of the dashed lines, contains the four primitives. Its cells trace the interaction loop: a function opens a choice, a resolver resolves the choice and supplies a record, the record answers the choice, and a function reads the record. The rows below the dashed line show what each principle adds to that loop:
+The top-left block, above and left of the dashed lines, contains the four primitives. Its cells trace the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows below the dashed line show what each principle adds to that loop:
 
-- **Binding** routes a choice to the resolver that a binding names.
+- **Binding** maps a choice to the resolver that the binding names.
 - **Sealing** adds a scope that a function picks out, a sequencer that admits records and orders the scope, and a seal that closes the scope.
-- **Prediction** adds provisional values, which a function outputs, a view includes, and a seal finalizes.
-- **Goals** add functions that steer resolvers, score records, and evaluate bindings.
-- **Versions** add a version that each record carries and that defines the functions used to read the record.
+- **Goals** add functions that steer resolvers, score records, evaluate bindings, and bound other functions as guardrails.
+- **Versions** add a version that each record carries. The version defines the choices and functions, includes the bindings, and translates records made under earlier versions.
 
-Coupling appears in two cells of the top-left block: a function couples choices, and one choice couples with another. Derivation appears as an absence: no term in the matrix denotes stored state.
+Three of the terms are cases of others: a sequencer is a resolver, a seal is a record, and a goal is a function. Their rows show only what each case adds. A release is also a record, the record that a new version is in force, so the matrix shows it through the version.
+
+Three principles add no term. Coupling appears in two cells of the top-left block: a function couples choices, and one choice couples with another. Prediction needs no term, because a provisional value is the output of a function over a scope that is not yet sealed. Derivation appears as an absence: no term in the matrix denotes stored state.
 
 ## Features built from the principles
 
