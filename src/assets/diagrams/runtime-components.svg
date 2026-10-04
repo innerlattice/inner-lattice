@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 424" role="img" aria-labelledby="title desc">
   <title id="title">Runtime components</title>
-  <desc id="desc">A server runs four components. The record store holds records with their id, choice, value, resolver, snapshot, program version, probability and time. The evaluator computes views, open choices and goals from the history. The dispatcher receives the open choices, delivers each to its bound resolver, checks the value against the options, runs timeouts and records probabilities. Records of order-coupled choices go from the dispatcher to the sequencers, one per scope, which append admissions and seals to the record store; other records go directly to the record store. Functions, AI models and external systems resolve choices through the server's dispatcher. A device runs replicas of the dispatcher, evaluator and record store and sequences its own private scopes; a person resolves choices through the device's dispatcher. The device syncs records with the server and receives views from the server's evaluator.</desc>
+  <desc id="desc">A server runs four components. The record store contains records with their id, choice, value, resolver, snapshot, program version, probability, and time. The evaluator computes views, open choices, and goals from the records. The dispatcher receives the open choices, delivers each to its bound resolver, checks the value against the options, runs timeouts, and records probabilities. Records of order-coupled choices go from the dispatcher to the sequencers, one per scope, which append admissions and seals to the record store; other records go directly to the record store. Functions, AI models, and external systems resolve choices through the server's dispatcher. A device runs replicas of the dispatcher, evaluator, and record store and sequences its own private scopes; a person resolves choices through the device's dispatcher. The device syncs records with the server and receives views from the server's evaluator.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
   </defs>
@@ -78,7 +78,7 @@
   </g>
   <line class="line" x1="194" y1="365" x2="246" y2="365" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
   <g class="label">
-    <text x="338" y="310">history</text>
+    <text x="338" y="310">records</text>
     <text x="338" y="200">open choices</text>
     <text x="572" y="200" text-anchor="end">order-coupled</text>
     <text x="222" y="244" text-anchor="middle">views</text>

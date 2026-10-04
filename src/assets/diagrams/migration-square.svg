@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" role="img" aria-labelledby="title desc">
-  <title id="title">A migration as a commuting square, and a release in the history</title>
-  <desc id="desc">Top: two paths lead from the history to the state under version 2. One computes the state under version 1 and then applies the migration. The other computes the state under version 2 directly. A migration is correct when both paths give the same state, and it must also preserve merges. Bottom: a timeline of the history. A release record changes the program version. Records before it were made under version 1 and records after it under version 2, except a record from a client still running version 1, which is read under version 1. An open choice with stable identifier q7 under version 1 moves to the choice q7 under version 2 at the release.</desc>
+  <title id="title">A migration as a commuting square, and a release among the records</title>
+  <desc id="desc">Top: two paths lead from the records to the state under version 2. One computes the state under version 1 and then applies the migration. The other computes the state under version 2 directly. A migration is correct when both paths give the same state, and it must also preserve merges. Bottom: a timeline of records. A release record changes the program version. Records before it were made under version 1 and records after it under version 2, except a record from a client still running version 1, which is read under version 1. An open choice with stable identifier q7 under version 1 moves to the choice q7 under version 2 at the release.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
   </defs>
 
   <g class="pine">
     <rect class="box" x="40" y="80" width="160" height="50" rx="6"/>
-    <text class="head" x="120" y="110" text-anchor="middle">History</text>
+    <text class="head" x="120" y="110" text-anchor="middle">Records</text>
   </g>
   <g class="iris">
     <rect class="box" x="440" y="20" width="200" height="50" rx="6"/>
@@ -30,7 +30,7 @@
     <text x="330" y="120">and μ must preserve merges</text>
   </g>
 
-  <text class="axis" x="40" y="236">History</text>
+  <text class="axis" x="40" y="236">Records</text>
   <line class="grid" x1="40" y1="256" x2="640" y2="256"/>
   <g class="pine">
     <circle class="dot" cx="80" cy="256" r="5"/><circle class="dot" cx="130" cy="256" r="5"/><circle class="dot" cx="180" cy="256" r="5"/><circle class="dot" cx="240" cy="256" r="5"/><circle class="dot" cx="290" cy="256" r="5"/><circle class="dot" cx="330" cy="256" r="5"/>

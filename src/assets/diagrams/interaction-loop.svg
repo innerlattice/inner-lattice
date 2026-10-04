@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" role="img" aria-labelledby="title desc">
   <title id="title">The interaction loop</title>
-  <desc id="desc">Four parts in a clockwise loop. The history, a set of records that are appended and never modified, is the input to functions. Functions are deterministic and compute state, views, indexes, access rules and goals, including the set of open choices. Each open choice has a view, options, a timeout with a default, and a binding. The choice is presented to its resolver, which is a function, a random number generator, a person, an AI model, a sensor or an external service. The selected value is appended to the history as a record. In the middle, two kinds of record with special roles: a seal, which states that a scope is complete, and a release, which changes the program version.</desc>
+  <desc id="desc">Four parts in a clockwise loop. The records, which are appended and never modified, are the input to functions. Functions are deterministic and compute state, views, indexes, access rules, and goals, including the set of open choices. Each open choice has a view, options, a timeout with a default, and a binding. The choice is presented to its resolver, which is a function, a random number generator, a person, an AI model, a sensor, or an external service. The value the resolver supplies is appended as a record. In the middle, two kinds of record with special roles: a seal, which states that a scope is complete, and a release, which changes the program version.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
   </defs>
 
   <g class="pine">
     <rect class="box" x="20" y="130" width="190" height="100" rx="6"/>
-    <text class="head" x="36" y="156">History</text>
-    <text class="note" x="36" y="178">records: value, choice,</text>
-    <text class="note" x="36" y="196">resolver, snapshot, version</text>
+    <text class="head" x="36" y="156">Records</text>
+    <text class="note" x="36" y="178">value, choice, resolver,</text>
+    <text class="note" x="36" y="196">view, version, time</text>
     <text class="note" x="36" y="214">appended, never modified</text>
   </g>
   <g class="iris">

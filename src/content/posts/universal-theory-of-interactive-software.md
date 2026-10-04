@@ -1,11 +1,11 @@
 ---
 title: "Toward a universal theory of interactive software"
-description: "A model of interactive software with three primitives (records, functions and choices) and seven principles, each following from a constraint every interactive system faces. Undo, offline mode, optimistic updates, A/B tests, sharding, access control, delegation to AI agents and live migration follow from the principles."
+description: "A theory of interactive software with four primitives (choices, resolvers, records, and functions) and seven principles, each following from a constraint every interactive system faces. Undo, offline mode, optimistic updates, A/B tests, sharding, access control, delegation to AI agents, and live migration follow from the principles."
 date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
 
-A booking site, a shared document, a multiplayer game, a tax questionnaire and a coding agent are all interactive software. Each one runs until it needs a value it cannot compute, such as a person's input, a sensor reading or a payment network's reply, and its next output depends on the value that arrives.
+A booking site, a shared document, a multiplayer game, a tax questionnaire, and a coding agent are all interactive software. Each one runs until it needs a value it cannot compute, such as a person's input, a sensor reading, or a payment network's reply, and its next output depends on the value that arrives.
 
 Teams build these products with different architectures:
 
@@ -16,52 +16,68 @@ Teams build these products with different architectures:
 - A/B tests run on experimentation platforms;
 - AI agents run on agent frameworks.
 
-Each architecture has its own vocabulary, and several problems are solved in each under different names. Offline editing in a document, rollback in a fighting game and a pending transaction in a banking app are one mechanism. Sharding a database and choosing units for an A/B test read the same graph.
+Each architecture has its own vocabulary, and several problems are solved in each under different names. Offline editing in a document, rollback in a fighting game, and a pending transaction in a banking app are one mechanism. The shards of a database and the units of an A/B test can be computed from the same graph.
 
-This post describes a model small enough to cover all of these. It has three primitives, called *records*, *functions* and *choices*, and seven principles. Each principle follows from a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, A/B tests, sharding, access control, delegation to AI agents and live migration.
+This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and seven principles. Each principle follows from a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, A/B tests, sharding, access control, delegation to AI agents, and live migration.
 
-Two later posts build on the model. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes a runtime that executes it, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes a language for writing programs in it.
+Two later posts build on the theory. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes a runtime that executes programs built on the theory, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes a language for writing programs in it.
 
-## Three primitives: records, functions and choices
+## Four primitives: choices, resolvers, records, and functions
 
-A running program alternates between computing and waiting. Computing is deterministic: the same inputs give the same outputs. Waiting happens where the program needs a value that its code does not determine. The model names both activities and the trace they leave.
+A running program alternates between computing and waiting for input. Computing is deterministic: the same inputs give the same outputs. Waiting happens where the program needs a value that its code does not determine. The theory names the point where the program waits, the source of the value, the stored value, and the computation.
 
-- A **choice** is a point where a run needs a value, and the program specifies what the value must satisfy without specifying how it is produced. Each choice has a stable identifier, a *view* (what is visible to whatever selects the value), a set of *options* (the admissible values), and a *timeout* with a *default*. A choice is *open* until a value is selected.
-- A **resolver** selects the value. It can be a person, an AI model, a random number generator, a deterministic function, a sensor or another organization's system. A *binding* states which resolver selects the value for which choice.
-- A **record** stores one selected value with its provenance: the choice, the resolver, what the resolver could see, the program version and the time. Records are never modified. The set of all records is the **history**.
-- A **function** is a deterministic map from the history to a value, in the mathematical sense of the word: the same history always gives the same result. Everything other than records is the output of a function, including current state, screens, search indexes, metrics, access rules and the set of open choices.
+- A **choice** is a point where a run needs a value from outside its code. The program specifies what the value must satisfy, but not how the value is produced. Every input to a program is the value of some choice, so choices include form fields, button presses, sensor readings, random draws, clock readings, and replies from other systems. Each choice has:
+  - a stable identifier;
+  - a *view*: the information shown to whatever supplies the value;
+  - *options*: the set of values the choice accepts;
+  - a *timeout*: how long the choice waits for a value;
+  - a *default*: the value used when the timeout passes.
 
-*Choice* names the open question and *record* names the answer. The word "decision" is avoided because it is used for both. *Resolver* names a role and implies no deliberation: a thermometer resolves the choice "current temperature", and a random number generator resolves the choice "which variant this visitor sees".
+  A choice is *open* until it has a value.
+- A **resolver** supplies a choice's value. A resolver can be a person, an AI model, a random number generator, a deterministic function, a sensor, or another organization's system. A *binding* states which resolver supplies the value for which choice.
+- A **record** stores one choice's value with its provenance: the choice, the resolver, the view shown to the resolver, the program version, and the time. Records are never modified.
+- A **function** is a deterministic map from a set of records to a value: the same records always give the same result. Everything other than records is the output of a function, including current state, screens, search indexes, metrics, access rules, and the set of open choices.
 
-![A loop from the history through functions to views and open choices, then to resolvers, whose selections are appended to the history as records](../../assets/diagrams/interaction-loop.svg "Functions compute views and open choices from the history. A resolver selects a value for each choice, and the value is appended as a record.")
+*Choice* names the open question and *record* names the answer. This post avoids the word "decision", which is commonly used for both. *Resolver* names a role and implies no deliberation: a thermometer resolves the choice "current temperature", and a random number generator resolves the choice "which variant this visitor sees".
 
-A record is a claim made from one perspective. It states what a resolver selected or observed from where it stood, and a person can mistype an address as easily as a sensor can drift. The system treats records as given, because it has nothing else to go on, and corrects one by appending a later record that supersedes it.
+![A loop from the records through functions to views and open choices, then to resolvers, whose values are appended to the records](../../assets/diagrams/interaction-loop.svg "Functions compute views and open choices from the records. A resolver supplies a value for each open choice, and the value is appended as a record.")
 
-The model has no primitive for state. State is a function of the history, so it can always be recomputed, and two parties that hold the same records compute the same state.
+A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype an address and a sensor can drift. Records are never modified, so a wrong record is corrected by appending a later record that supersedes it.
+
+The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records compute the same state.
+
+### How a resolver differs from a function
+
+A deterministic function can serve as a resolver, so a function and a resolver can run the same code. They differ in what happens to the output:
+
+- **A function's output is derived.** The output is computed from the records whenever the output is needed, and it is never stored as a record. Changing a function's code changes every output the function computes from then on, including outputs about the past.
+- **A resolver's output is recorded.** Once a resolver supplies a value, later computation reads the record and does not run the resolver again. Changing a resolver changes only the values it supplies afterward.
+
+A price shows the difference. If the price of an order is a function of the catalog's records, a change to the pricing code changes the computed price of every past order. If the price is a choice bound to a pricing function, the quoted price is recorded, and each order keeps the price it was quoted after the pricing code changes. Whether a value should be a function output or a choice depends on whether the value must stay fixed after being shown to someone.
 
 ### Resolvers ordered by determinacy
 
-Resolvers differ along one axis, determinacy, which sets what the history can do with their selections.
+Resolvers differ along one axis, determinacy, which sets what can be learned from their records.
 
-| Determinacy | Examples | Repeating the choice | Probability of the selected value |
+| Determinacy | Examples | Repeating the choice | Probability of the supplied value |
 | --- | --- | --- | --- |
 | Deterministic | a pricing function, game physics, a routing table | gives the same value | 1 |
 | Randomized | A/B assignment, a bandit algorithm, a seeded shuffle | gives the same value with the same seed | known, and recorded |
 | Opaque | a person, an AI model, a payment network, a sensor | may give a different value | unknown |
 
-Opaque resolvers sit outside the *system boundary*, the line between what the program determines and what it receives from its environment. Where that line runs is a modeling decision, and engineering moves resolvers across it:
+Opaque resolvers sit outside the *system boundary*, the line between what the program determines and what it receives from its environment. Whoever models a system sets where the system boundary runs, and engineering work moves resolvers across the boundary:
 
 - automation replaces an opaque resolver with a deterministic one;
-- a test suite replaces every opaque resolver with scripted or recorded values, so that runs can be reproduced;
+- a test suite replaces every opaque resolver with values written into the test in advance or recorded from earlier runs, so that runs can be reproduced;
 - delegation to an AI agent replaces one opaque resolver with another.
 
-An AI model sampled at temperature zero is deterministic in principle. In practice batching, hardware differences and model retirement make its outputs hard to reproduce, so the model treats it as opaque.
+An AI model sampled at temperature zero is deterministic in principle. In practice, batching, hardware differences, and model retirement make such a model's outputs hard to reproduce, so this post classifies AI models as opaque.
 
-Some opaque resolvers pursue goals of their own: people, AI agents and other organizations. These *agents* adapt to the program, so the program's design changes what they select. Principle 3 includes an example from online auctions. A sensor does not adapt to the program in this way.
+Some opaque resolvers have goals of their own: people, AI agents, and other organizations. These *agents* adapt to the program, so the program's design changes the values they supply. Bidders on auction sites, for example, bid later when auctions end at a fixed time than when auctions end after a period with no bids. A sensor does not adapt to the program in this way.
 
-![Resolvers arranged by determinacy, from deterministic functions through randomized assignment to people, models and external systems, with the system boundary between randomized and opaque resolvers](../../assets/diagrams/resolvers.svg "Determinacy determines whether a selection can be repeated and whether its probability is known.")
+![Resolvers arranged by determinacy, from deterministic functions through randomized assignment to people, models, and external systems, with the system boundary between randomized and opaque resolvers](../../assets/diagrams/resolvers.svg "A resolver's determinacy sets whether the values it supplies can be reproduced and whether their probabilities are known.")
 
-### The model in formal terms
+### The primitives in formal terms
 
 A choice $c$ is a tuple
 
@@ -71,144 +87,141 @@ $$
 
 where:
 
-- $\mathcal{H}$ is the set of possible histories, each a set of records;
-- $\mathrm{view}_c : \mathcal{H} \to V_c$ maps a history to what the resolver sees, a value of type $V_c$;
-- $\mathrm{opt}_c : \mathcal{H} \to \mathcal{P}(X_c)$ maps a history to the admissible values, a subset of the value type $X_c$ ($\mathcal{P}$ is the power set);
-- $t_c$ is the timeout, and $d_c \in X_c$ is the default recorded when the timeout passes.
+- $\mathcal{R}$ is the collection of possible sets of records;
+- $\mathit{id}_c$ is the choice's stable identifier;
+- $\mathrm{view}_c : \mathcal{R} \to V_c$ computes, from a set of records, the view shown to the resolver, a value of type $V_c$;
+- $\mathrm{opt}_c : \mathcal{R} \to \mathcal{P}(X_c)$ computes, from a set of records, the admissible values, a subset of the choice's value type $X_c$ ($\mathcal{P}(X_c)$ is the set of all subsets of $X_c$);
+- $t_c$ is the timeout;
+- $d_c \in X_c$ is the default, recorded when the timeout passes.
 
-A binding $\beta$ maps each choice to a resolver. Functions are maps $f : \mathcal{H} \to Y$ for some output type $Y$.
+A binding $\beta$ maps each choice to a resolver. A function is a map $f : \mathcal{R} \to Y$ for some output type $Y$. The view and the options are themselves functions, so they change as records arrive.
 
-In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed it. A resolver is a handler. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the history lists the responses along the path. Replaying a run means supplying recorded responses in place of live ones, and testing means supplying scripted ones.
-
-### The same structure in other fields
-
-Several fields reached this structure independently and named its parts differently:
-
-| This model | Game theory | Control and reinforcement learning | Databases and distributed systems | Experiment design |
-| --- | --- | --- | --- | --- |
-| record | move in the history | logged transition | log entry | recorded assignment or outcome |
-| function | rules of the game | dynamics, value function | query, view, state machine | estimator |
-| choice | decision node | decision step | operation | treatment assignment |
-| resolver | player, or Nature for chance | policy, environment | client, network | assignment mechanism |
-| view | information set | observation | snapshot | covariates |
-| seal | end of the game | end of an episode | commit, watermark | analysis cutoff |
-| coupling | strategic interdependence | multi-agent interaction | contention | interference |
-| goal | payoff | reward | objective | estimand |
-| release | change of rules | change of environment | schema version | protocol amendment |
-
-Results proved in one column apply in the others. The coordination results in principle 3 explain why checking an experiment's significance every day produces false positives. A technique from ad experiments in principle 5 shows that reserving capacity, a database method, can also buy statistical independence. The *information set* of an extensive-form game, the set of situations a player cannot tell apart, implies that what a resolver could see belongs in the record.
-
-[Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006) argued that the only essential state in a system is the input its users supply, and that everything else should be derived. [The Elm Architecture](https://guide.elm-lang.org/architecture/) applies the model to one person on one device: messages are records, and `update` and `view` are functions. Double-entry bookkeeping has derived balances from a journal for more than five centuries.
+In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed the operation. A resolver is a handler. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the records list the responses along the path. Replaying a run means supplying recorded responses in place of live ones, and testing means supplying responses written into the test in advance.
 
 ## Seven principles
 
-Each principle starts from a constraint that holds for every interactive system and states what the constraint requires.
+Each principle starts from a constraint that is true of every interactive system and states what the constraint requires. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
-| | Principle | Constraint it follows from |
+| Principle | Constraint it follows from | What it requires |
 | --- | --- | --- |
-| 1 | Records and derived values | Functions are deterministic. |
-| 2 | Binding | Different resolvers can resolve the same choice. |
-| 3 | Sealing | Records reach different places at different times. |
-| 4 | Prediction | A response can be needed sooner than records can travel. |
-| 5 | Coupling | Functions read records from more than one resolver. |
-| 6 | Goals | Systems are built to change something. |
-| 7 | Versions | The program changes while its history persists. |
+| Derivation | Functions are deterministic. | Store every value supplied at a choice, and compute everything else from the stored values. |
+| Binding | Different resolvers can supply the same choice. | Specify each choice without naming its resolver, and set the resolver separately. |
+| Sealing | Records reach different places at different times. | Conclude that a record does not exist only after the period in which it could arrive has closed. |
+| Prediction | A response can be needed sooner than records can travel. | Show provisional values, and replace them when the records arrive. |
+| Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one structure for sync, ordering, experiments, and access. |
+| Goals | Systems are built to change something. | State each goal as a function with a direction and limits. |
+| Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
 
-## 1. Records and derived values
+## Derivation: store supplied values and compute everything else
 
-**Store every selected value as a record, and compute everything else.**
+Functions are deterministic, so the only new information that enters a running system is the values supplied at choices. Every other value can be computed from the records of those values. A table's current row, a cache, a search index, and a dashboard are outputs of functions, and each one can be recomputed from the records. When a stored value disagrees with what its function computes from the records, the stored value is wrong.
 
-Functions are deterministic, so the only new information that enters a system is the values selected at choices. The history therefore determines every other value. A table's current row, a cache, a search index and a dashboard are outputs of functions and can be recomputed. A store that disagrees with the history is wrong.
+**Derivation principle:** store every value supplied at a choice as a record, and compute every other value from the records.
 
-A chess game shows how far this goes. The game is its list of moves, every position is computed from that list, and statistics about an opening across millions of games are functions over millions of lists. Real-time strategy games have shipped the same design since the 1990s. The network protocol of [Age of Empires](https://www.gamedeveloper.com/programming/1500-archers-on-a-28-8-network-programming-in-age-of-empires-and-beyond) sent only player commands, and every machine ran an identical deterministic simulation. Replay files in such games are lists of commands.
+Chess notation already follows the principle. A game is recorded as its move list, every position in the game is computed from the move list, and statistics about an opening across millions of games are functions over millions of move lists.
+
+The real-time strategy game Age of Empires (1997) applied the principle to networking. Its developers calculated that sending each unit's position, status, action, facing, and damage over a 28.8 kbps modem would limit a multiplayer match to about 250 moving units. Instead, each machine sent only its player's commands, and every machine ran an identical deterministic simulation from the same commands, so the network traffic no longer grew with the number of units. The developers titled their account of the design [1500 Archers on a 28.8](https://www.gamedeveloper.com/programming/1500-archers-on-a-28-8-network-programming-in-age-of-empires-and-beyond). Real-time strategy games have used this architecture, called deterministic lockstep, since the 1990s, and their replay files are lists of commands. Most web applications do the opposite: a server sends clients its current state, such as rows, documents, or rendered pages, and keeps the inputs that produced the state only in logs, if at all.
 
 Several features follow without further design:
 
-- **The data schema is the list of choices.** Any question an analyst can ask about a product is a function over its records, so an analytics tracking plan can be generated from the program.
-- **History, audit and debugging by replay** read the history. Undo appends a record that reverses an earlier one.
+- **The data schema is the list of choices.** Any question an analyst can ask about a product is a function over its records, so an analytics tracking plan can be generated from the program's choices.
+- **Version history, audit, and debugging by replay** are functions over the records. Undo appends a record that reverses an earlier one.
 - **Caches and indexes** are stored outputs of functions. Keeping them current is incremental computation.
-- **Sync** sends records, and **offline work** collects records locally until they can be sent.
+- **Sync** sends records, and **offline work** collects records on the device until they can be sent.
 - **Corrections** are new records, as reversing entries are in a ledger.
 
-The definition of a choice sets what is recorded. A drag sampled at 120 Hz can be one choice whose value is the endpoint, or a stream of samples. A selection made by a deterministic resolver could be recomputed, but recording it costs little and keeps the history meaningful after the binding changes.
+How choices are defined determines what is recorded. A drag gesture, for example, can be defined as one choice whose value is the point where the drag ends, or as a series of choices, one for each position sampled at 120 Hz. A value supplied by a deterministic resolver could be recomputed instead of recorded. Recording the value costs little and keeps the records interpretable after the binding changes.
 
-Erasure is the hard case, because a request to delete a person's data meets a history that never changes. Two methods are in use:
+Because records are never modified, deleting a person's data on request needs a separate method. Two methods are in use:
 
 - encrypt each person's records under a key of their own, and destroy the key on request;
-- add an access rule (principle 5) that removes the person's records from every view.
+- add an access rule that removes the person's records from every view.
 
-## 2. Binding
-
-**Specify each choice independently of its resolver, and set the resolver by configuration.**
+## Binding: specify each choice separately from its resolver
 
 The lead story on a news site's front page was once chosen by an editor. Today the same choice can be resolved by:
 
 - a 50/50 assignment between two headlines;
 - a bandit algorithm that shifts traffic toward the headline with more clicks;
-- a model that selects per reader;
+- an AI model that selects a headline per reader;
 - an AI agent that writes a new headline.
 
-The view, the options and the timeout stay the same, and only the resolver changes. If each choice has one specification and its resolver is bound separately, several features become one construct:
+The view, the options, and the timeout stay the same, and only the resolver changes.
 
-| Resolver bound to the choice | Usual name |
+**Binding principle:** specify each choice (its view, options, timeout, and default) without naming a resolver, and set the resolver by configuration, in a binding.
+
+With one specification per choice and a separately configured resolver, several features become one construct:
+
+| Usual name | Resolver bound to the choice |
 | --- | --- |
-| A fixed function | conditional, feature flag |
-| Uniform or balanced randomization | A/B test |
-| A randomized policy that learns toward a goal | bandit |
-| A function of the view learned from data | personalization, recommendation |
-| An AI model | classification, routing |
-| An AI agent | delegation |
-| A person | the user interface |
+| conditional, feature flag | a fixed function |
+| A/B test | uniform or balanced randomization |
+| bandit | a randomized policy that learns toward a goal |
+| personalization, recommendation | a function of the view learned from data |
+| classification, routing | an AI model |
+| delegation | an AI agent |
+| the user interface | a person |
 
-Changing a binding accounts for more:
+Changing a binding accounts for more features:
 
 - **Automation** moves a choice from a person to a function.
-- **Escalation** moves it back to a person.
-- **Delegation** moves it from a person to an AI agent, under limits the person sets.
-- **Testing** binds scripted resolvers, randomized resolvers that search for failures, and models playing personas.
-- **Regression testing** binds recorded selections and runs them against a new program version.
-- **Presentation** depends on the resolver. The same choice can be drawn on a screen, read aloud by a voice interface or given to an AI agent as a typed schema. An API for agents is the set of a product's choices with the rendering removed.
+- **Escalation** moves a choice back to a person.
+- **Delegation** moves a choice from a person to an AI agent, under limits the person sets.
+- **Testing** binds resolvers that return values written into the test, randomized resolvers that search for failures, and AI models playing personas.
+- **Regression testing** binds the values recorded in earlier runs and replays them against a new program version.
+- **Presentation** depends on the resolver. The same choice can be drawn on a screen, read aloud by a voice interface, or given to an AI agent as a typed schema. An API for agents is the set of a product's choices with the rendering removed.
 
-The choice that most shapes a product is which step comes next. When a deterministic function resolves it, the product is an interview, such as a tax questionnaire or a checkout. When a person resolves it, the product is a workspace, such as a spreadsheet. When an AI agent resolves it, the product is a delegated task, such as a coding agent working through a repository. [Mixed-initiative interfaces](https://erichorvitz.com/chi99horvitz.pdf) pass this choice back and forth within one session.
+The choice with the largest effect on a product is which step comes next, and products are usually named after the resolver bound to that choice:
 
-Two quantities set how much an agent can do. *Discretion* is the size of a choice's option set: "select one of three refund amounts" is narrow, and "reply to the customer" is wide. Splitting a wide choice into narrow ones lowers discretion and makes each part checkable, so the depth of decomposition sets an agent's autonomy. [Levels of automation](https://doi.org/10.1109/3468.844354) can be set separately for gathering information, analyzing it, selecting an action and carrying it out, which amounts to a binding per stage. Authority belongs to the binding, not to the resolver's capability, a point developed in [Old Foundations, New Agents](/durable-universals-agentic-ai-engineering).
+- When a deterministic function selects the next step, the product is an interview, such as a tax questionnaire or a checkout.
+- When a person selects the next step, the product is a workspace, such as a spreadsheet.
+- When an AI agent selects the next step, the product is a delegated task, such as a coding agent working through a repository.
 
-Cybernetics sets a limit on deterministic bindings. The [law of requisite variety](https://en.wikipedia.org/wiki/Variety_(cybernetics)#Law_of_requisite_variety) says that a regulator keeps outcomes within bounds only if it can produce as many distinct responses as there are distinct disturbances to counter. A deterministic resolver produces only the responses its author anticipated. A choice whose views vary in ways nobody enumerated in advance therefore needs a person or a model.
+[Mixed-initiative interfaces](https://erichorvitz.com/chi99horvitz.pdf) move the binding of the next-step choice between a person and a program within one session.
 
-Determinacy also sets what the history can hold. A randomized resolver records the probability it gave the selected value, called its *propensity* in causal inference. A person's propensities are unknown, and a person cannot be asked the same question again with nothing else changed. Principle 6 depends on this difference.
+Two properties of a binding limit what an AI agent can do:
 
-## 3. Sealing
+- **Discretion** is the size of the option set of a choice bound to the agent. "Select one of three refund amounts" allows little discretion, and "reply to the customer" allows a great deal. Splitting a choice with a large option set into choices with small ones lowers discretion and makes each part checkable, so how finely a task is divided sets how much autonomy an agent has. [Levels of automation](https://doi.org/10.1109/3468.844354) can be set separately for gathering information, analyzing the information, selecting an action, and carrying the action out, which amounts to one binding per stage.
+- **Authority** is the set of choices bound to the agent. Authority is set by the binding, independently of what the agent is capable of, a point developed in [Old Foundations, New Agents](/durable-universals-agentic-ai-engineering).
 
-**A function that only accumulates is correct on any snapshot. A conclusion that depends on records being absent is final only after its scope is sealed.**
+Cybernetics sets a limit on deterministic bindings. The [law of requisite variety](https://en.wikipedia.org/wiki/Variety_(cybernetics)#Law_of_requisite_variety) says that a regulator keeps outcomes within bounds only if it can produce as many distinct responses as there are distinct disturbances to counter. In other words, a controller with fewer possible responses than the situations it faces will meet a situation for which it has no correct response. A deterministic resolver produces only the responses its author anticipated, so a choice whose views vary in ways nobody listed in advance needs a person or an AI model.
 
-Records reach different places at different times, so different parties see different subsets of the history. Call the subset visible to a resolver at a moment its *snapshot*. Some functions give useful answers on any snapshot. "These people have voted" and "this document contains these edits" only grow as records arrive, and every party reaches the same answer once the records have spread, whatever order they arrived in. Such a function is *monotone*:
+Determinacy also sets what the records can contain. A randomized resolver can record the probability with which it selected the value, called the *propensity* in causal inference. A person's propensities are unknown, and a person cannot be asked the same question again with nothing else changed. The goals principle depends on this difference.
+
+## Sealing: wait for every record that could arrive before concluding that one is absent
+
+Records reach different places at different times, so the records available at one place differ from those available at another. The set of records available to a resolver at a given moment is that resolver's *snapshot*.
+
+Some functions give a useful answer on any snapshot. "These people have voted" and "this document contains these edits" only grow as records arrive, and every place reaches the same answer once the records have spread, in whatever order they arrived. Such a function is *monotone*:
 
 $$
-H \subseteq H' \implies f(H) \sqsubseteq f(H')
+R \subseteq R' \implies f(R) \sqsubseteq f(R')
 $$
 
-Here $H$ and $H'$ are histories, $f$ is a function, and $\sqsubseteq$ is the order on $f$'s outputs, such as inclusion for sets. In words: adding records can only add to the output.
+Here $R$ and $R'$ are sets of records, $f$ is a function, and $\sqsubseteq$ is the order on $f$'s outputs, such as inclusion for sets. In words: adding records can only add to the output.
 
-Other functions conclude something from the absence of records:
+Other functions conclude that some record does not exist:
 
 - "the seat is free";
 - "the latest price is 40";
 - "this username is available";
 - "candidate A won".
 
-Each states that some record does not exist, and one late record can make it false. Such a conclusion is final only over a *sealed* scope:
+One late record can make such a conclusion false. The conclusion can be final only if the system waits until every record that could affect the conclusion has had time to arrive, and then refuses or redirects any record that arrives later. Three terms describe how a system closes that waiting period:
 
 - A **scope** is a set of records picked out by a condition, such as every booking for seat C14 at tonight's performance.
-- A **seal** is a record stating that a scope is complete up to some position: no further record will be admitted into it before that position.
-- The **sequencer** of a scope admits records into the scope in one order and writes its seals. Each scope that needs seals has exactly one sequencer at a time. Admitting a record seals the part of the scope that precedes it, which is how a sequencer settles which of two concurrent bookings came first.
+- The **sequencer** of a scope is the single resolver that admits records into the scope, one at a time and in one order. Each scope that needs an order has exactly one sequencer at a time.
+- A **seal** is a record, written by the sequencer, stating that the scope is complete up to some position in that order: no record will later be admitted at or before that position. Admitting a record also seals the part of the scope before the admitted record, which is how a sequencer settles which of two concurrent bookings came first.
 
-The [CALM theorem](https://arxiv.org/abs/1901.01930) makes this exact. A problem has a consistent distributed implementation that needs no coordination if and only if it is monotone, so coordination is needed exactly where a conclusion about absence is drawn. Even "the current value" is such a conclusion, and last-writer-wins replication lets timestamps act as the sequencer.
+**Sealing principle:** a monotone function is correct on any snapshot. A conclusion that depends on records being absent is final only over a sealed scope.
+
+The [CALM theorem](https://arxiv.org/abs/1901.01930) makes the principle exact. A problem has a consistent distributed implementation that needs no coordination if and only if the problem is monotone, so coordination is needed exactly where a conclusion about absence is drawn. Even "the current value" is such a conclusion, and last-writer-wins replication uses timestamps as the sequencer.
 
 ![Records arriving over time, a running count that is correct at every moment, and a winner that is final only after the seal](../../assets/diagrams/sealing-timeline.svg "A monotone function is correct at every moment. A conclusion about absence is final only after the seal.")
 
 Seals appear at every scale under other names:
 
-| Seal | Scope | Sequencer |
+| Usual name | Scope | Sequencer |
 | --- | --- | --- |
 | Pressing submit | one person's answers on a form | that person's device |
 | A hold's timeout | one held seat | the booking system |
@@ -219,29 +232,31 @@ Seals appear at every scale under other names:
 | Closing the books | one accounting period | the accounting department |
 | Polls closing | one election's ballots | the election authority |
 
-How a scope is sealed changes what agents select. A [study of online auctions](https://www.cs.princeton.edu/courses/archive/spr08/cos444/papers/roth_ockenfels02.pdf) compared eBay, whose auctions ended at a fixed time, with Amazon, whose auctions continued until ten minutes passed without a bid. Bidding in the final seconds was far more common on eBay. With experience, eBay bidders bid later and Amazon bidders bid earlier. The sealing rule worked as a mechanism in the game-theoretic sense: it set the incentives, and bidders adapted to it.
+The sealing method changes what agents do. A [study of online auctions](https://www.cs.princeton.edu/courses/archive/spr08/cos444/papers/roth_ockenfels02.pdf) compared eBay, where auctions ended at a fixed time, with Amazon, where auctions continued until ten minutes passed without a bid. Bids in the final seconds were far more common on eBay. Bidders with more experience bid later on eBay and earlier on Amazon. The sealing method worked as a mechanism in the game-theoretic sense: the method set the incentives, and bidders adapted to the method.
 
 Two methods avoid waiting for a sequencer:
 
-- **Use choices whose records always merge.** Operations are [invariant-confluent](https://arxiv.org/abs/1402.2237) when any two valid histories merge into a valid history. Likes on a post are invariant-confluent, and seats in a theater are not.
-- **Split the scope.** The escrow method divides a shared quantity into shares, and each share has its own sequencer. A box office holding a block of seats can sell them without contacting the central system, and a warehouse can promise its own stock.
+- **Use choices whose records always merge.** Operations are [invariant-confluent](https://arxiv.org/abs/1402.2237) when any two valid sets of records merge into a valid set. Likes on a post are invariant-confluent, and seats in a theater are not.
+- **Split the scope.** The escrow method divides a shared quantity into shares, and each share has its own sequencer. A box office holding a block of seats can sell those seats without contacting the central system, and a warehouse can promise its own stock.
 
-Offline work follows from both: a disconnected device can admit any record that is invariant-confluent or that falls in a share escrowed to the device.
+Offline work follows from both methods: a disconnected device can admit any record that is invariant-confluent or that falls in a share escrowed to the device.
 
-The same structure explains a common statistical error. A fixed-horizon significance test is valid only at its declared cutoff, which is a seal. Checking the result every day and stopping once it looks significant draws a conclusion before the seal, and false positives multiply. [Always-valid inference](https://arxiv.org/abs/1512.04922) makes the conclusion valid whenever the experimenter stops.
+The same structure explains a common statistical error. A fixed-horizon significance test is valid only at its declared cutoff, which is a seal. Checking the result every day and stopping once the result looks significant draws a conclusion before the seal, and false positives multiply. [Always-valid inference](https://arxiv.org/abs/1512.04922) makes the conclusion valid whenever the experimenter stops.
 
-## 4. Prediction
-
-**When a response is needed sooner than the seal can arrive, show provisional values and replace them when the seal arrives.**
+## Prediction: show provisional values when records cannot arrive in time
 
 Each choice involves two durations:
 
-- The **response deadline** is the longest a resolver can wait, after selecting a value, to see its consequence before the interaction fails.
-- The **sealing latency** is the time from the selection until the sequencer's admission reaches the resolver. It is at least the round trip to the sequencer.
+- The **response deadline** is the longest time that can pass between supplying a value and showing its consequence before the interaction fails, for example because a game stops feeling responsive or a person concludes that a button did nothing.
+- The **sealing latency** is the time between supplying a value and the arrival of the sequencer's admission at the place where the value was supplied. The sealing latency is at least the round trip to the sequencer.
 
-Human perception and physics set both. Responses within about 0.1 s [feel immediate](https://doi.org/10.1145/1476589.1476628). Animation at 60 Hz needs a new frame every 16.7 ms. For telephone calls, ITU-T Recommendation G.114 recommends at most 150 ms of one-way delay. On the other side, light in optical fiber travels about 200,000 km/s, so each 100 km of fiber adds about 1 ms to a round trip before any routing or processing. A sealed result within one 60 Hz frame needs the sequencer within about 1,700 km of fiber, and a round trip between London and Sydney takes at least 170 ms.
+Human perception and physics set both durations. Responses within about 0.1 s [feel immediate](https://doi.org/10.1145/1476589.1476628). Animation at 60 Hz needs a new frame every 16.7 ms. For telephone calls, ITU-T Recommendation G.114 recommends at most 150 ms of one-way delay. On the other side, light in optical fiber travels about 200,000 km/s, so each 100 km of fiber adds about 1 ms to a round trip before any routing or processing. A sealed result within one 60 Hz frame needs the sequencer within about 1,700 km of fiber, and a round trip between London and Sydney takes at least 170 ms.
 
-When the response deadline is shorter than the sealing latency, the view has to show records the sequencer has not yet admitted. Functions evaluated over them give **provisional values**, which are replaced when the seal arrives. Several familiar features are this one mechanism:
+When the response deadline is shorter than the sealing latency, the view has to include records that the sequencer has not yet admitted. Functions evaluated over those records give **provisional values**, which are replaced when the sequencer's admissions arrive.
+
+**Prediction principle:** when a choice's response deadline is shorter than its sealing latency, show provisional values computed from records not yet admitted, and replace them when the admissions arrive.
+
+Several familiar features are this one mechanism:
 
 - optimistic updates in a web app;
 - characters appearing as they are typed into a shared document;
@@ -249,43 +264,47 @@ When the response deadline is shorter than the sealing latency, the view has to 
 - rollback netcode in fighting games;
 - the pending line in a banking app after a card payment.
 
-The card payment shows the mechanism plainly. The authorization is a provisional record, labeled pending, and settlement days later is the seal that posts it.
+The card payment shows the mechanism plainly. The authorization is a provisional record, labeled pending, and settlement days later is the seal that posts the payment.
 
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
-For invariant-confluent choices, the local result is already final, and only other parties' view of it waits. For other choices the provisional value can be wrong. The cost of prediction grows with how often it is wrong, because every wrong provisional value becomes a correction someone sees.
+For invariant-confluent choices, the provisional value is already final, and only other places' copies of the value are delayed. For other choices the provisional value can be wrong. The cost of prediction grows with how often provisional values are wrong, because each wrong provisional value becomes a correction that someone sees.
 
 Designers have three levers:
 
 1. **Move the sequencer closer.** Trading firms place their servers in the exchange's data center, and a drawing app makes the device the sequencer for its own strokes.
-2. **Lengthen the response deadline.** Age of Empires scheduled each command to run two 200 ms communication turns after it was issued. Turn-based games make the deadline a whole turn. [EVE Online](https://www.eveonline.com/news/view/introducing-time-dilation-tidi) slows its simulation to as little as 10% of normal speed during large battles.
-3. **Make the choice invariant-confluent,** so that it needs no seal (principle 3).
+2. **Lengthen the response deadline.** Age of Empires scheduled each command to run two 200 ms communication turns after the command was issued. Turn-based games make the deadline a whole turn. [EVE Online](https://www.eveonline.com/news/view/introducing-time-dilation-tidi) slows its simulation to as little as 10% of normal speed during large battles.
+3. **Make the choice invariant-confluent,** so that the choice needs no seal.
 
-[Optimistic simulation with rollback](https://doi.org/10.1145/3916.3988) is the general form of prediction. Each part of a simulation runs ahead on the records it has, and when a record arrives with an earlier timestamp, that part rolls back and recomputes.
+[Optimistic simulation with rollback](https://doi.org/10.1145/3916.3988) is the general form of prediction. Each part of a simulation runs ahead using the records available to that part, and when a record arrives with an earlier timestamp, the part rolls back and recomputes.
 
-## 5. Coupling
+## Coupling: derive which choices affect each other from the functions
 
-**Which choices affect each other follows from the functions. One analysis of that structure sets sync, sequencer scopes, experiment units and access.**
+Functions combine records supplied by different resolvers, so the value supplied at one choice can change the view or the options of another choice. Two relations describe how choices affect each other. In the definitions below, $a$ and $b$ are choices, $r_a$ and $r_b$ are records of values supplied at them, $R$ is a set of records, $\mathrm{view}_b$ and $\mathrm{opt}_b$ are the view and option functions of $b$, and $I : \mathcal{R} \to \{\text{true}, \text{false}\}$ is an *invariant*, a condition every admitted set of records must satisfy.
 
-Functions combine records from different resolvers, so the selection at one choice can change what another resolver sees or may select. Two relations capture this. In the definitions below, $a$ and $b$ are choices, $r_a$ and $r_b$ are records produced by resolving them, $H$ is a history, $\mathrm{view}_b$ and $\mathrm{opt}_b$ are the view and option functions of $b$, and $I : \mathcal{H} \to \{\text{true}, \text{false}\}$ is an *invariant*, a condition every admitted history must satisfy.
-
-**Read coupling** $a \to b$ holds when a record from $a$ can change what $b$'s resolver sees or may select:
+**Read coupling** $a \to b$ holds when a record from $a$ can change $b$'s view or options:
 
 $$
-\exists H :\ \mathrm{view}_b(H \cup \{r_a\}) \neq \mathrm{view}_b(H)\ \ \lor\ \ \mathrm{opt}_b(H \cup \{r_a\}) \neq \mathrm{opt}_b(H)
+\exists R :\ \mathrm{view}_b(R \cup \{r_a\}) \neq \mathrm{view}_b(R)\ \ \lor\ \ \mathrm{opt}_b(R \cup \{r_a\}) \neq \mathrm{opt}_b(R)
 $$
+
+In words: for some set of records, adding a record from $a$ changes what $b$ shows or accepts.
 
 **Order coupling** $a \leftrightarrow b$ holds when records from $a$ and $b$ can each be admitted alone, but not together:
 
 $$
-\exists H, r_a, r_b :\ I(H \cup \{r_a\}) \land I(H \cup \{r_b\}) \land \lnot I(H \cup \{r_a, r_b\})
+\exists R, r_a, r_b :\ I(R \cup \{r_a\}) \land I(R \cup \{r_b\}) \land \lnot I(R \cup \{r_a, r_b\})
 $$
 
-Order-coupled choices need a sequencer to put one record first and refuse the other. Because merging two histories means taking their union, order coupling is exactly the failure of invariant confluence for a pair of records. Every order coupling is also a read coupling, since the first record changes the options of the second.
+In words: for some set of records, adding either record alone keeps the invariant true, and adding both makes the invariant false.
 
-Two people booking the same seat are order-coupled. Two people commenting on the same post are read-coupled. Two people typing into the same paragraph of a shared document are read-coupled when a merge algorithm combines their edits, because every combination of concurrent edits merges into a valid document.
+Order-coupled choices need a sequencer to admit one record first and refuse the other. Because merging two sets of records means taking their union, order coupling is exactly the failure of invariant confluence for a pair of records. Every order coupling is also a read coupling, since the first record changes the options of the second choice.
 
-![A graph of choices joined by read coupling and order coupling, divided into three parts, with the edges that cross parts marked](../../assets/diagrams/coupling-graph.svg "One partition of the coupling graph sets what syncs live, where sequencers sit and which units share an experiment variant.")
+Two people booking the same seat are order-coupled. Two people commenting on the same post are read-coupled. Two people typing into the same paragraph of a shared document are read-coupled when a merge algorithm combines their edits, because every combination of concurrent edits then merges into a valid document.
+
+**Coupling principle:** derive which choices affect each other from the functions, and use the resulting graph to set what is synchronized, which records share a sequencer, which units share an experiment variant, and who may see what.
+
+![A graph of choices joined by read coupling and order coupling, divided into three parts, with the edges that cross parts marked](../../assets/diagrams/coupling-graph.svg "One partition of the coupling graph sets what syncs live, where sequencers sit, and which units share an experiment variant.")
 
 Most of what a product does about other people uses one of the two relations:
 
@@ -298,28 +317,28 @@ Most of what a product does about other people uses one of the two relations:
 | Sharding | order | partition so each part has one sequencer; edges that cross parts need distributed transactions |
 | Experiment units | read | partition so each part receives one variant; edges that cross parts carry treatment between variants |
 
-The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) requires that one unit's outcome not depend on another unit's treatment, which means no read coupling crosses between variants. Software rarely has this property by default, so it has to be engineered. Three methods are in use:
+The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) requires that one unit's outcome not depend on another unit's treatment, which means no read coupling crosses between variants. Software rarely has this property by default, so the property has to be engineered. Three methods are in use:
 
 - **Partition the graph.** [Graph cluster randomization](https://arxiv.org/abs/1305.6979) assigns variants to clusters of a social graph. The same year, [balanced label propagation](https://web.stanford.edu/~jugander/papers/wsdm13-blp.pdf) partitioned that graph across servers, so experiment units and shards were computed from one graph.
 - **Randomize over time.** When coupling runs through a shared pool, as when every rider in a city draws on the same drivers, the graph has no useful clusters. [Switchback designs](https://arxiv.org/abs/2009.00148) randomize time periods instead.
-- **Change the functions to remove edges.** A [budget-split design](https://arxiv.org/abs/2012.08724) for ad experiments gives each variant its own share of every advertiser's budget, so the variants cannot draw on the same money. This is escrow from principle 3, used to obtain statistical independence instead of coordination-free writes.
+- **Change the functions to remove edges.** A [budget-split design](https://arxiv.org/abs/2012.08724) for ad experiments gives each variant its own share of every advertiser's budget, so the variants cannot draw on the same money. This design is the escrow method from the sealing principle, used to obtain statistical independence instead of coordination-free writes.
 
-Access rules can remove read coupling but not order coupling. If two people try to register the same email address, the second learns that the first exists, whatever the access rules say, because the refusal itself carries the information. A sign-up form that reports "this email is already registered" therefore lets anyone test whether a person has an account. The standard fix moves the outcome to a channel only the address's owner can read: "If an account exists, we have sent a link."
+Access rules can remove read coupling but not order coupling. If two people try to register the same email address, the second person learns that the first exists, whatever the access rules say, because the refusal itself carries the information. A sign-up form that reports "this email is already registered" therefore lets anyone test whether a person has an account. The standard fix moves the outcome to a channel only the address's owner can read: "If an account exists, we have sent a link."
 
-Economics sorts goods into *rival* goods, whose use by one party prevents use by another, and *non-rival* goods, such as information, whose use by one party does not. In this model rivalry corresponds to order coupling. Non-rivalry corresponds to read coupling, which is still coupling: an idea one person shares changes what others know and select. The terms carry an assumption the structure does not. They make separation the default, describe contact between parties as competition, and describe the most widely shared goods as if their users had no effect on each other. In the coupling graph, both kinds of good are edges. Whether an edge helps or harms the parties it joins depends on their goals (principle 6), and the same edge can do both.
+Economics sorts goods into *rival* goods, whose use by one party prevents use by another, and *non-rival* goods, such as information, whose use by one party does not. In this theory, rivalry corresponds to order coupling. Non-rivalry corresponds to read coupling, which is still coupling: an idea one person shares changes what others know and select. The economic terms carry an assumption the structure does not. They make separation the default, describe contact between parties as competition, and describe the most widely shared goods as if their users had no effect on each other. In the coupling graph, both kinds of good are edges. Whether an edge helps or harms the parties it joins depends on the parties' goals, the subject of the next principle, and the same edge can do both.
 
-## 6. Goals
+## Goals: functions with a direction and guardrails
 
-**A goal is a function of the history with a direction and guardrails. Analytics, experiments and optimization are uses of goals.**
+Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails.
 
-Formally, a goal is a function $g : \mathcal{H} \to \mathbb{R}$ to be increased or decreased, together with guardrails $c_i(H) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while the goal is pursued. Conversion rate is a goal, and refund rate, latency and complaint rate are typical guardrails.
+**Goals principle:** state each goal as a function of the records with a direction and guardrails, and compute analytics, experiments, and optimization from that one definition.
 
 Several practices are uses of goals:
 
-- **Analytics** evaluates goals and their inputs over the history. A dashboard displays goal values.
-- **Attribution** follows provenance from a goal's value back to the records that produced it.
+- **Analytics** evaluates goals and their inputs over the records. A dashboard displays goal values.
+- **Attribution** follows provenance from a goal's value back to the records that produced the value.
 - **An experiment** combines four parts from earlier principles: a randomized resolver with recorded probabilities, a goal, units taken from a partition of the read-coupling graph, and a seal for analysis.
-- **Bandit algorithms and personalization models** are resolvers that read a goal while they run.
+- **Bandit algorithms and personalization models** are resolvers that read a goal's value while they run.
 - **Pre-registration** records the goal and the analysis plan before any outcome exists. Medical journals have required registration of clinical trials before enrollment since 2004.
 
 Recorded probabilities make it possible to evaluate a binding that was never deployed. The standard estimator, inverse propensity scoring, is
@@ -330,72 +349,71 @@ $$
 
 where:
 
-- $n$ is the number of recorded selections at a choice;
-- $v_i$ is the view at the $i$-th selection, and $x_i$ is the value selected;
-- $p_i$ is the recorded probability that the deployed resolver gave $x_i$;
-- $\pi'(x_i \mid v_i)$ is the probability that a candidate resolver $\pi'$ would give $x_i$ in view $v_i$;
-- $g_i$ is the goal's value attributed to the $i$-th selection.
+- $n$ is the number of records at a choice;
+- $v_i$ is the view in the $i$-th record, and $x_i$ is the value supplied;
+- $p_i$ is the recorded probability with which the deployed resolver selected $x_i$;
+- $\pi'(x_i \mid v_i)$ is the probability that a candidate resolver $\pi'$ would select $x_i$ given view $v_i$;
+- $g_i$ is the goal's value attributed to the $i$-th record;
+- $\hat{G}(\pi')$ is the estimated value of the goal had $\pi'$ been bound to the choice.
 
-In words: reweight each recorded outcome by how much more or less often the candidate would have made the same selection. The estimate needs $p_i > 0$ for every value the candidate might select, which is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied this to a log of randomly selected articles, and [a decision service built on the method](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
+In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate needs $p_i > 0$ for every value the candidate might select, which is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied this estimator to a log of randomly selected articles, and [a decision service built on the method](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
 
-Counterfactual replay generalizes the estimator. Hold the functions fixed, change one record, and recompute everything after it. The result is exact until the first later opaque resolver whose view would have changed. A pinned model can be asked again, but a person cannot, so beyond that point the replay needs a model of the person.
+Counterfactual replay generalizes the estimator. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver whose view would have changed. A pinned AI model can be asked again, but a person cannot, so beyond that point the replay needs a stand-in for the person, such as a predictive model of the person's behavior.
 
-A goal without guardrails invites a capable resolver to find the gap between the function and what it was meant to measure. Experimentation practice handles this with guardrail metrics, and in this model the same goal and guardrails can steer a bandit, a person's dashboard or an AI agent.
+Optimizing a goal without guardrails tends to find the cases where the function differs from what the function was meant to measure, and a more capable resolver finds more of those cases. Experimentation practice handles the problem with guardrail metrics. In this theory, one goal with its guardrails can be shown on a dashboard, steer a bandit, and constrain an AI agent.
 
-## 7. Versions
+## Versions: store the program version with every record
 
-**Record which program version produced each record, and record each release. A migration is correct when it gives the same state as recomputing under the new version.**
+Programs change while choices are open. Some people still run last year's version of an app, an insurance claim may be halfway through a review that takes weeks, and an AI agent may be partway through a task. If every record carries the version it was made under, each record can be read under the functions in force when the record was made. Tax law treats transactions the same way: a sale is taxed under the law in force at the time of the sale, and retroactive change is exceptional and explicit.
 
-Programs change while choices are open. Some people still run last year's version of an app, an insurance claim may be halfway through a review that takes weeks, and an AI agent may be partway through a task. If every record carries the version it was made under, each record can be read under the functions in force when it was made. Tax law treats transactions the same way: a sale is taxed under the law in force at the time of the sale, and retroactive change is exceptional and explicit.
+**Versions principle:** store the program version with every record, and store each release as a record. A migration is correct when it gives the same state as recomputing from the records under the new version.
 
-- **A release is a record.** Choices opened after it use the new version.
+- **A release is a record.** Choices opened after the release use the new version.
 - **Migrations change how records are read.** Old records stay as they are, and translation between versions is a function.
-- **Open choices move by stable identifier.** A form can be edited while thousands of people are partway through it, as long as every open choice maps to a choice in the new version or to a recorded fallback.
-- **Changing an AI agent's model is a release,** because it changes what the agent would select.
+- **Open choices move by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
+- **Changing an AI agent's model is a release,** because the change alters the values the agent would supply.
 
-Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{H} \to S_v$ compute state of type $S_v$ from a history under version $v$, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
+Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{R} \to S_v$ compute state of type $S_v$ from a set of records under version $v$, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
 
 $$
-\mu\big(\mathrm{state}_v(H)\big) = \mathrm{state}_{v'}(H) \quad \text{for every history } H
+\mu\big(\mathrm{state}_v(R)\big) = \mathrm{state}_{v'}(R) \quad \text{for every set of records } R
 $$
 
-In words: migrating the old state gives the same result as recomputing the state from the history under the new version, which reads old records through translation functions. A diagram of this kind is called a *commuting square*, because both paths around the square arrive at the same value. Where replicas merge state with an operation $\sqcup$, the migration must also preserve merges: $\mu(s_1 \sqcup s_2) = \mu(s_1) \sqcup \mu(s_2)$.
+In words: migrating the old state gives the same result as recomputing the state from the records under the new version, which reads old records through translation functions. A diagram of this kind is called a *commuting square*, because both paths around the square arrive at the same value. Where replicas merge state with an operation $\sqcup$, the migration must also preserve merges: $\mu(s_1 \sqcup s_2) = \mu(s_1) \sqcup \mu(s_2)$ for any two states $s_1$ and $s_2$.
 
-The history holds real past runs, so the condition can be tested by replaying them along both paths. A finite library of migration operators, each with a known inverse or complement, satisfies the condition by construction. Three such libraries exist: [schema modification operators](https://doi.org/10.14778/1453856.1453939), [bidirectional lenses](https://doi.org/10.1145/1232420.1232424) and [functorial data migration](https://arxiv.org/abs/1009.1166).
+The records contain real past runs, so the condition can be tested by replaying those runs along both paths. A finite library of migration operators, each with a known inverse or complement, satisfies the condition by construction. Three such libraries exist: [schema modification operators](https://doi.org/10.14778/1453856.1453939), [bidirectional lenses](https://doi.org/10.1145/1232420.1232424), and [functorial data migration](https://arxiv.org/abs/1009.1166).
 
 One requirement has no exception. If a release changes what an earlier view showed, after someone selected a value based on that view, the change must itself be recorded, as a restatement is in accounting. Otherwise the selection loses the context that gave it meaning.
 
-## Consequences of the principles
+## Features built from the principles
 
-Principles: 1 records and derived values; 2 binding; 3 sealing; 4 prediction; 5 coupling; 6 goals; 7 versions.
-
-| Feature | Principles | Construction in the model |
+| Feature | Principles | Construction in the theory |
 | --- | --- | --- |
-| History, audit, undo | 1 | functions over the history; undo appends a reversing record |
-| Caches, indexes, search | 1 | stored outputs of functions |
-| Analytics, funnels, attribution | 1, 6 | goals and provenance over the history |
-| Feature flags, A/B tests, staged rollouts | 2, 5, 6 | a randomized resolver with recorded probabilities, units from a coupling partition, a goal |
-| Personalization, recommendation | 2, 6 | a learned resolver that reads a goal |
-| Automation, escalation, delegation | 2, 5 | changing a binding, within access rules on bindings |
-| Simulated users, regression replay | 1, 2 | scripted or recorded resolvers |
-| Voice interfaces, accessibility, agent APIs | 2 | one choice presented differently per resolver |
-| Durable workflows, reminders | 1, 2 | open choices are functions of the history; timeouts record defaults |
-| Submit buttons, turns, commits | 3 | seals |
-| Inventory, quotas, rate limits | 3 | escrow: a scope split into shares, each with a sequencer |
-| Offline mode | 3 | admitting invariant-confluent or escrowed records on the device |
-| Optimistic UI, client prediction, rollback | 4 | provisional values |
-| Presence, live cursors, notifications | 4, 5 | read coupling, delivered by response deadline |
-| Access control, privacy, blocking | 5 | removed read-coupling edges |
-| Sharding | 5 | a partition of the order-coupling graph |
-| Experiments with interference | 5, 6 | a partition of the read-coupling graph, or functions that remove edges |
-| Off-policy evaluation, counterfactuals | 1, 2, 6 | recorded probabilities and replay |
-| Live updates, schema migration, old clients | 7 | versioned records and translation functions |
+| Version history, audit, undo | derivation | functions over the records; undo appends a reversing record |
+| Caches, indexes, search | derivation | stored outputs of functions |
+| Analytics, funnels, attribution | derivation, goals | goals and provenance over the records |
+| Feature flags, A/B tests, staged rollouts | binding, coupling, goals | a randomized resolver with recorded probabilities, units from a coupling partition, and a goal |
+| Personalization, recommendation | binding, goals | a learned resolver that reads a goal |
+| Automation, escalation, delegation | binding, coupling | changing a binding, within access rules on bindings |
+| Simulated users, regression replay | derivation, binding | resolvers that return values written into a test, or recorded values |
+| Voice interfaces, accessibility, agent APIs | binding | one choice presented differently per resolver |
+| Durable workflows, reminders | derivation, binding | open choices are functions of the records; timeouts record defaults |
+| Submit buttons, turns, commits | sealing | seals |
+| Inventory, quotas, rate limits | sealing | escrow: a scope split into shares, each with a sequencer |
+| Offline mode | sealing | admitting invariant-confluent or escrowed records on the device |
+| Optimistic UI, client prediction, rollback | prediction | provisional values |
+| Presence, live cursors, notifications | prediction, coupling | read coupling, delivered by response deadline |
+| Access control, privacy, blocking | coupling | removed read-coupling edges |
+| Sharding | coupling | a partition of the order-coupling graph |
+| Experiments with interference | coupling, goals | a partition of the read-coupling graph, or functions that remove edges |
+| Off-policy evaluation, counterfactuals | derivation, binding, goals | recorded probabilities and replay |
+| Live updates, schema migration, old clients | versions | versioned records and translation functions |
 
-## Classes of choices by coupling and response deadline
+## Six classes of choices by coupling and response deadline
 
-Two quantities from principles 3 to 5 determine what a runtime must do for a choice:
+Two quantities defined in the sealing, prediction, and coupling principles determine what a runtime must do for a choice:
 
-- its coupling: independent, read-coupled or order-coupled;
+- its coupling: independent, read-coupled, or order-coupled;
 - its response deadline: long (a second or more, enough for a network round trip) or short (below about 100 ms, shorter than many round trips).
 
 | | Independent | Read-coupled | Order-coupled |
@@ -407,14 +425,14 @@ The runtime's work grows from the top-left class to the bottom-right one. The re
 
 ![Six classes of choices by coupling and response deadline, each with the runtime behavior it needs and example choices marked by resolver](../../assets/diagrams/choice-classes.svg "Coupling and response deadline determine what the runtime does. The resolver varies within every class.")
 
-The usual taxonomy of forms, editors and games hides two of the classes. Comment threads, wikis and email are read-coupled with long deadlines. Bookings, username registration and bank transfers are order-coupled with long deadlines: they wait for a sequencer and do not predict.
+The usual taxonomy of forms, editors, and games hides two of the classes. Comment threads, wikis, and email are read-coupled with long deadlines. Bookings, username registration, and bank transfers are order-coupled with long deadlines: they wait for a sequencer and do not predict.
 
 Products combine classes, so the classes describe choices, not products. A ride-hailing trip uses five of the six:
 
 | Choice | Resolver | Response deadline | Coupling | Runtime behavior |
 | --- | --- | --- | --- | --- |
 | Destination | rider | long | independent | compute anywhere |
-| Price quote | pricing function pursuing market balance | long | read, through shared supply | merge, deliver later; experiments need switchbacks |
+| Price quote | pricing function with a market-balance goal | long | read, through shared supply | merge, deliver later; experiments need switchbacks |
 | Rider–driver match | dispatch function | seconds | order, over drivers | wait for a sequencer per zone |
 | Accept the trip | driver | about 15 s | order | wait for the sequencer |
 | Car on the map | GPS receiver | short | read | merge, deliver live; the view interpolates between samples |
@@ -427,19 +445,44 @@ Groupware research classified collaboration tools by whether people work [at the
 ## Designs the principles rule out
 
 1. **A sealed result for an order-coupled choice sooner than the round trip to its sequencer.** A sealed result within one 60 Hz frame requires a sequencer within about 1,700 km of fiber. Anything faster is provisional.
-2. **A conclusion about absence without coordination.** This is the CALM theorem.
+2. **A conclusion about absence without coordination.** The CALM theorem rules this design out.
 3. **An unbiased per-person estimate of an effect when read coupling crosses between variants.** Randomizing per person then measures a mixture of direct effects and spillover.
 4. **Exact counterfactual replay past an opaque resolver whose view would have changed.**
-5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send it through another channel, but cannot remove it.
+5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send the refusal through another channel, but cannot remove the refusal.
 6. **Changing what a past view showed without recording the change.**
+
+## The same structure in five other fields
+
+Several fields reached this structure independently and named its parts differently. The five fields below each have a counterpart for every primitive, and each contributed a result this post uses.
+
+| This theory | Game theory | Reinforcement learning and control | Probabilistic programming | Databases and distributed systems | Causal inference |
+| --- | --- | --- | --- | --- | --- |
+| record | move in the history | logged transition | entry in an execution trace | log entry | observed outcome |
+| function | rules of the game | dynamics, value function | deterministic program code | query, view, state machine | structural equation |
+| choice | decision node | decision step | random choice | operation | treatment assignment |
+| resolver | player, or Nature for chance | policy, environment | sampler, inference proposal | client, network | assignment mechanism |
+| view | information set | observation | distribution and its arguments | snapshot | covariates |
+| seal | end of the game | end of an episode | end of an execution | commit, watermark | end of follow-up |
+| coupling | strategic interdependence | multi-agent interaction | dependency between random choices | contention | interference |
+| goal | payoff | reward | inference objective | objective | estimand |
+| release | change of rules | change of environment | program edit | schema version | protocol amendment |
+
+Results proved in one field apply in the others:
+
+- The coordination results behind the sealing principle, from distributed systems, explain why checking an experiment's significance every day produces false positives.
+- The budget-split design from ad experiments, described under the coupling principle, uses escrow, a database method, to obtain statistical independence.
+- Game theory's *information set*, the set of situations a player cannot tell apart, implies that each record should contain the view shown to its resolver.
+- Probabilistic programming [names each random choice by a stable *address*](https://proceedings.mlr.press/v15/wingate11a.html), so that an inference algorithm can change one choice, re-run the program, and reuse every other recorded value at the same address. This procedure is the counterfactual replay described under the goals principle.
+
+Older work reached parts of the structure. [Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006) argued that the only essential state in a system is the input its users supply, and that everything else should be derived. [The Elm Architecture](https://guide.elm-lang.org/architecture/) applies the derivation principle to one person on one device: messages are records, and `update` and `view` are functions. Double-entry bookkeeping has derived balances from a journal for more than five centuries.
 
 ## Open problems
 
-1. **Inferring scopes.** A compiler could read functions and invariants and report which choices need a sequencer, over which scope, and where escrow would remove the need. [Indigo](https://www.dpss.inesc-id.pt/~rodrigo/indigo_eurosys15.pdf) and [Hamsaz](https://doi.org/10.1145/3290387) do this for invariants written in restricted logics.
-2. **Estimating coupling.** Read and order coupling can be derived from functions and weighted from the history. No published method says when a runtime may repartition a changing graph without invalidating experiments already running.
-3. **Declaring response deadlines.** Products do not record a response deadline per choice. Without one, principle 4 cannot be applied mechanically.
+1. **Inferring scopes.** A compiler could read functions and invariants and report which choices need a sequencer, over which scope, and where escrow would remove the need. [Indigo](https://www.dpss.inesc-id.pt/~rodrigo/indigo_eurosys15.pdf) and [Hamsaz](https://doi.org/10.1145/3290387) perform this analysis for invariants written in restricted logics.
+2. **Estimating coupling.** Read and order coupling can be derived from functions and weighted from the records. No published method says when a runtime may repartition a changing graph without invalidating experiments already running.
+3. **Declaring response deadlines.** Products do not record a response deadline per choice. Without one, the prediction principle cannot be applied mechanically.
 4. **Specifications for AI agent resolvers.** A choice bound to an agent needs a specification: what the view includes, which options exist, what budget applies, which results a person must confirm, and what must be recorded for replay.
-5. **Models of people.** Counterfactual replay past a person needs a stand-in, and no accepted method validates one.
-6. **Sealing rules as mechanism design.** The auction comparison shows that sealing rules change what agents select. No catalog maps sealing rules to the behavior each one produces.
+5. **Stand-ins for people.** Counterfactual replay past a person needs a stand-in, and no accepted method validates one.
+6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. No catalog maps sealing methods to the behavior each one produces.
 
-[Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the model as four runtime components, one each for records, functions, choices and seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the model, so that a compiler can check the principles.
+[Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the theory as four runtime components: one for records, one for functions, one for choices and their resolvers, and one for seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the theory, so that a compiler can check the principles.
