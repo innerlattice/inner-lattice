@@ -1,6 +1,6 @@
 ---
 title: "Toward a universal theory of interactive software"
-description: "A theory of interactive software with four primitives (choices, resolvers, records, and functions) and seven principles, each following from a constraint every interactive system faces. Undo, offline mode, optimistic updates, A/B tests, sharding, access control, delegation to AI agents, and live migration follow from the principles."
+description: "A theory of interactive software with four primitives (choices, resolvers, records, and functions) and eight principles, each following from a constraint every interactive system faces. Undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration follow from the principles."
 date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
@@ -18,7 +18,7 @@ Teams build these products with different architectures:
 
 Each architecture has its own vocabulary, and several problems are solved in each under different names. Offline editing in a document, rollback in a fighting game, and a pending transaction in a banking app are one mechanism. The shards of a database and the units of an A/B test can be computed from the same graph.
 
-This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and seven principles. Each principle follows from a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, A/B tests, sharding, access control, delegation to AI agents, and live migration.
+This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and eight principles. Each principle follows from a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration.
 
 Two later posts build on the theory. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes a runtime that executes programs built on the theory, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes a language for writing programs in it.
 
@@ -98,7 +98,7 @@ A binding $\beta$ maps each choice to a resolver. A function is a map $f : \math
 
 In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed the operation. A resolver is a handler. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the records list the responses along the path. Replaying a run means supplying recorded responses in place of live ones, and testing means supplying responses written into the test in advance.
 
-## Seven principles
+## Eight principles
 
 Each principle starts from a constraint that is true of every interactive system and states what the constraint requires. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
@@ -108,6 +108,7 @@ Each principle starts from a constraint that is true of every interactive system
 | Binding | Different resolvers can supply the same choice. | Specify each choice without naming its resolver, and set the resolver separately. |
 | Sealing | Records reach different places at different times. | Conclude that a record does not exist only after the period in which it could arrive has closed. |
 | Prediction | A response can be needed sooner than records can travel. | Show provisional values, and replace them when the records arrive. |
+| Effects | Presenting a choice can change the world, and the reply can be lost. | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one structure for sync, ordering, experiments, and access. |
 | Goals | Systems are built to change something. | State each goal as a function with a direction and limits. |
 | Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
@@ -278,6 +279,22 @@ Designers have three levers:
 
 [Optimistic simulation with rollback](https://doi.org/10.1145/3916.3988) is the general form of prediction. Each part of a simulation runs ahead using the records available to that part, and when a record arrives with an earlier timestamp, the part rolls back and recomputes.
 
+## Effects: present each choice so that a repeat changes nothing
+
+Presenting a choice to a resolver outside the system boundary can change the world. A request to a card network moves money, a message to a mail server reaches a person, and a request to a deployment service changes what people run. The presentation and the record that answers it are separate events, and a run can fail between them: the card network approves a charge, and the reply is lost or arrives after the timeout. The derivation principle covers replay, because later computation reads the record instead of presenting the choice again. It does not cover a retry before any record exists, or a default recorded after the world has already changed.
+
+**Effects principle:** present each choice under its stable identifier, so that presenting it again has no further effect; open a choice that has effects only from final values; and when the reply can be lost, make "unknown" the default.
+
+Each part uses something the theory already has:
+
+- **The choice's identifier is the idempotency key.** Payment networks and many APIs accept [a key with each request](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) and return the first result when a key repeats. A retry presents the same choice, so it carries the same key.
+- **Effects follow final values.** A provisional value can be wrong, and a sent email cannot be unsent, so a confirmation is opened only after the booking it confirms is admitted. An effect that must start sooner needs a compensating choice, such as a refund, for when the provisional value is corrected.
+- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, that asks for the outcome under the same identifier.
+
+Whether a choice has effects is a property of the choice, not of its resolver. The same card network resolves a balance inquiry, which has no effect, and a charge, which has one.
+
+No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot tell whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver honors the identifier, and a recorded "unknown" everywhere else.
+
 ## Coupling: derive which choices affect each other from the functions
 
 Functions combine records supplied by different resolvers, so the value supplied at one choice can change the view or the options of another choice. Two relations describe how choices affect each other. In the definitions below, $a$ and $b$ are choices, $r_a$ and $r_b$ are records of values supplied at them, $R$ is a set of records, $\mathrm{view}_b$ and $\mathrm{opt}_b$ are the view and option functions of $b$, and $I : \mathcal{R} \to \{\text{true}, \text{false}\}$ is an *invariant*, a condition every admitted set of records must satisfy.
@@ -387,7 +404,7 @@ One requirement has no exception. If a release changes what an earlier view show
 
 ## How the terms of the theory relate
 
-The four primitives and the seven principles introduce ten terms. Each term after the first is needed because the terms before it leave something undetermined:
+The four primitives and the eight principles introduce ten terms. Each term after the first is needed because the terms before it leave something undetermined:
 
 1. A **choice** is a point where a run needs a value that its code does not determine.
 2. The value has to come from outside the code, so each choice needs a **resolver**.
@@ -406,7 +423,7 @@ Every filled cell lies on or below the diagonal. Each relation runs from a later
 
 The top-left block traces the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows for scope, sequencer, and seal repeat the first three primitives with records as their subject. A sequencer orders a scope as a resolver resolves a choice, and a seal closes the scope and names its sequencer as a record answers a choice and names its resolver. Two of these terms are cases of the primitives they repeat: a sequencer is a resolver, and a seal is a record. A goal is also a function, and a release is a record.
 
-Three principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is the output of a function over a scope that is not yet sealed. Derivation appears as an absence: no term in the matrix denotes stored state.
+Four principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is the output of a function over a scope that is not yet sealed. Effects needs no term, because the key that makes a repeat harmless is the choice's identifier and "unknown" is one of the choice's options. Derivation appears as an absence: no term in the matrix denotes stored state.
 
 ## Features built from the principles
 
@@ -425,6 +442,7 @@ Three principles add no term. Coupling appears in one cell: a function couples c
 | Inventory, quotas, rate limits | sealing | escrow: a scope split into shares, each with a sequencer |
 | Offline mode | sealing | admitting invariant-confluent or escrowed records on the device |
 | Optimistic UI, client prediction, rollback | prediction | provisional values |
+| Retries, idempotent payments, reconciliation | effects | presentation keyed by the choice's identifier; an "unknown" default that opens a reconciliation choice |
 | Presence, live cursors, notifications | prediction, coupling | read coupling, delivered by response deadline |
 | Access control, privacy, blocking | coupling | removed read-coupling edges |
 | Sharding | coupling | a partition of the order-coupling graph |
@@ -473,6 +491,7 @@ Groupware research classified collaboration tools by whether people work [at the
 4. **Exact counterfactual replay past an opaque resolver whose view would have changed.**
 5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send the refusal through another channel, but cannot remove the refusal.
 6. **Changing what a past view showed without recording the change.**
+7. **Performing an effect exactly once through a system that does not deduplicate by identifier.** After a lost reply, the sender cannot tell whether the request arrived.
 
 ## The same structure in five other fields
 
