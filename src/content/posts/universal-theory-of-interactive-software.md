@@ -184,8 +184,6 @@ Two properties of a binding limit what an AI agent can do:
 
 The binding is the program's only rule for who may supply a value. Releases, seals, and records that a binding reads, such as a grant of a role, are values supplied at choices too, so the question of who may do any of them has one answer: whoever is bound to that choice in the version in force. A value from a resolver that was not bound, or outside the options offered, is recorded as refused, and no function other than an audit reads it. Checking that a record really came from the resolver it names is a matter of signatures, not of the theory.
 
-Cybernetics sets a limit on deterministic bindings. The [law of requisite variety](https://en.wikipedia.org/wiki/Variety_(cybernetics)#Law_of_requisite_variety) says that a regulator keeps outcomes within bounds only if it can produce as many distinct responses as there are distinct disturbances to counter. In other words, a controller with fewer possible responses than the situations it faces will meet a situation for which it has no correct response. A deterministic resolver produces only the responses its author anticipated, so a choice whose views vary in ways nobody listed in advance needs a person or an AI model.
-
 Determinacy also sets what the records can contain. A randomized resolver can record the probability with which it selected the value, called the *propensity* in causal inference. A person's propensities are unknown, and a person cannot be asked the same question again with nothing else changed. The goals principle depends on this difference.
 
 ## Sealing: wait for every record that could arrive before concluding that one is absent
@@ -240,8 +238,6 @@ Two methods avoid waiting for a sequencer:
 
 - **Use choices whose records always merge.** Operations are [invariant-confluent](https://arxiv.org/abs/1402.2237) when any two valid sets of records they produce from a common valid set merge into a valid set. Likes on a post are invariant-confluent, and seats in a theater are not.
 - **Split the scope.** The escrow method divides a shared quantity into shares, and each share has its own sequencer. A box office holding a block of seats can sell those seats without contacting the central system, and a warehouse can promise its own stock.
-
-Offline work follows from both methods: a disconnected device can admit any record that is invariant-confluent or that falls in a share escrowed to the device.
 
 The sealing method also sets what a statistical conclusion means. A fixed-horizon significance test assumes that its cutoff, which is a seal, was chosen without reading the outcomes. Sealing once the result looks significant reads them, and false positives multiply although the scope is sealed. [Always-valid inference](https://arxiv.org/abs/1512.04922) stays valid at any cutoff, however it was chosen.
 
@@ -347,8 +343,6 @@ The last row is where statistics and systems engineering meet. Causal inference'
 
 An access rule removes an edge only when nothing $b$ sees, counts and refusals included, changes with $a$'s records, the property called [noninterference](https://doi.org/10.1109/SP.1982.10014). Access rules can remove read coupling but not order coupling. If two people try to register the same email address, the second person learns that the first exists, whatever the access rules say, because the refusal itself carries the information. A sign-up form that reports "this email is already registered" therefore lets anyone test whether a person has an account. The standard fix moves the outcome to a channel only the address's owner can read: "If an account exists, we have sent a link."
 
-Economics sorts goods into *rival* goods, whose use by one party prevents use by another, and *non-rival* goods, such as information, whose use by one party does not. In this theory, rivalry corresponds to order coupling. Non-rivalry corresponds to read coupling, which is still coupling: an idea one person shares changes what others know and select. The economic terms carry an assumption the structure does not. They make separation the default, describe contact between parties as competition, and describe the most widely shared goods as if their users had no effect on each other. In the coupling graph, both kinds of good are edges. Whether an edge helps or harms the parties it joins depends on the parties' goals, the subject of the next principle, and the same edge can do both.
-
 ## Goals: functions with a direction and guardrails
 
 Several resolvers can be bound to one choice, and they can be ranked only against a direction. Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails. The period over which a goal is evaluated belongs in its definition, because a metric that rises over a week can fall over a year.
@@ -357,7 +351,7 @@ Several resolvers can be bound to one choice, and they can be ranked only agains
 
 Several practices are uses of goals:
 
-- **Analytics** evaluates goals and their inputs over the records. A dashboard displays goal values.
+- **Analytics** evaluates goals and their inputs over the records.
 - **Attribution** follows provenance from a goal's value back to the records it was computed from.
 - **An experiment** combines four parts from earlier principles: a randomized resolver with recorded probabilities, a goal, units taken from a partition of the read-coupling graph, and a seal for analysis.
 - **Bandit algorithms and personalization models** are resolvers that read a goal's value while they run.
@@ -382,11 +376,11 @@ In words: reweight each recorded outcome by how much more or less often the cand
 
 Counterfactual replay evaluates a change to one run instead of a binding's average. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver that the change could reach, through its view or outside the program. A pinned AI model can be asked again, but a person cannot and needs a stand-in, such as a model of the person's behavior.
 
-Optimizing a goal without guardrails tends to find the cases where the function differs from what the function was meant to measure, and a more capable resolver finds more of those cases. Experimentation practice limits the problem with guardrail metrics. In this theory, one goal with its guardrails can be shown on a dashboard, steer a bandit, and constrain an AI agent.
+Optimizing a goal without guardrails tends to find the cases where the function differs from what the function was meant to measure, and a more capable resolver finds more of those cases. Experimentation practice limits the problem with guardrail metrics.
 
 ## Versions: store the program version with every record
 
-Programs change while choices are open. Some people still run last year's version of an app, an insurance claim may be halfway through a review that takes weeks, and an AI agent may be partway through a task. If every record carries the version it was made under, each record can be read under the functions in force when the record was made. Tax law treats transactions the same way: a sale is taxed under the law in force at the time of the sale, and retroactive change is exceptional and explicit.
+Programs change while choices are open. Some people still run last year's version of an app, an insurance claim may be halfway through a review that takes weeks, and an AI agent may be partway through a task. If every record carries the version it was made under, each record can be read under the functions in force when the record was made.
 
 **Versions principle:** store the program version with every record, and store each release as a record. A migration is correct when it gives the same state as recomputing from the records under the new version.
 
@@ -512,7 +506,7 @@ Groupware research classified collaboration tools by whether people work [at the
 4. **Exact counterfactual replay past an opaque resolver whose view would have changed.**
 5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send the refusal through another channel, but cannot remove the refusal.
 6. **Changing what a past view showed without recording the change.**
-7. **Performing an effect exactly once through a system that does not deduplicate by identifier.** After a lost reply, the sender cannot tell whether the request arrived.
+7. **Performing an effect exactly once through a system that does not deduplicate by identifier.**
 
 ## The same structure in five other fields
 
