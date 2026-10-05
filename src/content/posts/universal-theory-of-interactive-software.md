@@ -110,7 +110,7 @@ Each principle starts from a constraint that is true of every interactive system
 | Prediction | A response can be needed sooner than records can travel. | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Presenting a choice can change the world, and the reply can be lost. | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
-| Goals | Bindings can be ranked only against a direction. | State each goal as a function with a direction and limits. |
+| Goals | Bindings can be ranked only against a direction. | State each goal as a function of the records with a direction and guardrails. |
 | Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
 
 ## Derivation: store supplied values and compute everything else
