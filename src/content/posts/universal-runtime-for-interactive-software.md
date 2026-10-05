@@ -148,7 +148,7 @@ Open choices survive restarts without further machinery. An insurance claim wait
 
 ## Sequencers
 
-Every scope that contains order-coupled choices needs exactly one sequencer at a time. Scopes come from the order-coupling graph (coupling principle): every booking for one performance is one scope, because bookings for the same seat are order-coupled and bookings for different performances are not. The sequencer admits each record into the scope or refuses it, and an admitted record receives the next position.
+Every scope that contains order-coupled choices needs exactly one sequencer at a time. Scopes come from the order-coupling graph (coupling principle): every booking for one performance can be one scope, because bookings for the same seat are order-coupled and bookings for different performances are not. The sequencer admits each record into the scope or refuses it, and an admitted record receives the next position.
 
 Where a sequencer runs is configuration. Three requirements of the scope set it:
 
@@ -204,7 +204,7 @@ The booking appends these records:
 | r4 | `payment.authorize` | approved | card network | absent |
 | r5 | admission to performance 311 | r4 admitted at position 91 | sequencer for performance 311 | 1 |
 
-Each record also carries its `id`, `snapshot`, `version` and `time`. The seat map, the hold's expiry, the confirmation email, the fill-rate dashboard, and the recommender's evaluation are all function outputs over these five records. No step copies state into a second system.
+Each record also carries its `id`, `snapshot`, `version` and `time`. The seat map, the hold's expiry, the open choice that sends the confirmation email, the fill-rate dashboard, and the recommender's evaluation are all function outputs over these five records. No step copies state into a second system.
 
 ## Runtime configuration for each class of choice
 
@@ -219,7 +219,7 @@ The theory post sorts choices into six classes by coupling and response deadline
 | Order | long | server | server | server or device | one per scope | booking systems, banks |
 | Order | short | device and server | device and server, with rollback | device, recording provisional values | one per scope, placed close to the parties | multiplayer game servers, exchanges |
 
-A product combines classes in one runtime, because the classes describe choices, not products. The ride-hailing trip in the theory post uses five of the six classes over one set of records.
+A product combines classes in one runtime, because the classes describe choices, not products. The ride-hailing trip in the theory post uses four of the six classes over one set of records.
 
 A delegated task, such as a coding agent working through a repository, is not a seventh class. It is a binding: the choice of next step is bound to an AI agent, and choices with large consequences are bound to the delegating person.
 
