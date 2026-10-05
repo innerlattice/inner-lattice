@@ -83,7 +83,7 @@ Each field exists because some principle reads it.
 | `value` | the supplied value, one of the choice's options | every function |
 | `resolver` | the identity and version of whatever supplied the value: a function version, an AI model and its version, a person, or an external system | audit, rebinding, and evaluation (binding and goals principles) |
 | `snapshot` | the records from which the view was computed, identified by a version vector | recomputing the view exactly; causal order |
-| `version` | the program version whose functions computed the view and options | reading the record under the functions in force when the record was made (versions principle) |
+| `version` | the program version whose functions computed the view and options, including the libraries and data files those functions read | reading the record under the functions in force when the record was made (versions principle) |
 | `probability` | the probability with which the resolver selected the value given its view: 1 for a deterministic resolver, the recorded value for a randomized one, and absent for an opaque one | off-policy evaluation (goals principle) |
 | `time` | the wall-clock time where the value was supplied | display and timeouts; not order, because clocks drift by unknown amounts |
 
@@ -102,7 +102,7 @@ An admission at position $p$ also seals positions before $p$, since nothing can 
 
 ### Erasure
 
-Records are never modified, so deleting a person's data on request needs a separate method. Each person's records are encrypted under a key held for that person, and destroying the key makes the records unreadable in every replica and backup. Outputs computed before the key was destroyed, such as aggregate counts, keep their values until recomputed. Whether a given aggregate must be recomputed depends on the applicable law.
+Records are never modified, so deleting a person's data on request needs a separate method. Each person's records are encrypted under a key held for that person, and destroying the key makes the records unreadable in every replica and backup. Outputs computed before the key was destroyed, such as aggregate counts, keep their values until recomputed. Whether a given aggregate must be recomputed depends on the applicable law. Copies that left the record store in plaintext, such as exports, are beyond the key's reach. Erasure is the one event that changes a final output.
 
 ## The evaluator
 
@@ -225,12 +225,12 @@ A delegated task, such as a coding agent working through a repository, is not a 
 
 ## Releases
 
-A release is a record. Its value is the new program version, and choices opened after the release use the new version while choices opened before the release keep the old one. Every record carries the version it was made under, so each component handles a release in its own way:
+A release is a record. Its value is the new program version, and each choice keeps the version it was opened under: choices opened before the release, or on a device not yet updated, keep the old one. Every record carries the version it was made under, so each component handles a release in its own way:
 
 - **The evaluator** runs both versions while records made under the old version still arrive. Clients on the old version keep producing them, so the evaluator reads each one under its own version and converts it through a translation function. [Cambria](https://www.inkandswitch.com/cambria/) translates edits between schema versions with lenses, so peers on different versions can keep editing one document.
-- **The dispatcher** moves each open choice to the choice with the same stable identifier in the new version. A choice with no counterpart in the new version receives a recorded fallback.
+- **The dispatcher** maps each open choice by stable identifier to its counterpart in the new version, where its answer counts after translation. A choice with no counterpart receives a recorded fallback, or "unknown" if an external system already received it.
 - **Changing an AI agent's model** is a release. Replaying recent choices with both models before the release shows what the change would have done.
-- **The migration square is checked by replay.** The theory post defines a migration $\mu$ from stored state under version $v$ to stored state under version $v'$ as correct when $\mu(\mathrm{state}_v(R)) = \mathrm{state}_{v'}(R)$ for every set of records $R$: migrating the old state gives the same result as recomputing from the records under the new version. Before the release record is appended, the evaluator computes both sides over every prefix of the stored records and reports each prefix on which the two sides differ.
+- **The migration square is tested by replay.** The theory post defines a migration $\mu$ from stored state under version $v$ to stored state under version $v'$ as correct when $\mu(\mathrm{state}_v(R)) = \mathrm{state}_{v'}(\tau(R))$ for every set of records $R$ that runs can produce before the release, where $\tau$ translates old records: migrating the old state gives the same result as translating the records and recomputing under the new version. Before the release record is appended, the evaluator computes both sides over every prefix of the stored records and reports each prefix on which the two sides differ.
 
 ![Two paths from the records to state under version 2, which must agree, above a timeline in which a release record separates records made under version 1 from records made under version 2, and an open choice keeps its stable identifier across the release](../../assets/diagrams/migration-square.svg "A migration is correct when migrating the old state and recomputing under the new version agree. Open choices move across a release by stable identifier.")
 
