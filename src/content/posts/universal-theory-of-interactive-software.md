@@ -259,7 +259,7 @@ Human perception and physics set both durations. Responses within about 0.1 s [f
 
 When the response deadline is shorter than the sealing latency, the view has to include records that the sequencer has not yet admitted. Functions evaluated over those records give **provisional values**, which are replaced when the sequencer's admissions arrive.
 
-**Prediction principle:** when a choice's response deadline is shorter than its sealing latency, show provisional values computed from records not yet admitted, and recompute them when the admissions arrive.
+**Prediction principle:** when a choice's response deadline is shorter than its sealing latency, show provisional values computed from records not yet admitted, and recompute them when the admissions arrive. A record made from a view that showed provisional values is provisional too.
 
 Several familiar features are this one mechanism:
 
@@ -274,6 +274,8 @@ The card payment shows the mechanism plainly. The authorization is a provisional
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
 For invariant-confluent choices, the provisional value is already final, and only other places' copies of the value are delayed. For other choices the provisional value can be wrong. The cost of prediction grows with how often provisional values are wrong, because each wrong provisional value becomes a correction that someone sees.
+
+A provisional value can also reach a record. A person who holds seat C14 provisionally and then adds a meal for C14 makes the meal record from a view that showed the hold. If the sequencer refuses the hold, the meal record rests on a record that was never admitted, which rollback recovery calls an *orphan*. Its choice states what happens then: the record is refused, the choice is asked again, or the value is applied again on top of the admitted records, as rollback netcode replays a player's inputs.
 
 Designers have three levers:
 
