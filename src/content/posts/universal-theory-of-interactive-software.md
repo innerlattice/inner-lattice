@@ -125,7 +125,7 @@ The real-time strategy game Age of Empires (1997) applied the principle to netwo
 
 Several features follow without further design:
 
-- **The data schema is the list of choice declarations.** Any question an analyst can ask about a product is a function over its records, so an analytics tracking plan can be generated from the program's choices.
+- **The data schema is the list of choice declarations.** Every value the program received is in its records, so the events of an analytics tracking plan can be generated from the program's choice declarations, and its metrics from the goals.
 - **Version history, audit, and debugging by replay** are functions over the records. Undo appends a record that reverses an earlier one.
 - **Caches and indexes** are stored outputs of functions. Keeping them current is incremental computation.
 - **Sync** sends records, and **offline work** collects records on the device until they can be sent.
@@ -354,17 +354,17 @@ Economics sorts goods into *rival* goods, whose use by one party prevents use by
 
 ## Goals: functions with a direction and guardrails
 
-Several resolvers can be bound to one choice, and they can be compared only against a direction. Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails. The period over which a goal is evaluated belongs in its definition, because a metric that rises over a week can fall over a year.
+Several resolvers can be bound to one choice, and they can be ranked only against a direction. Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails. The period over which a goal is evaluated belongs in its definition, because a metric that rises over a week can fall over a year.
 
 **Goals principle:** state each goal as a function of the records with a direction and guardrails, and compute analytics, experiments, and optimization from that one definition.
 
 Several practices are uses of goals:
 
 - **Analytics** evaluates goals and their inputs over the records. A dashboard displays goal values.
-- **Attribution** follows provenance from a goal's value back to the records that produced the value.
+- **Attribution** follows provenance from a goal's value back to the records it was computed from.
 - **An experiment** combines four parts from earlier principles: a randomized resolver with recorded probabilities, a goal, units taken from a partition of the read-coupling graph, and a seal for analysis.
 - **Bandit algorithms and personalization models** are resolvers that read a goal's value while they run.
-- **Pre-registration** records the goal and the analysis plan before any outcome exists. Medical journals have required registration of clinical trials before enrollment since 2004.
+- **Pre-registration** records the goal, the analysis plan, and the rule that sets the cutoff before any outcome exists.
 
 Recorded probabilities make it possible to evaluate a binding that was never deployed. The standard estimator, inverse propensity scoring, is
 
@@ -374,18 +374,18 @@ $$
 
 where:
 
-- $n$ is the number of records at a choice;
+- $n$ is the number of records of one declaration's choices;
 - $v_i$ is the view in the $i$-th record, and $x_i$ is the value supplied;
-- $p_i$ is the recorded probability with which the deployed resolver selected $x_i$;
+- $p_i = \pi(x_i \mid v_i)$ is the probability with which the deployed resolver $\pi$ selected $x_i$, recorded at selection;
 - $\pi'(x_i \mid v_i)$ is the probability that a candidate resolver $\pi'$ would select $x_i$ given view $v_i$;
-- $g_i$ is the goal's value attributed to the $i$-th record;
-- $\hat{G}(\pi')$ is the estimated value of the goal had $\pi'$ been bound to the choice.
+- $g_i$ is the outcome of the $i$-th record, for a goal that averages one outcome per record;
+- $\hat{G}(\pi')$ is the estimated value of that goal had $\pi'$ been bound to those choices.
 
-In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate needs $p_i > 0$ for every value the candidate might select, which is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied this estimator to a log of randomly selected articles, and [a decision service built on the method](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
+In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate is unbiased when each $p_i$ is correct, $\pi$ gives a positive probability to every value $\pi'$ might select in the same view, and no record's value changes another record's view or outcome. The second condition is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives without a model of the outcomes they never show. An opaque resolver's probabilities can only be estimated, which assumes that nothing outside the recorded view affected both the value and the outcome. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied this estimator to a log of randomly selected articles, and [a decision service built on the method](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
 
-Counterfactual replay generalizes the estimator. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver whose view would have changed. A pinned AI model can be asked again, but a person cannot, so beyond that point the replay needs a stand-in for the person, such as a predictive model of the person's behavior.
+Counterfactual replay evaluates a change to one run instead of a binding's average. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver that the change could reach, through its view or outside the program. A pinned AI model can be asked again, but a person cannot and needs a stand-in, such as a model of the person's behavior.
 
-Optimizing a goal without guardrails tends to find the cases where the function differs from what the function was meant to measure, and a more capable resolver finds more of those cases. Experimentation practice handles the problem with guardrail metrics. In this theory, one goal with its guardrails can be shown on a dashboard, steer a bandit, and constrain an AI agent.
+Optimizing a goal without guardrails tends to find the cases where the function differs from what the function was meant to measure, and a more capable resolver finds more of those cases. Experimentation practice limits the problem with guardrail metrics. In this theory, one goal with its guardrails can be shown on a dashboard, steer a bandit, and constrain an AI agent.
 
 ## Versions: store the program version with every record
 
