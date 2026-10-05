@@ -27,13 +27,13 @@ Two later posts build on the theory. [Toward a universal runtime for interactive
 A running program alternates between computing and waiting for input. Computing is deterministic: the same inputs give the same outputs. Waiting happens where the program needs a value that its code does not determine. The theory names the point where the program waits, the source of the value, the stored value, and the computation.
 
 - A **choice** is a point where a run needs a value from outside its code. The program specifies what the value must satisfy, but not how the value is produced. Every input to a program is the value of some choice, so choices include form fields, button presses, sensor readings, random draws, clock readings, and replies from other systems. Each choice has:
-  - a stable identifier;
+  - a stable identifier: the name of the declaration in the code that opens the choice, and the choice's *address*, which says where in its run it opened;
   - a *view*: the information shown to whatever supplies the value;
   - *options*: the set of values the choice accepts;
   - a *timeout*: how long the choice waits for a value;
   - a *default*: the value used when the timeout passes.
 
-  A choice is *open* until it has a value.
+  A choice is *open* until it has a value. One declaration can open many choices, such as one question per guest or one per pass through a loop, and each has its own address.
 - A **resolver** supplies a choice's value. A resolver can be a person, an AI model, a random number generator, a deterministic function, a sensor, or another organization's system. A *binding* states which resolver supplies the value for which choice, and only a value from the bound resolver counts.
 - A **record** stores one choice's value with its provenance: the choice, the resolver, the view shown to the resolver, the program version, and the time. Records are never modified.
 - A **function** is a deterministic map from a set of records to a value: the same records always give the same result. Everything other than records is the output of a function, including current state, screens, search indexes, metrics, access rules, and the set of open choices.
@@ -42,7 +42,7 @@ A running program alternates between computing and waiting for input. Computing 
 
 ![A loop from the records through functions to views and open choices, then to resolvers, whose values are appended to the records](../../assets/diagrams/interaction-loop.svg "Functions compute views and open choices from the records. A resolver supplies a value for each open choice, and the value is appended as a record.")
 
-A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype an address and a sensor can drift. Records are never modified, so a wrong record is corrected by appending a later record that supersedes it.
+A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype an address and a sensor can drift. Records are never modified, and at most one record answers a choice, so a wrong record is corrected by the answer to a later choice, such as an edit, whose record names the record it supersedes.
 
 The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records compute the same state.
 
@@ -88,7 +88,7 @@ $$
 where:
 
 - $\mathcal{R}$ is the collection of possible sets of records;
-- $\mathit{id}_c$ is the choice's stable identifier;
+- $\mathit{id}_c$ is the choice's stable identifier, made of its declaration's name and its address;
 - $\mathrm{view}_c : \mathcal{R} \to V_c$ computes, from a set of records, the view shown to the resolver, a value of type $V_c$;
 - $\mathrm{opt}_c : \mathcal{R} \to \mathcal{P}(X_c)$ computes, from a set of records, the admissible values, a subset of the choice's value type $X_c$ ($\mathcal{P}(X_c)$ is the set of all subsets of $X_c$);
 - $t_c$ is the timeout;
@@ -125,7 +125,7 @@ The real-time strategy game Age of Empires (1997) applied the principle to netwo
 
 Several features follow without further design:
 
-- **The data schema is the list of choices.** Any question an analyst can ask about a product is a function over its records, so an analytics tracking plan can be generated from the program's choices.
+- **The data schema is the list of choice declarations.** Any question an analyst can ask about a product is a function over its records, so an analytics tracking plan can be generated from the program's choices.
 - **Version history, audit, and debugging by replay** are functions over the records. Undo appends a record that reverses an earlier one.
 - **Caches and indexes** are stored outputs of functions. Keeping them current is incremental computation.
 - **Sync** sends records, and **offline work** collects records on the device until they can be sent.
@@ -293,7 +293,7 @@ Each part uses something the theory already has:
 
 - **The choice's identifier is the idempotency key.** Payment networks and many APIs accept [a key with each request](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) and return the first result when a key repeats. A retry presents the same choice, so it carries the same key.
 - **Effects follow final values.** A provisional value can be wrong, and a sent email cannot be unsent, so a confirmation is opened only after the booking it confirms is admitted. An effect that must start sooner needs a compensating choice, such as a refund, for when the provisional value is corrected.
-- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, that asks for the outcome under the same identifier.
+- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, that asks for the outcome under the first choice's identifier.
 
 Whether a choice has effects is a property of the choice, not of its resolver. The same card network resolves a balance inquiry, which has no effect, and a charge, which has one.
 
@@ -394,7 +394,7 @@ Programs change while choices are open. Some people still run last year's versio
 - **Open choices move by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
 - **Changing a binding is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
 
-Records can therefore be read in two ways, and each answers a different question. The *historical reading* evaluates each record under the functions in force when the record was made, and answers what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and answers what the state is now. Both are functions of the same records. A release that changes what a choice asks, rather than how its value is written, gives the choice a new identifier, because no translation turns an answer to one question into an answer to another. Open choices with the old identifier then receive a recorded fallback.
+Records can therefore be read in two ways, and each answers a different question. The *historical reading* evaluates each record under the functions in force when the record was made, and answers what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and answers what the state is now. Both are functions of the same records. A release that changes what a choice asks, rather than how its value is written, gives the choice's declaration a new name, because no translation turns an answer to one question into an answer to another. Open choices of the old declaration then receive a recorded fallback.
 
 Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{R} \to S_v$ compute state of type $S_v$ from a set of records under version $v$, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
 
