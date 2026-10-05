@@ -79,7 +79,7 @@ Each field exists because some principle reads it.
 | Field | Definition | Used by |
 | --- | --- | --- |
 | `id` | a unique identifier, such as the pair of the creating replica and a counter | merging, which discards duplicates |
-| `choice` | the stable identifier of the choice that was resolved | the analytics schema, which is the set of choices (derivation principle); migration, which moves open choices by identifier (versions principle) |
+| `choice` | the stable identifier of the choice that was resolved: its declaration's name and its address in the run | the analytics schema, which is the set of declarations (derivation principle); presentation under the identifier (effects principle); migration, which moves open choices by identifier (versions principle) |
 | `value` | the supplied value, one of the choice's options | every function |
 | `resolver` | the identity and version of whatever supplied the value: a function version, an AI model and its version, a person, or an external system | audit, rebinding, and evaluation (binding and goals principles) |
 | `snapshot` | the records from which the view was computed, identified by a version vector | recomputing the view exactly; causal order |
@@ -117,9 +117,9 @@ Four services that products usually run as separate systems are outputs of the e
 
 ### Final and provisional outputs
 
-Each element of an output is *final* when no later record can retract it, and *provisional* otherwise. The evaluator determines which applies with two checks.
+Each element of an output is *final* when no later record can retract it, and *provisional* otherwise. The evaluator labels an element final only when one of two checks proves it.
 
-1. **A check on the function's definition.** A function built only from monotone operators (selection, projection, join, union, and recursion without negation) can only gain elements as records arrive. Every element it outputs is final on any snapshot.
+1. **A check on the function's definition.** A function built only from monotone operators (selection, projection, join, union, and recursion without negation) can only gain elements as records are admitted. Every element it outputs from admitted records is final.
 2. **A check on seals.** A function that uses negation, aggregation over a scope, or "the latest value" can lose elements when a record arrives. For each such function the evaluator tracks the scopes it reads, and an element becomes final once the evaluator has received seals covering every position the element depends on.
 
 A seat map for one performance shows both. "Seat C14 has a hold" is final as soon as the hold is admitted. "Seat C15 is free" states that no hold exists, so it stays provisional until the performance's sequencer has sealed the positions it covers. Stream processors apply the second check with *watermarks*, which are seals over time windows. Views use the label to show what is still pending.
@@ -138,10 +138,10 @@ One table covers automation, delegation, escalation, and an experiment that comp
 
 For each choice the dispatcher also:
 
-- **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot; any other value is recorded as refused. For an order-coupled choice the options may have changed since the snapshot, so the sequencer checks the invariant again at admission.
+- **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot; any other value is recorded as refused. For an order-coupled choice the sequencer also checks the invariant at admission, because records admitted since the snapshot can make the value violate it.
 - **checks access rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
 - **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher is the sequencer of each choice with a timeout and records whichever arrives first. An escalation is a choice whose default opens another choice bound to a different resolver.
-- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice that asks the same resolver for the outcome under the same identifier.
+- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice that asks the same resolver for the outcome under the first choice's identifier.
 - **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) covers how a choice declares what any presentation must convey.
 
 Open choices survive restarts without further machinery. An insurance claim waiting three weeks for a document is not a suspended process or a sleeping thread. The open choice is an output of a function over the records, and after a restart the evaluator computes the same set of open choices from the same records. [Durable execution](https://docs.temporal.io/workflows) engines such as Temporal and Restate reach the same property by a different route: they record the result of every step and rebuild a workflow's position by replaying its deterministic code against those results.
@@ -179,7 +179,7 @@ A device runs replicas of the record store, the evaluator, and the dispatcher, p
 | --- | --- | --- |
 | Independent | the local record is final | local-first app |
 | Read | records merge by set union and are forwarded to subscribers | CRDT sync |
-| Order | outputs that depend on the record stay provisional until admission; after a refusal, local records are reapplied on top of the admitted ones, or the simulation rolls back and recomputes | optimistic UI with rebase; rollback netcode |
+| Order | outputs that depend on the record stay provisional until admission; after a refusal, each local record made from a view that showed the refused record is refused, asked again, or reapplied on top of the admitted ones, as its choice states, or the simulation rolls back and recomputes | optimistic UI with rebase; rollback netcode |
 
 [Replicache](https://doc.replicache.dev/concepts/how-it-works) reapplies pending local changes on top of the server's admitted state. [GGPO](https://www.ggpo.net/) rolls a fighting game back to the last frame with confirmed inputs and recomputes the frames since. Both implement the third row, at different response deadlines.
 
