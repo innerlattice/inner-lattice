@@ -73,7 +73,7 @@ Opaque resolvers sit outside the *system boundary*, the line between what the pr
 
 An AI model sampled at temperature zero is deterministic in principle. In practice, batching, hardware differences, and model retirement make such a model's outputs hard to reproduce, so this post classifies AI models as opaque.
 
-Some opaque resolvers have goals of their own: people, AI agents, and other organizations. These *agents* adapt to the program, so the program's design changes the values they supply. Bidders on auction sites, for example, bid later when auctions end at a fixed time than when auctions end after a period with no bids. A sensor does not adapt to the program in this way.
+Some opaque resolvers have goals of their own: people, AI agents, and other organizations. These *agents* adapt to the program, so the program's design changes the values they supply. A sensor does not adapt to the program in this way.
 
 ![Resolvers arranged by determinacy, from deterministic functions through randomized assignment to people, models, and external systems, with the system boundary between randomized and opaque resolvers](../../assets/diagrams/resolvers.svg "A resolver's determinacy sets whether the values it supplies can be reproduced and whether their probabilities are known.")
 
@@ -123,13 +123,12 @@ Chess notation already follows the principle. A game is recorded as its move lis
 
 The real-time strategy game Age of Empires (1997) applied the principle to networking. Its developers calculated that sending each unit's position, status, action, facing, and damage over a 28.8 kbps modem would limit a multiplayer match to about 250 moving units. Instead, each machine sent only its player's commands, and every machine ran an identical deterministic simulation from the same commands, so the network traffic no longer grew with the number of units. The developers titled their account of the design [1500 Archers on a 28.8](https://www.gamedeveloper.com/programming/1500-archers-on-a-28-8-network-programming-in-age-of-empires-and-beyond). Real-time strategy games have used this architecture, called deterministic lockstep, since the 1990s, and their replay files are lists of commands. Most web applications do the opposite: a server sends clients its current state, such as rows, documents, or rendered pages, and keeps the inputs that produced the state only in logs, if at all.
 
-Several features follow without further design:
+Several features follow:
 
 - **The data schema is the list of choice declarations.** Every value the program received is in its records, so the events of an analytics tracking plan can be generated from the program's choice declarations, and its metrics from the goals.
 - **Version history, audit, and debugging by replay** are functions over the records. Undo appends a record that reverses an earlier one.
 - **Caches and indexes** are stored outputs of functions. Keeping them current is incremental computation.
 - **Sync** sends records, and **offline work** collects records on the device until they can be sent.
-- **Corrections** are new records, as reversing entries are in a ledger.
 
 How choices are defined determines what is recorded. A drag gesture, for example, can be defined as one choice whose value is the point where the drag ends, or as a series of choices, one for each position sampled at 120 Hz. A value supplied by a deterministic resolver could be recomputed instead of recorded. Recording the value costs little and keeps the records interpretable after the binding changes.
 
@@ -165,8 +164,7 @@ Changing a binding accounts for more features:
 - **Automation** moves a choice from a person to a function.
 - **Escalation** moves a choice back to a person.
 - **Delegation** moves a choice from a person to an AI agent, under limits the person sets.
-- **Testing** binds resolvers that return values written into the test, randomized resolvers that search for failures, and AI models playing personas.
-- **Regression testing** binds the values recorded in earlier runs and replays them against a new program version.
+- **Testing** binds values written into the test or recorded in earlier runs, randomized resolvers that search for failures, and AI models playing personas.
 - **Presentation** depends on the resolver. The same choice can be drawn on a screen, read aloud by a voice interface, or given to an AI agent as a typed schema. An API for agents is the set of a product's choices with the rendering removed.
 
 The choice with the largest effect on a product is which step comes next, and products are usually named after the resolver bound to that choice:
@@ -196,7 +194,7 @@ $$
 R \subseteq R' \implies f(R) \sqsubseteq f(R')
 $$
 
-Here $R$ and $R'$ are sets of records, $f$ is a function, and $\sqsubseteq$ is the order on $f$'s outputs, such as inclusion for sets. In words: adding records can only add to the output.
+Here $R$ and $R'$ are sets of records, $f$ is a function, and $\sqsubseteq$ is the order on $f$'s outputs, such as inclusion for sets.
 
 Other functions conclude that some record does not exist:
 
@@ -230,7 +228,7 @@ Seals appear at every scale under other names:
 | Closing the books | one accounting period | the accounting department |
 | Polls closing | one precinct's ballots | the precinct's officials |
 
-The smallest scope is one choice. A choice with a timeout can receive both its resolver's value and its default, and each can be admitted alone but not both, so each such choice is a scope with a sequencer of its own, which runs the timer and admits whichever value reaches it first. At most one record answers a choice, which settles duplicate replies and a reply that races its timeout without a further rule.
+The smallest scope is one choice. A choice with a timeout can receive both its resolver's value and its default, and each can be admitted alone but not both, so each such choice is a scope with a sequencer of its own, which runs the timer, admits whichever value reaches it first, and refuses duplicate replies.
 
 The sealing method changes what agents do. A [study of online auctions](https://www.cs.princeton.edu/courses/archive/spr08/cos444/papers/roth_ockenfels02.pdf) compared eBay, where auctions ended at a fixed time, with Amazon, where auctions continued until ten minutes passed without a bid. Bids in the final seconds were far more common on eBay. Bidders with more experience bid later on eBay and earlier on Amazon. The sealing method worked as a mechanism in the game-theoretic sense: the method set the incentives, and bidders adapted to the method.
 
@@ -262,7 +260,7 @@ Several familiar features are this one mechanism:
 - rollback netcode in fighting games;
 - the pending line in a banking app after a card payment.
 
-The card payment shows the mechanism plainly. The pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment.
+In the card payment, the pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment.
 
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
@@ -397,7 +395,7 @@ $$
 \mu\big(\mathrm{state}_v(R)\big) = \mathrm{state}_{v'}\big(\tau(R)\big) \quad \text{for every } R \in \mathcal{A}_v
 $$
 
-In words: migrating the old state gives the same result as translating the records and recomputing the state under the new version. Both paths around this *commuting square* arrive at the same value. A correct $\mu$ exists exactly when the old state keeps everything the new state needs: any two reachable sets of records with the same old state also have the same new state. A balance cannot be migrated to a count of transactions, because $\{+10\}$ and $\{+15, -5\}$ have the same balance, and only recomputation from the records gives the count.
+In words: the two paths around this *commuting square*, migrating the old state and translating the records to recompute the state under the new version, give the same result. A correct $\mu$ exists exactly when the old state keeps everything the new state needs: any two reachable sets of records with the same old state also have the same new state. A balance cannot be migrated to a count of transactions, because $\{+10\}$ and $\{+15, -5\}$ have the same balance, and only recomputation from the records gives the count.
 
 The records contain real past runs, so the condition can be tested by replaying those runs along both paths. Operator libraries such as [schema modification operators](https://doi.org/10.14778/1453856.1453939), [bidirectional lenses](https://doi.org/10.1145/1232420.1232424), and [functorial data migration](https://arxiv.org/abs/1009.1166) build $\tau$ and $\mu$ from parts that compose, but none of them establishes the square, which also depends on what the new version's functions compute.
 
@@ -405,28 +403,13 @@ One requirement has no exception. If a release changes what an earlier view show
 
 ## How the terms of the theory relate
 
-The four primitives and the eight principles introduce ten terms. Each term after the first is needed because the terms before it leave something undetermined:
-
-1. A **choice** is a point where a run needs a value that its code does not determine.
-2. The value has to come from outside the code, so each choice needs a **resolver**.
-3. Later computation depends on the value, so the value has to stay fixed, and it is stored as a **record**.
-4. Each record holds one value. What the records mean together, such as the current state, the next view, and the next open choice, is computed by a **function**.
-5. Functions are deterministic, so what a program does depends on which resolver supplies each choice. A **binding** states that dependence.
-6. Functions combine records from different resolvers, which couples choices. When two records cannot both be admitted, one resolver has to put them in order: a **sequencer** orders a **scope** of records, and a **seal** states that the scope is complete up to a position.
-7. Bindings can be ranked only against a direction, which a **goal** states.
-8. Choices, functions, bindings, and goals change as the program changes, and each change is a new **version**.
-
-The matrix below lists the terms in that order and states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record.
+The matrix below relates ten of the theory's terms, primitives first, and states how each acts on the others. Each cell reads from its row to its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice".
 
 ![A matrix of ten terms, from choice to version, with a verb in each cell where the row term acts on the column term, and every filled cell on or below the diagonal](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives and the terms added by each principle.")
 
-Every filled cell lies on or below the diagonal. Each relation runs from a later term to an earlier one, so no term depends on a term that comes after it. The row for *Choice* is empty, because everything that gives a choice its content comes later: a function computes its view and options, a resolver supplies its value, and a record stores the value.
+Every filled cell lies on or below the diagonal, so no term acts on a term that comes after it. Several terms are cases of the primitives: a binding and a goal are functions, a sequencer is a resolver, and a seal and a release are records. Four principles add no term. Coupling is one cell: a function couples choices. For prediction, a provisional value is a function's output that is not yet final. For effects, the key that makes a repeat harmless is the choice's identifier, and "unknown" is one of the choice's options. Derivation appears as an absence: no term denotes stored state.
 
-The top-left block traces the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows for scope, sequencer, and seal repeat the first three primitives with records as their subject. A sequencer orders a scope as a resolver resolves a choice, and a seal closes the scope and names its sequencer as a record answers a choice and names its resolver. Two of these terms are cases of the primitives they repeat: a sequencer is a resolver, and a seal is a record. A goal is also a function, and a release is a record.
-
-Four principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is a function's output that is not yet final. Effects needs no term, because the key that makes a repeat harmless is the choice's identifier and "unknown" is one of the choice's options. Derivation appears as an absence: no term in the matrix denotes stored state.
-
-The principles are independent in a similar sense: each can be broken while the other seven hold. The table gives one such failure per principle, with the two sentences of Binding taken separately, and what goes wrong.
+The principles are independent: each can be broken while the other seven hold. The table gives one such failure per principle, with the two sentences of Binding taken separately, and what goes wrong.
 
 | Principle broken | A failure in which every other principle holds | What goes wrong |
 | --- | --- | --- |
@@ -477,7 +460,7 @@ Two quantities defined in the sealing, prediction, and coupling principles deter
 | **Long deadline** | compute anywhere; the device is the sequencer | merge, deliver later | wait for the sequencer |
 | **Short deadline** | compute on the device | merge, deliver live | show provisional values, reconcile with the sequencer |
 
-The runtime's work grows from the top-left class to the bottom-right one. The resolver varies within every class.
+The runtime's work grows from the top-left class to the bottom-right one.
 
 ![Six classes of choices by coupling and response deadline, each with the runtime behavior it needs and example choices marked by resolver](../../assets/diagrams/choice-classes.svg "Coupling and response deadline determine what the runtime does. The resolver varies within every class.")
 
@@ -522,9 +505,8 @@ Several fields reached this structure independently and named its parts differen
 | seal | end of the game | end of an episode | end of an execution | commit, watermark | end of follow-up |
 | coupling | strategic interdependence | multi-agent interaction | dependency between random choices | contention | interference |
 | goal | payoff | reward | inference objective | objective | estimand |
-| release | change of rules | change of environment | program edit | schema version | protocol amendment |
 
-Results proved in one field apply in the others:
+Two ideas carry over directly:
 
 - Game theory's *information set*, the set of situations a player cannot tell apart, is the counterpart of the view. A selection can be judged only against what its resolver could tell apart, so each record contains the view shown to its resolver.
 - Probabilistic programming [names each random choice by a stable *address*](https://proceedings.mlr.press/v15/wingate11a.html), so that an inference algorithm can change one choice, re-run the program, and reuse every other recorded value at the same address. This procedure is the counterfactual replay described under the goals principle.
