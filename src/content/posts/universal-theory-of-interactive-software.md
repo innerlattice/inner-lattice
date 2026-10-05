@@ -394,6 +394,8 @@ Programs change while choices are open. Some people still run last year's versio
 - **Open choices move by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
 - **Changing a binding is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
 
+Records can therefore be read in two ways, and each answers a different question. The *historical reading* evaluates each record under the functions in force when the record was made, and answers what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and answers what the state is now. Both are functions of the same records. A release that changes what a choice asks, rather than how its value is written, gives the choice a new identifier, because no translation turns an answer to one question into an answer to another. Open choices with the old identifier then receive a recorded fallback.
+
 Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{R} \to S_v$ compute state of type $S_v$ from a set of records under version $v$, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
 
 $$
