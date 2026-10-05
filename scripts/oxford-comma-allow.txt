@@ -2,6 +2,7 @@
 # One snippet per line; a flagged clause containing the snippet is skipped.
 
 # universal-theory-of-interactive-software.md
+this *commuting square*, migrating the old state and translating
 made of its declaration's name and its
 surviving failures and releases
 which runs the timer and admits
@@ -33,6 +34,7 @@ reply arrives first, the dispatcher records the reply and the
 names the record, the outcome (admitted or refused
 
 # universal-languages-for-interactive-software.md
+starts a declaration, with its parameters and value
 started the run, the calls and steps
 to be invariant-confluent, the compiler derives a scope and requires
 deposit is lost, the hold stays in place and the
