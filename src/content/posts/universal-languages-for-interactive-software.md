@@ -26,7 +26,7 @@ The method is to start from particular languages. Each successful special-purpos
 
 | Term | Meaning |
 | --- | --- |
-| choice | a point where a run needs a value from outside its code; a choice has a stable identifier, a view, options, a timeout, and a default |
+| choice | a point where a run needs a value from outside its code; a choice has a stable identifier (its declaration's name and its address in the run), a view, options, a timeout, and a default |
 | resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or an external system |
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
 | function | a deterministic map from a set of records to a value |
@@ -100,7 +100,7 @@ $$
 \mathsf{choose} : C \to X_c
 $$
 
-where $C$ is the set of declared choices and $X_c$ is the value type of choice $c$. In words: `choose c` opens the choice $c$ and evaluates to the value that the bound resolver supplies. Code that performs no `choose` is *pure*, and code that does is *interactive*. Every interaction that languages usually treat as a separate effect is a choice bound to a particular resolver:
+where $C$ is the set of declared choices and $X_c$ is the value type of choice $c$. In words: `choose c` opens a new choice declared as $c$ and evaluates to the value that the bound resolver supplies. Code that performs no `choose` is *pure*, and code that does is *interactive*. Every interaction that languages usually treat as a separate effect is a choice bound to a particular resolver:
 
 | Usual effect | As a choice |
 | --- | --- |
@@ -112,7 +112,7 @@ where $C$ is the set of declared choices and $X_c$ is the value type of choice $
 | a model call | a choice bound to an AI model |
 | a database transaction | a choice bound to a sequencer: admit or refuse a record into a scope |
 
-A `choice` declaration gives the choice's stable identifier, view, options, timeout, and default, and the set of declared choices is the program's record schema, which makes the analytics tracking plan a compiler output. A declaration can also mark the choice `acts`, meaning that presenting it changes the world, as a payment or an email does. The runtime presents such a choice under its identifier, and the compiler checks that its view reads only final outputs (effects principle). This is a property of a choice, separate from the programming-language sense in which `choose` is the only effect.
+A `choice` declaration gives a name, a view, options, a timeout, and a default, and the set of declarations is the program's record schema, which makes the analytics tracking plan a compiler output. Each `choose` opens a new choice, whose stable identifier is the declaration's name and an [*address*](https://proceedings.mlr.press/v15/wingate11a.html): the record that started the run, the calls and `choose` steps that led to this one, and the count of each enclosing loop. A declaration can also mark the choice `acts`, meaning that presenting it changes the world, as a payment or an email does. The runtime presents such a choice under its identifier, and the compiler checks that its view reads only final outputs (effects principle). This is a property of a choice, separate from the programming-language sense in which `choose` is the only effect.
 
 The table is the binding principle in language form. In programming-language terms, `choose` is an [algebraic effect](https://arxiv.org/abs/1312.1399) and a resolver is the effect's handler, so the code that opens a choice never names the resolver. The binding names the resolver, and a test, a replay, or an experiment substitutes a different handler without changing the code. Koka shows that an effect can be tracked in types. With one effect, the type of every definition states whether the definition can open choices at all, and pure code can be cached, moved, and replayed freely.
 
@@ -138,7 +138,7 @@ fn open_choices(R) =
   else {}
 ```
 
-`recorded(R, c)` is true when `R` contains a record for choice `c`, and `value(R, c)` is the value of that record. The runtime does not need the second form written out. The runtime computes the same result by replaying the flow against the records, using the recorded value at each `choose` until the replay reaches a `choose` with no record. Durable execution engines rebuild a workflow's position the same way. Semantically, a flow denotes an [interaction tree](https://arxiv.org/abs/1906.00046): each `choose` is a node, each possible value is a branch, and the records determine a path through the tree.
+`recorded(R, c)` is true when `R` contains a record answering the choice `c` opened in this run, and `value(R, c)` is that record's value. In a flow with a loop, `c` stands for an address, because each pass opens a new choice. The runtime does not need the second form written out. The runtime computes the same result by replaying the flow against the records, using the record at each `choose`'s address until the replay reaches an address with no record. Durable execution engines rebuild a workflow's position the same way. Semantically, a flow denotes an [interaction tree](https://arxiv.org/abs/1906.00046): each `choose` is a node, each possible value is a branch, and the records determine a path through the tree.
 
 The equivalence places interactive code on the first axis. The control, which determines the next open choice, is a function, and its power level determines what can be checked:
 
@@ -272,7 +272,7 @@ fn suggest_alternatives(party: Party, wanted: Time) -> Set<Id<Slot>>
   ensures size(result) <= 3 and result ⊆ ids(open_slots(party.size))
 ```
 
-`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. `acts` marks a choice whose presentation changes the world. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
+`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver answers it. `acts` marks a choice whose presentation changes the world. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
 
 ### The booking flow
 
@@ -358,7 +358,7 @@ The language has three kinds of definition and five kinds of declaration.
 
 1. **Types** describe the values that choices produce. They are constraints at level 0, and combining types is unification.
 2. **Functions** are deterministic maps from a set of records to a value. Each function has a power level from 0 to 4: constraints, queries, recursive queries, total functions, or general recursion. The compiler infers the lowest level that fits and checks it against the level the file declares.
-3. **Choices** have a stable identifier, a view, options, a timeout, and a default. `choose` is the only effect. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and the compiler checks that it opens only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
+3. **Choices** are declared with a name, a view, options, a timeout, and a default, and each `choose` opens a choice identified by the name and its address in the run. `choose` is the only effect. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and the compiler checks that it opens only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
 
 **Declarations.**
 
