@@ -301,25 +301,25 @@ No method performs an effect exactly once through a system that ignores the key.
 
 ## Coupling: derive which choices affect each other from the functions
 
-Functions combine records supplied by different resolvers, so the value supplied at one choice can change the view or the options of another choice. Two relations describe how choices affect each other. In the definitions below, $a$ and $b$ are choices, $r_a$ and $r_b$ are records of values supplied at them, $R$ is a set of records, $\mathrm{view}_b$ and $\mathrm{opt}_b$ are the view and option functions of $b$, and $I : \mathcal{R} \to \{\text{true}, \text{false}\}$ is an *invariant*, a condition every admitted set of records must satisfy.
+Functions combine records supplied by different resolvers, so the value supplied at one choice can change the view or the options of another choice. Two relations describe how choices affect each other. In the definitions below, $a$ and $b$ are choices, $r_a$ and $r_b$ are records of values supplied at them, $\mathrm{view}_b$ and $\mathrm{opt}_b$ are the view and option functions of $b$, and $I : \mathcal{R} \to \{\text{true}, \text{false}\}$ is an *invariant*, a condition every admitted set of records must satisfy. $R$ ranges over $\mathcal{A} \subseteq \mathcal{R}$, the *reachable* sets of records: those a run of the program can produce, each of which satisfies $I$.
 
 **Read coupling** $a \to b$ holds when a record from $a$ can change $b$'s view or options:
 
 $$
-\exists R :\ \mathrm{view}_b(R \cup \{r_a\}) \neq \mathrm{view}_b(R)\ \ \lor\ \ \mathrm{opt}_b(R \cup \{r_a\}) \neq \mathrm{opt}_b(R)
+\exists R \in \mathcal{A},\ r_a :\ \mathrm{view}_b(R \cup \{r_a\}) \neq \mathrm{view}_b(R)\ \ \lor\ \ \mathrm{opt}_b(R \cup \{r_a\}) \neq \mathrm{opt}_b(R)
 $$
 
-In words: for some set of records, adding a record from $a$ changes what $b$ shows or accepts.
+In words: for some reachable set of records, adding some record from $a$ changes what $b$ shows or accepts.
 
 **Order coupling** $a \leftrightarrow b$ holds when records from $a$ and $b$ can each be admitted alone, but not together:
 
 $$
-\exists R, r_a, r_b :\ I(R \cup \{r_a\}) \land I(R \cup \{r_b\}) \land \lnot I(R \cup \{r_a, r_b\})
+\exists R \in \mathcal{A},\ r_a, r_b :\ I(R \cup \{r_a\}) \land I(R \cup \{r_b\}) \land \lnot I(R \cup \{r_a, r_b\})
 $$
 
-In words: for some set of records, adding either record alone keeps the invariant true, and adding both makes the invariant false.
+In words: for some reachable set of records, adding either record alone keeps the invariant true, and adding both makes the invariant false.
 
-Order-coupled choices need a sequencer to admit one record first and refuse the other. Because merging two sets of records means taking their union, order coupling is exactly the failure of invariant confluence for a pair of records. Every order coupling is also a read coupling, since the first record changes the options of the second choice.
+Order-coupled choices need a sequencer to admit one record first and refuse the other. Sets of records merge by union and each admission adds one record, so a set of choices is invariant-confluent exactly when no order coupling holds among them: a failure over longer histories always contains a failing pair. Order coupling can hold without read coupling. When $b$'s options ignore $a$'s records, as a sign-up form that accepts any email address does, the sequencer refuses $b$'s record at admission.
 
 Two people booking the same seat are order-coupled. Two people commenting on the same post are read-coupled. Two people typing into the same paragraph of a shared document are read-coupled when a merge algorithm combines their edits, because every combination of concurrent edits then merges into a valid document.
 
