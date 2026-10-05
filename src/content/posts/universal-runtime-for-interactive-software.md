@@ -27,28 +27,17 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
 | function | a deterministic map from a set of records to a value; state, views, indexes, and the set of open choices are function outputs |
 | binding | configuration stating which resolver supplies the value for which choice; only a value from the bound resolver counts |
-| snapshot | the set of records from which a view was computed |
 | scope | a set of records picked out by a condition, such as every booking for one performance |
 | sequencer | the single resolver that admits records into a scope in one order and writes the scope's seals |
 | seal | a record stating that a scope is complete up to a position |
 | provisional value | a function's output that is not yet final, shown before the seal and replaced after it |
 | read coupling | a record from one choice can change another choice's view or options |
 | order coupling | records from two choices can each be admitted alone but not together |
+| goal | a function of the records with a direction and guardrails |
 | response deadline | the longest time that can pass between supplying a value and showing its consequence before the interaction fails |
 | release | a record that changes the program version |
 
-The eight principles, by name:
-
-| Principle | What it requires |
-| --- | --- |
-| Derivation | Store every value supplied at a choice, and compute everything else from the stored values. |
-| Binding | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
-| Sealing | Conclude that a record does not exist only over a sealed scope. |
-| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
-| Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
-| Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
-| Goals | State each goal as a function of the records with a direction and guardrails. |
-| Versions | Store the program version with every record, and translate old records instead of rewriting them. |
+The eight principles are derivation, binding, sealing, prediction, effects, coupling, goals, and versions. [The theory's table](/universal-theory-of-interactive-software#eight-principles) states what each requires, and the sections below restate each requirement where a component meets it.
 
 ## Four components, one per part of the theory
 
@@ -61,12 +50,7 @@ The eight principles, by name:
 | Choices, resolvers, and bindings | dispatcher | every open choice reaches its bound resolver under the choice's identifier, a value counts only from the bound resolver and within the choice's options, and every timeout records the default | binding, prediction, effects, goals, versions |
 | Scopes and seals | sequencers | each scope that needs order has exactly one sequencer at a time, which admits the scope's records in one order and writes the scope's seals | sealing, prediction, coupling |
 
-Seals are records, so a fifth primitive is not needed for them. A separate component is needed, because a sequencer has properties that storage does not: there is one per scope, its placement sets the latency of every order-coupled choice, and its failure stops admission to its scope. Each of the four components owns one concern and changes for one reason:
-
-- the record store for durability and replication;
-- the evaluator for computation;
-- the dispatcher for interaction with resolvers;
-- the sequencers for order.
+Seals are records, so a fifth primitive is not needed for them. A separate component is needed, because a sequencer has properties that storage does not: there is one per scope, its placement sets the latency of every order-coupled choice, and its failure stops admission to its scope.
 
 ## The record store
 
@@ -234,7 +218,7 @@ A release is a record. Its value is the new program version, and each choice kee
 
 ![Two paths from the records to state under version 2, which must agree, above a timeline in which a release record separates records made under version 1 from records made under version 2, and an open choice keeps its stable identifier across the release](../../assets/diagrams/migration-square.svg "A migration is correct when migrating the old state and recomputing under the new version agree. Open choices carry over a release by stable identifier.")
 
-[Temporal's versioning API](https://docs.temporal.io/develop/typescript/versioning) is a small instance of the same design: workflow code branches on a version marker recorded in the workflow's own event history, so a workflow started under old code replays under old code. Erlang's [`code_change` callback](https://www.erlang.org/doc/apps/stdlib/gen_server.html) converts a running process's state when new code is loaded.
+[Temporal's versioning API](https://docs.temporal.io/develop/typescript/versioning) is a small instance of the same design: workflow code branches on a version marker recorded in the workflow's own event history, so a workflow started under old code replays under old code.
 
 ## Existing systems by component
 
