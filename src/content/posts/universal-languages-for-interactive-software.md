@@ -79,9 +79,9 @@ Polynomial time, in both tables, is in the number of records for a fixed query.
 
 **Level 2, recursive queries.** Adding recursion to a least fixpoint, as Datalog does, expresses reachability, hierarchies, and graph partitions. On ordered finite data, first-order logic with least fixpoints expresses exactly the queries computable in polynomial time (the Immerman–Vardi theorem of [descriptive complexity](https://en.wikipedia.org/wiki/Descriptive_complexity_theory)). Evaluation can be incremental, and monotonicity is visible in the syntax: a query without negation or aggregation is monotone. A compiler can therefore flag every place where a query may conclude something from absence, and by the CALM theorem from the sealing principle, the flagged places include every place that needs a seal. [Datafun](https://doi.org/10.1145/2951913.2951948) carries the same monotonicity tracking into a typed functional language.
 
-**Level 3, total functions.** Functions whose recursion provably terminates can compute over any data type, including trees and higher-order functions, and are no longer limited to polynomial time. A tool can no longer decide the properties of such functions automatically, but a property can be proved and the proof checked by machine. A game's step function, a migration, and a pricing formula belong here.
+**Level 3, total functions.** Functions whose recursion provably terminates can compute over any data type, including trees and higher-order functions, and are no longer limited to polynomial time. A game's step function, a migration, and a pricing formula belong here.
 
-**Level 4, general recursion.** By [Rice's theorem](https://en.wikipedia.org/wiki/Rice%27s_theorem), no nontrivial property of what arbitrary programs compute can be decided. Assurance comes from tests, from monitors that check results at run time, and from proofs about individual programs, as in [Dafny](https://dafny.org).
+**Level 4, general recursion.** By [Rice's theorem](https://en.wikipedia.org/wiki/Rice%27s_theorem), no nontrivial property of what arbitrary programs compute can be decided.
 
 ## Axis two: one effect, choose
 
@@ -129,7 +129,7 @@ fn open_choices(R) =
   else {}
 ```
 
-`recorded(R, c)` is true when `R` contains a record answering the choice `c` opened in this run, and `value(R, c)` is that record's value. In a flow with a loop, `c` stands for an address, because each pass opens a new choice. The runtime does not need the second form written out. The runtime computes the same result by replaying the flow against the records, using the record at each `choose`'s address until the replay reaches an address with no record. Durable execution engines rebuild a workflow's position the same way. Semantically, a flow denotes an [interaction tree](https://arxiv.org/abs/1906.00046): each `choose` is a node, each possible value is a branch, and the records determine a path through the tree.
+`recorded(R, c)` is true when `R` contains a record answering the choice `c` opened in this run, and `value(R, c)` is that record's value. In a flow with a loop, `c` stands for an address, because each pass opens a new choice. The runtime does not need the second form written out. The runtime computes the same result by replaying the flow against the records, using the record at each `choose`'s address until the replay reaches an address with no record. Semantically, a flow denotes an [interaction tree](https://arxiv.org/abs/1906.00046): each `choose` is a node, each possible value is a branch, and the records determine a path through the tree.
 
 The equivalence places interactive code on the first axis. The control, which determines the next open choice, is a function, and its power level determines what can be checked:
 
@@ -188,21 +188,9 @@ A `release` declaration names a new program version and the migrations that read
 
 ## Modules organized by notion architecture
 
-The declarations above need an organization that keeps related code together and keeps dependencies pointing one way. [Notion architecture](https://github.com/ayahohner/notion-architecture) provides one. A codebase is divided into *notions*. A notion is a module that owns one concept, such as Reservation, Payment, or Venue, together with everything that changes when the concept changes. Grouping by concept, rather than by technical layer, means a change to how reservations work touches one notion.
+The declarations above need an organization that keeps related code together and keeps dependencies pointing one way. [Notion architecture](https://github.com/ayahohner/notion-architecture) provides one. A codebase is divided into *notions*. A notion is a module that owns one concept, such as Reservation, Payment, or Venue, together with everything that changes when the concept changes, so most changes to how reservations work stay inside one notion.
 
-Inside a notion, each file has two coordinates. The first, *orientation*, says which side of the concept the file faces:
-
-- **Inward:** what the concept is. Types, stored values, and invariants.
-- **Process:** what the concept does. Transformations, policies, and coordination.
-- **Outward:** how the concept meets everything else. Pages, endpoints, events, and APIs.
-
-The second, *determination*, says how specific the file is:
-
-- **Universal:** what is true of every instance of the concept. Laws and contracts.
-- **Particular:** what is true of one kind or strategy. Implementations of the contracts.
-- **Individual:** one concrete composition. Wiring, bindings, and configuration for a specific product.
-
-The import direction combines both coordinates. A file may import only files that are at least as inward and at least as universal as itself. Laws, which are inward and universal, import nothing from their notion, and a concrete page, which is outward and individual, may import anything. Files that change rarely sit where everything depends on them, and files that change often sit where nothing does.
+Inside a notion, each file has two coordinates. Its *orientation* is inward (what the concept is: types, stored values, and invariants), process (what the concept does: transformations, policies, and coordination), or outward (how the concept meets everything else: pages, endpoints, events, and APIs). Its *determination* is universal (laws and contracts true of every instance), particular (implementations of the contracts), or individual (wiring, bindings, and configuration for one product). A file may import only files that are at least as inward and at least as universal as itself, so files that change rarely sit where everything depends on them, and files that change often sit where nothing does.
 
 The language adds the two axes as further coordinates. Each file declares its power level and whether it is interactive, and the compiler checks three things together: that the code stays within its declared level, that imports follow the import direction, and that laws sit at universal positions. The parts of the theory map onto these coordinates: types and laws are inward and universal, functions and flows are process files, presentation is outward, and bindings are individual.
 
@@ -236,7 +224,7 @@ fn near(size: Nat, t: Time) =
   { s in open_slots(size) | abs(s.start - t) <= 2 h }
 ```
 
-`type` declares the value types that choices produce; `Id<Slot>` is the identifier of a record whose value is a `Slot`, and `|` separates alternatives. `fn` defines a function, and every function implicitly reads the current records. `values(c)` is the set of values counted for choice `c`, `records(c)` is the set of counted records for choice `c`, each carrying the choice's arguments and the supplied value, and `admitted(T)` is the set of records of type `T` that a sequencer has admitted. Set-builder braces read as in mathematics: `{ s in slots | condition }` is the set of slots meeting the condition. All six functions are first-order queries, so they are at level 1, and the compiler can determine that `live_holds` and `open_slots` conclude something from absence (`not released`, `== {}`).
+`type` declares the value types that choices produce; `Id<Slot>` is the identifier of a record whose value is a `Slot`, and `|` separates alternatives. `fn` defines a function, and every function implicitly reads the current records. `values(c)` is the set of values counted for choice `c`, `records(c)` is the set of counted records for choice `c`, each carrying the choice's arguments and the supplied value, and `admitted(T)` is the set of records of type `T` that a sequencer has admitted. All six functions are first-order queries, so they are at level 1, and the compiler can determine that `live_holds` and `open_slots` conclude something from absence (`not released`, `== {}`).
 
 ### Choices and an unresolved function
 
