@@ -52,7 +52,7 @@ The eight principles, by name:
 
 ## What existing languages give up and what they gain
 
-A general-purpose language can express every part of a program and guarantees nothing about any of them, because properties of arbitrary programs cannot be decided. The W3C's [Rule of Least Power](https://www.w3.org/2001/tag/doc/leastPower.html) draws the practical conclusion: use the least powerful language that can express each part, because the restriction is what makes the part analyzable. Successful special-purpose languages follow the rule, each in its own way:
+A general-purpose language can express every part of a program and guarantees little about what any of them computes, because nontrivial properties of what arbitrary programs compute cannot be decided. The W3C's [Rule of Least Power](https://www.w3.org/2001/tag/doc/leastPower.html) draws the practical conclusion: use the least powerful language that can express each part, because the restriction is what makes the part analyzable. Successful special-purpose languages follow the rule, each in its own way:
 
 | Language | What it gives up | What the restriction guarantees |
 | --- | --- | --- |
@@ -76,15 +76,17 @@ Five levels of power recur across the languages above. Each level contains the o
 
 | Level | What code at this level can express | What a tool can decide or guarantee |
 | --- | --- | --- |
-| 0. Constraints | conjunctions of conditions on one value, without quantifiers | whether constraints are compatible, and their combination, independent of order |
-| 1. Queries | first-order logic over the finite set of records: joins, filters, negation, aggregation | termination in polynomial time; equivalence only for restricted forms |
+| 0. Constraints | conjunctions of bounds, patterns, and equalities on one value, without quantifiers | whether constraints are compatible, and their combination, independent of order |
+| 1. Queries | first-order logic over the finite set of records (joins, filters, negation), plus aggregation | termination in polynomial time; equivalence only for restricted forms |
 | 2. Recursive queries | queries plus recursion to a least fixpoint | termination in polynomial time; incremental evaluation; monotonicity from syntax |
 | 3. Total functions | recursion that provably terminates, over any data type | termination; properties provable with machine-checked proofs |
 | 4. General recursion | anything computable | no nontrivial property in general; tests, runtime monitors, and per-program proofs |
 
-**Level 0, constraints.** A constraint states what a value must satisfy, such as "a string of at most 40 characters" or "a color token equal to the brand's primary color". Combining two constraints, called *unification*, gives the most specific value satisfying both, and contradictory constraints give an error. Unification is commutative, associative, and idempotent, the same algebra as a merge of replicas. Configuration, [design tokens](https://www.designtokens.org/tr/2025.10/format/), and translated copy belong here, so a brand's tokens, a product's overrides, and an experiment variant can be combined in any order.
+Polynomial time, in both tables, is in the number of records for a fixed query.
 
-**Level 1, queries.** First-order logic over a finite database has the same expressive power as relational algebra ([Codd's theorem](https://en.wikipedia.org/wiki/Codd%27s_theorem)), which is the core of SQL. Every query terminates in polynomial time. Deciding whether two first-order queries are equivalent is undecidable over finite databases ([Trakhtenbrot's theorem](https://en.wikipedia.org/wiki/Trakhtenbrot%27s_theorem)), which is why Cedar restricts further: without unbounded quantification, its policies translate into a logic that [SMT solvers](https://en.wikipedia.org/wiki/Satisfiability_modulo_theories) decide. Access rules are functions at this level or level 0. They need no level of their own.
+**Level 0, constraints.** A constraint states what a value must satisfy, such as "a string of at most 40 characters" or "a color token equal to the brand's primary color". Combining two constraints, called *unification*, gives the most specific value satisfying both, and contradictory constraints give an error. Unification is commutative, associative, and idempotent, the same algebra as a merge of replicas. Configuration, [design tokens](https://www.designtokens.org/tr/2025.10/format/), and translated copy belong here, so a brand's tokens, a product's refinements, and an experiment variant can be combined in any order.
+
+**Level 1, queries.** Safe first-order queries over a finite database have the same expressive power as relational algebra ([Codd's theorem](https://en.wikipedia.org/wiki/Codd%27s_theorem)), which is the core of SQL. Every query terminates in polynomial time. Deciding whether two first-order queries are equivalent is undecidable over finite databases ([Trakhtenbrot's theorem](https://en.wikipedia.org/wiki/Trakhtenbrot%27s_theorem)), which is why Cedar restricts further: without unbounded quantification, its policies translate into a logic that [SMT solvers](https://en.wikipedia.org/wiki/Satisfiability_modulo_theories) decide. Access rules are functions at this level or level 0. They need no level of their own.
 
 **Level 2, recursive queries.** Adding recursion to a least fixpoint, as Datalog does, expresses reachability, hierarchies, and graph partitions. On ordered finite data, first-order logic with least fixpoints expresses exactly the queries computable in polynomial time (the Immerman–Vardi theorem of [descriptive complexity](https://en.wikipedia.org/wiki/Descriptive_complexity_theory)). Evaluation can be incremental, and monotonicity is visible in the syntax: a query without negation or aggregation is monotone. A compiler can therefore flag every place where a query may conclude something from absence, and by the CALM theorem from the sealing principle, the flagged places include every place that needs a seal. [Datafun](https://doi.org/10.1145/2951913.2951948) carries the same monotonicity tracking into a typed functional language.
 
@@ -94,13 +96,13 @@ Five levels of power recur across the languages above. Each level contains the o
 
 ## Axis two: one effect, choose
 
-In the theory, a function is deterministic, and every value a function cannot compute arrives through a choice. The language therefore needs exactly one effect:
+In the theory, a function is deterministic, and every value a function cannot compute arrives through a choice. Apart from nontermination, which the power level records, the language therefore needs exactly one effect:
 
 $$
-\mathsf{choose} : C \to X_c
+\mathsf{choose} : (c : C) \to X_c
 $$
 
-where $C$ is the set of declared choices and $X_c$ is the value type of choice $c$. In words: `choose c` opens a new choice declared as $c$ and evaluates to the value that the bound resolver supplies. Code that performs no `choose` is *pure*, and code that does is *interactive*. Every interaction that languages usually treat as a separate effect is a choice bound to a particular resolver:
+where $C$ is the set of declared choices with their arguments and $X_c$ is the value type of choice $c$. In words: `choose c` opens a new choice declared as $c$ and evaluates to the value that the bound resolver supplies. Code that performs no `choose` is *pure*, and code that does is *interactive*. Every interaction that languages usually treat as a separate effect is a choice bound to a particular resolver:
 
 | Usual effect | As a choice |
 | --- | --- |
@@ -112,7 +114,7 @@ where $C$ is the set of declared choices and $X_c$ is the value type of choice $
 | a model call | a choice bound to an AI model |
 | a database transaction | a choice bound to a sequencer: admit or refuse a record into a scope |
 
-A `choice` declaration gives a name, a view, options, a timeout, and a default, and the set of declarations is the program's record schema, which makes the analytics tracking plan a compiler output. Each `choose` opens a new choice, whose stable identifier is the declaration's name and an [*address*](https://proceedings.mlr.press/v15/wingate11a.html): the record that started the run, the calls and `choose` steps that led to this one, and the count of each enclosing loop. A declaration can also mark the choice `acts`, meaning that presenting it changes the world, as a payment or an email does. The runtime presents such a choice under its identifier, and the compiler checks that its view reads only final outputs (effects principle). This is a property of a choice, separate from the programming-language sense in which `choose` is the only effect.
+A `choice` declaration gives a name, a view, options, a timeout, and a default, and the set of declarations is the program's record schema, which makes the analytics tracking plan a compiler output. Each `choose` opens a new choice, whose stable identifier is the declaration's name and an [*address*](https://proceedings.mlr.press/v15/wingate11a.html): the record that started the run, the calls and `choose` steps that led to this one, and the count of each enclosing loop. A declaration can also mark the choice `acts`, meaning that presenting it changes the world, as a payment or an email does. The runtime presents such a choice under its identifier and opens it only when its view, and the condition under which the flow reaches it, read only final outputs (effects principle). This is a property of a choice, separate from the programming-language sense in which `choose` is the only effect.
 
 The table is the binding principle in language form. In programming-language terms, `choose` is an [algebraic effect](https://arxiv.org/abs/1312.1399) and a resolver is the effect's handler, so the code that opens a choice never names the resolver. The binding names the resolver, and a test, a replay, or an experiment substitutes a different handler without changing the code. Koka shows that an effect can be tracked in types. With one effect, the type of every definition states whether the definition can open choices at all, and pure code can be cached, moved, and replayed freely.
 
@@ -144,7 +146,7 @@ The equivalence places interactive code on the first axis. The control, which de
 
 | Power of the control between choices | Example | What can be checked |
 | --- | --- | --- |
-| Levels 0–1: fixed sequence, conditions, loops back to earlier points | a tax interview, a checkout, or a booking flow | control has finitely many locations, so properties over all paths, such as "every hold is eventually paid or released," can be [model-checked](https://en.wikipedia.org/wiki/Model_checking) |
+| Levels 0–1: fixed sequence, conditions, loops back to earlier points | a tax interview, a checkout, or a booking flow | control has finitely many locations, so properties over all paths through them, such as "every hold is eventually paid or released," can be [model-checked](https://en.wikipedia.org/wiki/Model_checking) |
 | Levels 2–3: loops bounded by data | one question per guest, one step per line item | every step between choices terminates; properties can be checked for bounded data or proved |
 | Level 4: unbounded computation between choices | an agent loop, a planner | monitors and tests; replay is still exact because the control is deterministic |
 
@@ -154,7 +156,7 @@ Any piece of code therefore has two coordinates: its power level, and whether it
 
 ### Unresolved names are choices
 
-A choice can also be declared implicitly. A function with a type signature and no body cannot be computed, so a call to it needs a value from outside the program, which is the definition of a choice. The choice's view is the function's name, signature, documentation, and arguments, its options are the values of the return type that satisfy the stated conditions, and its default resolver is an AI model. [Ia](https://github.com/innerlattice/ia-lang) is a language built on this idea: an undefined name used as a function is interpreted by a model at run time. Typed holes in [Hazel](https://hazel.org) are the same construct at edit time. A program with holes still runs, evaluating everything that does not depend on a hole, and each hole is filled in later by the programmer or by a tool.
+A choice can also be declared implicitly. A function with a type signature and no body cannot be computed, so a call to it needs a value from outside the program, which is the definition of a choice. The choice's view is the function's name, signature, documentation, and arguments, its options are the values of the return type that satisfy the stated conditions, and its default resolver is an AI model. [Ia](https://github.com/innerlattice/ia-lang) is a language built on this idea: an undefined name used as a function is interpreted by a model at run time. Here the signature is required, so a misspelled name is a compile error. Typed holes in [Hazel](https://hazel.org) are the same construct at edit time. A program with holes still runs, evaluating everything that does not depend on a hole, and each hole is filled in later by the programmer or by a tool.
 
 Treating a call to an unresolved name as a choice gives the call everything a choice has: the dispatcher checks the returned value against the type, the record contains the AI model, the model's version, and the view for replay, and the binding can be changed to a deterministic function once someone writes one.
 
@@ -174,7 +176,7 @@ A law is a property the program promises. How a law is checked depends on what i
 | --- | --- | --- |
 | an invariant | "a slot never has two live holds" | for invariants written in a restricted logic, a solver checks whether the invariant is invariant-confluent, that is, whether two sets of records that each satisfy the invariant and grow from a common admitted set always merge into a set that also satisfies the invariant, as [Indigo](https://www.dpss.inesc-id.pt/~rodrigo/indigo_eurosys15.pdf) and [Hamsaz](https://doi.org/10.1145/3290387) do. If the invariant is not shown to be invariant-confluent, the compiler derives a scope and requires every record that can violate the invariant to pass through that scope's sequencer, which evaluates the invariant at admission |
 | a temporal property of a flow | "every admitted hold is eventually paid or released" | model checking over the flow's control locations, using the guarantee that every choice with a timeout eventually has a record |
-| a property of a binding table | "AI models never resolve the deposit payment" | the compiler translates the binding table and the law into a decidable logic and runs an SMT solver to search for a binding table that satisfies the configuration and violates the law; because the logic is decidable, the search terminates, and if the solver finds nothing, no such table exists |
+| a property of a binding table | "AI models never resolve the deposit payment" | the compiler translates the binding table and the law into a decidable logic and runs an SMT solver to search for a binding table that satisfies the configuration and violates the law; because the logic is decidable, the solver either finds such a table or proves that none exists, unless it runs out of time or memory first |
 | a property of a merge | "concurrent edits merge to the same document in any order" | true by construction when the merge is unification at level 0; otherwise checked by a proof or by property-based tests |
 | a migration square | "migrating stored state gives the same result as recomputing the state under the new version" | true by construction when the migration uses operators with known inverses; otherwise checked by replaying stored records along both paths and comparing the results |
 | a property of a level-3 or level-4 function | "a refund never exceeds the amount paid" | a machine-checked proof where one exists; otherwise a runtime monitor that refuses a value violating the law and records the refusal |
