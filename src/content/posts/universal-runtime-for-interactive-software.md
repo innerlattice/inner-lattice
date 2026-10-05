@@ -84,7 +84,7 @@ Each field exists because some principle reads it.
 | `resolver` | the identity and version of whatever supplied the value: a function version, an AI model and its version, a person, or an external system | audit, rebinding, and evaluation (binding and goals principles) |
 | `snapshot` | the records from which the view was computed, identified by a version vector | recomputing the view exactly; causal order |
 | `version` | the program version whose functions computed the view and options | reading the record under the functions in force when the record was made (versions principle) |
-| `probability` | the probability with which the resolver selected the value: 1 for a deterministic resolver, the recorded value for a randomized one, and absent for an opaque one | off-policy evaluation (goals principle) |
+| `probability` | the probability with which the resolver selected the value given its view: 1 for a deterministic resolver, the recorded value for a randomized one, and absent for an opaque one | off-policy evaluation (goals principle) |
 | `time` | the wall-clock time where the value was supplied | display and timeouts; not order, because clocks drift by unknown amounts |
 
 A [version vector](https://en.wikipedia.org/wiki/Version_vector) has one counter per replica that creates records. The counter for a replica states how many of that replica's records are included, so a snapshot is identified in a few numbers instead of a copy of the screen. Given the snapshot and the version, the evaluator can recompute the view exactly. The snapshot also orders records causally: record $a$ precedes record $b$ when $a$ is inside $b$'s snapshot, and two records are concurrent when neither precedes the other. Devices usually receive other parties' records through a server, so a device's snapshot can be stated as the server's position plus the device's own counter.
@@ -111,8 +111,8 @@ The evaluator computes every function output: state, views, indexes, goals, acce
 Four services that products usually run as separate systems are outputs of the evaluator:
 
 - **Subscriptions** deliver changes along read-coupling edges. A device subscribes to the functions that compute its views and receives each change to their outputs. Game engines call this *interest management*.
-- **Access rules** remove read-coupling edges. When an access rule changes, the evaluator retracts the outputs that are no longer visible, as it would retract any other output.
-- **Provenance** maps each output to the records it was computed from. Provenance explains a view to the person looking at the view, and attributes a goal's value to the choices behind the value.
+- **Access rules** remove read-coupling edges or narrow what a view shows along them. When an access rule changes, the evaluator retracts the outputs that are no longer visible, as it would retract any other output.
+- **Provenance** maps each output to the records it was computed from. Provenance explains a view to the person looking at the view, and traces a goal's value to the choices behind the value.
 - **Goals** are functions like any other. A dashboard subscribes to them, and a bandit reads them while it runs.
 
 ### Final and provisional outputs
@@ -131,7 +131,7 @@ The evaluator outputs the set of open choices, and the dispatcher delivers each 
 | Choice | Condition | Resolver | Recorded with the value |
 | --- | --- | --- | --- |
 | `refund.amount` | up to 20 | refund function | function version; probability 1 |
-| `refund.amount` | 20 to 200 | AI agent in a random 90% of cases, support staff in the other 10% | for the agent: model version, prompt digest, tool results; for the assignment: a separate record with probability 0.9 or 0.1 |
+| `refund.amount` | 20 to 200 | AI agent in a random 90% of cases, support staff in the other 10% | for the agent: model version and prompt digest, with each tool call recorded as a choice of its own; for the assignment: a separate record with probability 0.9 or 0.1 |
 | `refund.amount` | over 200 | support lead | snapshot of the view |
 
 One table covers automation, delegation, escalation, and an experiment that compares the agent with people. The table is part of the program, so changing a row is a release (versions principle), and every refund can be traced to the binding in force when it was made.
@@ -139,9 +139,9 @@ One table covers automation, delegation, escalation, and an experiment that comp
 For each choice the dispatcher also:
 
 - **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot, or if it is the default recorded at the timeout; any other value is recorded as refused. For an order-coupled choice the sequencer also checks the invariant and the binding at admission, because records admitted since the snapshot can make the value violate the invariant or revoke the binding.
-- **checks access rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
+- **checks rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
 - **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher that runs the choice's timer is its sequencer and records whichever reaches it first. An escalation is a choice whose default opens another choice bound to a different resolver.
-- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice that asks the same resolver for the outcome under the first choice's identifier.
+- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice that asks the same resolver for the outcome under the first choice's identifier. A late reply answers the reconciliation, and a reconciliation that ends in "unknown" escalates to a person.
 - **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) covers how a choice declares what any presentation must convey.
 
 Open choices survive restarts without further machinery. An insurance claim waiting three weeks for a document is not a suspended process or a sleeping thread. The open choice is an output of a function over the records, and after a restart the evaluator computes the same set of open choices from the same records. [Durable execution](https://docs.temporal.io/workflows) engines such as Temporal and Restate reach the same property by a different route: they record the result of every step and rebuild a workflow's position by replaying its deterministic code against those results.
@@ -251,7 +251,7 @@ Every component has mature partial implementations:
 No existing system combines three capabilities:
 
 - bindings with interchangeable resolvers and recorded probabilities;
-- sequencer scopes, sync partitions, and experiment units computed from one coupling graph;
+- sequencer scopes, sync, and experiment units computed from one coupling graph;
 - records read under the program version that produced them.
 
 These are the parts the theory adds, and they are where much of today's glue code sits.
