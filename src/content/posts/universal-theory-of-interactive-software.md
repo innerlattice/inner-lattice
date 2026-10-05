@@ -42,7 +42,7 @@ A running program alternates between computing and waiting for input. Computing 
 
 ![A loop from the records through functions to views and open choices, then to resolvers, whose values are appended to the records](../../assets/diagrams/interaction-loop.svg "Functions compute views and open choices from the records. A resolver supplies a value for each open choice, and the value is appended as a record.")
 
-A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype an address and a sensor can drift. Records are never modified, and at most one record answers a choice, so a wrong record is corrected by the answer to a later choice, such as an edit, whose record names the record it supersedes.
+A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype a name and a sensor can drift. Records are never modified, and at most one record answers a choice, so a wrong record is corrected by the answer to a later choice, such as an edit, whose record names the record it supersedes.
 
 The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records and run the same program version compute the same state.
 
@@ -100,7 +100,7 @@ In programming-language terms, a choice is an [algebraic effect](https://arxiv.o
 
 ## Eight principles
 
-Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, as one that asks about an unknown payment until the network answers does. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
+Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, such as one that asks again about an unknown payment until the network answers. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
 | Principle | Constraint it answers | What it requires |
 | --- | --- | --- |
@@ -209,7 +209,7 @@ One late record can make such a conclusion false. A value is *final* when no rec
 
 - A **scope** is a set of records picked out by a condition, such as every booking for seat C14 at tonight's performance.
 - The **sequencer** of a scope is the single resolver that admits records into the scope, one at a time and in one order. Each scope that needs an order has exactly one sequencer at a time.
-- A **seal** is a record, written by the sequencer, stating that the scope is complete up to some position in that order: no record will later be admitted at or before that position. Admitting a record also seals the part of the scope before the admitted record, which is how a sequencer settles which of two concurrent bookings came first. A scope can also be [split into a fixed set of parts](https://www.neilconway.org/docs/icde2014_blazes.pdf) that are not order-coupled with one another, each with its own sequencer, as the escrow method below does. The whole scope is then sealed as far as every part is, as an election's ballots are complete once every precinct has sealed its own.
+- A **seal** is a record, written by the sequencer, stating that the scope is complete up to some position in that order: no record will later be admitted at or before that position. Admitting a record also seals the part of the scope before the admitted record, which is how a sequencer settles which of two concurrent bookings came first. A scope can also be [split into a fixed set of parts](https://www.neilconway.org/docs/icde2014_blazes.pdf) whose records never need ordering against one another, each with its own sequencer, as the escrow method below does. The whole scope is then sealed as far as every part is, as an election's ballots are complete once every precinct has sealed its own.
 
 **Sealing principle:** later records only add to a monotone function's output over admitted records. A conclusion that depends on records being absent is final only over a sealed scope.
 
@@ -335,7 +335,7 @@ Most of what a product does about other people uses one of the two relations:
 | Sharding | order | partition so each part has one sequencer; edges that cross parts need distributed transactions |
 | Experiment units | read | partition so each part receives one variant; edges that cross parts carry treatment between variants |
 
-The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) includes the requirement that one unit's outcome not depend on another unit's treatment. Read coupling that crosses between variants can break the requirement, and so can contact outside the program, which no function shows. Software rarely has this property by default, so the property has to be engineered. Three methods are in use:
+The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) includes the requirement that one unit's outcome not depend on another unit's treatment. Read coupling that crosses between variants can break the requirement, and so can contact outside the program, which no function shows. Software rarely meets the requirement by default, so it has to be engineered. Three methods are in use:
 
 - **Partition the graph.** [Graph cluster randomization](https://arxiv.org/abs/1305.6979) assigns variants to clusters of a social graph. The same year, [balanced label propagation](https://doi.org/10.1145/2433396.2433461) partitioned Facebook's social graph across servers, so experiment units and shards can be computed from one graph.
 - **Randomize over time.** When coupling runs through a shared pool, as when every rider in a city draws on the same drivers, the graph has no useful clusters. [Switchback designs](https://arxiv.org/abs/2009.00148) randomize time periods instead.
@@ -510,7 +510,7 @@ Groupware research classified collaboration tools by whether people work [at the
 
 ## The same structure in five other fields
 
-Several fields reached this structure independently and named its parts differently. The five fields below each have a counterpart for every primitive, and each contributed a result this post uses.
+Several fields reached this structure independently and named its parts differently. The table pairs each term with its nearest counterpart in five fields, and each field contributed a result this post uses.
 
 | This theory | Game theory | Reinforcement learning and control | Probabilistic programming | Databases and distributed systems | Causal inference |
 | --- | --- | --- | --- | --- | --- |
@@ -547,6 +547,6 @@ Older work reached each principle, usually in one kind of system:
 3. **Declaring response deadlines.** Products do not record a response deadline per choice. Without one, the prediction principle cannot be applied mechanically.
 4. **Specifications for AI agent resolvers.** A choice bound to an agent needs a specification: what the view includes, which options exist, what budget applies, which results a person must confirm, and what must be recorded for replay.
 5. **Stand-ins for people.** Counterfactual replay past a person needs a stand-in. For averages over many runs, the [g-formula](https://doi.org/10.1016/0270-0255(86)90088-6) states when models of each step suffice, but no accepted method validates a stand-in for one run.
-6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also decides whose record goes first, and no principle constrains that decision when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
+6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also decides whose record goes first, and no principle constrains that order when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
 
 [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the theory as four runtime components: one for records, one for functions, one for choices and their resolvers, and one for seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the theory, so that a compiler can check the principles.
