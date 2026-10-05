@@ -195,7 +195,7 @@ Determinacy also sets what the records can contain. A randomized resolver can re
 
 Records reach different places at different times, so the records available at one place differ from those available at another. The set of records available to a resolver at a given moment is that resolver's *snapshot*.
 
-Some functions give a useful answer on any snapshot. "These people have voted" and "this document contains these edits" only grow as records arrive, and every place reaches the same answer once the records have spread, in whatever order they arrived. Such a function is *monotone*:
+"These people have voted" and "this document contains these edits" only grow as records arrive, so an answer given early is later added to but never taken back. Such a function is *monotone*:
 
 $$
 R \subseteq R' \implies f(R) \sqsubseteq f(R')
@@ -210,13 +210,13 @@ Other functions conclude that some record does not exist:
 - "this username is available";
 - "candidate A won".
 
-One late record can make such a conclusion false. The conclusion can be final only if the system waits until every record that could affect the conclusion has had time to arrive, and then refuses any record that arrives later or admits it into a later scope, where it acts as a correction. Three terms describe how a system closes that waiting period:
+One late record can make such a conclusion false. A value is *final* when no record that can still be admitted would change it. The conclusion can be final only if the system waits until every record that could affect the conclusion has had time to arrive, and then refuses any record that arrives later or admits it into a later scope, where it acts as a correction. Three terms describe how a system closes that waiting period:
 
 - A **scope** is a set of records picked out by a condition, such as every booking for seat C14 at tonight's performance.
 - The **sequencer** of a scope is the single resolver that admits records into the scope, one at a time and in one order. Each scope that needs an order has exactly one sequencer at a time.
-- A **seal** is a record, written by the sequencer, stating that the scope is complete up to some position in that order: no record will later be admitted at or before that position. Admitting a record also seals the part of the scope before the admitted record, which is how a sequencer settles which of two concurrent bookings came first.
+- A **seal** is a record, written by the sequencer, stating that the scope is complete up to some position in that order: no record will later be admitted at or before that position. Admitting a record also seals the part of the scope before the admitted record, which is how a sequencer settles which of two concurrent bookings came first. A scope can also be [split into a fixed set of parts](https://www.neilconway.org/docs/icde2014_blazes.pdf) that are not order-coupled with one another, each with its own sequencer, as the escrow method below does. The whole scope is then sealed as far as every part is, as an election's ballots are complete once every precinct has sealed its own.
 
-**Sealing principle:** a monotone function is correct on any snapshot. A conclusion that depends on records being absent is final only over a sealed scope.
+**Sealing principle:** later records only add to a monotone function's output over admitted records. A conclusion that depends on records being absent is final only over a sealed scope.
 
 The [CALM theorem](https://arxiv.org/abs/1901.01930) makes the principle exact. A problem has a consistent distributed implementation that needs no coordination if and only if the problem is monotone, so coordination is needed exactly where a conclusion about absence is drawn. Even "the current value" is such a conclusion, and last-writer-wins replication uses timestamps as the sequencer.
 
@@ -230,10 +230,10 @@ Seals appear at every scale under other names:
 | A hold's timeout | one held seat | the booking system |
 | A transaction commit | the rows the transaction read and wrote | the database |
 | An entry reaching consensus | one position in a replicated log | a quorum of replicas |
-| A watermark in a stream processor | all events before a timestamp | the stream processor |
+| A watermark in a stream processor | one input's events before a timestamp | that input's source |
 | An analysis cutoff | the data for one experiment | the experimenter |
 | Closing the books | one accounting period | the accounting department |
-| Polls closing | one election's ballots | the election authority |
+| Polls closing | one precinct's ballots | the precinct's officials |
 
 The smallest scope is one choice. A choice with a timeout can receive both its resolver's value and its default, and each can be admitted alone but not both, so each such choice has a sequencer of its own that admits whichever value arrives first. At most one record answers a choice, which settles duplicate replies and a reply that races its timeout without a further rule.
 
@@ -429,7 +429,7 @@ Every filled cell lies on or below the diagonal. Each relation runs from a later
 
 The top-left block traces the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows for scope, sequencer, and seal repeat the first three primitives with records as their subject. A sequencer orders a scope as a resolver resolves a choice, and a seal closes the scope and names its sequencer as a record answers a choice and names its resolver. Two of these terms are cases of the primitives they repeat: a sequencer is a resolver, and a seal is a record. A goal is also a function, and a release is a record.
 
-Four principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is the output of a function over a scope that is not yet sealed. Effects needs no term, because the key that makes a repeat harmless is the choice's identifier and "unknown" is one of the choice's options. Derivation appears as an absence: no term in the matrix denotes stored state.
+Four principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is a function's output that is not yet final. Effects needs no term, because the key that makes a repeat harmless is the choice's identifier and "unknown" is one of the choice's options. Derivation appears as an absence: no term in the matrix denotes stored state.
 
 ## Features built from the principles
 
