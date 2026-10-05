@@ -100,16 +100,16 @@ In programming-language terms, a choice is an [algebraic effect](https://arxiv.o
 
 ## Eight principles
 
-Each principle starts from a constraint that is true of every interactive system and states what the constraint requires. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
+Each principle starts from a constraint that is true of every interactive system and states what the constraint requires of a system whose results must agree across devices and survive failures and releases. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
 | Principle | Constraint it follows from | What it requires |
 | --- | --- | --- |
 | Derivation | Functions are deterministic. | Store every value supplied at a choice, and compute everything else from the stored values. |
 | Binding | Different resolvers can supply the same choice. | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
-| Sealing | Records reach different places at different times. | Conclude that a record does not exist only after the period in which it could arrive has closed. |
-| Prediction | A response can be needed sooner than records can travel. | Show provisional values, and replace them when the records arrive. |
+| Sealing | Records reach different places at different times. | Conclude that a record does not exist only over a sealed scope. |
+| Prediction | A response can be needed sooner than records can travel. | When the response deadline is shorter than the time to seal, show provisional values, and recompute them when the seal arrives. |
 | Effects | Presenting a choice can change the world, and the reply can be lost. | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
-| Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one structure for sync, ordering, experiments, and access. |
+| Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
 | Goals | Bindings can be compared only against a direction. | State each goal as a function with a direction and limits. |
 | Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
 
@@ -259,7 +259,7 @@ Human perception and physics set both durations. Responses within about 0.1 s [f
 
 When the response deadline is shorter than the sealing latency, the view has to include records that the sequencer has not yet admitted. Functions evaluated over those records give **provisional values**, which are replaced when the sequencer's admissions arrive.
 
-**Prediction principle:** when a choice's response deadline is shorter than its sealing latency, show provisional values computed from records not yet admitted, and replace them when the admissions arrive.
+**Prediction principle:** when a choice's response deadline is shorter than its sealing latency, show provisional values computed from records not yet admitted, and recompute them when the admissions arrive.
 
 Several familiar features are this one mechanism:
 
@@ -323,7 +323,7 @@ Order-coupled choices need a sequencer to admit one record first and refuse the 
 
 Two people booking the same seat are order-coupled. Two people commenting on the same post are read-coupled. Two people typing into the same paragraph of a shared document are read-coupled when a merge algorithm combines their edits, because every combination of concurrent edits then merges into a valid document.
 
-**Coupling principle:** derive which choices affect each other from the functions, and use the resulting graph to set what is synchronized, which records share a sequencer, which units share an experiment variant, and who may see what.
+**Coupling principle:** derive which choices affect each other from the functions, and use the resulting graph to set what is synchronized, which records share a sequencer, and which units share an experiment variant, and to locate the edges that access rules remove.
 
 ![A graph of choices joined by read coupling and order coupling, divided into three parts, with the edges that cross parts marked](../../assets/diagrams/coupling-graph.svg "One partition of the coupling graph sets what syncs live, where sequencers sit, and which units share an experiment variant.")
 
