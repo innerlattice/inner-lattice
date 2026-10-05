@@ -133,10 +133,7 @@ Several features follow without further design:
 
 How choices are defined determines what is recorded. A drag gesture, for example, can be defined as one choice whose value is the point where the drag ends, or as a series of choices, one for each position sampled at 120 Hz. A value supplied by a deterministic resolver could be recomputed instead of recorded. Recording the value costs little and keeps the records interpretable after the binding changes.
 
-Because records are never modified, deleting a person's data on request needs a separate method. Two methods are in use:
-
-- encrypt each person's records under a key of their own, and destroy the key on request;
-- add an access rule that removes the person's records from every view.
+Because records are never modified, deleting a person's data on request needs a separate method: encrypt each person's records under a key of their own, and destroy the key on request. Erasure is the one exception to recomputation and to finality: an output computed from erased records, even a final one, can no longer be recomputed as it was. The erasure request is itself a record, so the historical reading shows where records were erased.
 
 ## Binding: specify each choice separately from its resolver
 
@@ -395,20 +392,20 @@ Programs change while choices are open. Some people still run last year's versio
 
 - **A release is a record.** Choices opened after the release use the new version.
 - **Migrations change how records are read.** Old records stay as they are, and translation between versions is a function.
-- **Open choices move by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
-- **Changing a binding is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
+- **Open choices carry over by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
+- **Changing a binding's definition is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
 
-Records can therefore be read in two ways, and each answers a different question. The *historical reading* evaluates each record under the functions in force when the record was made, and answers what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and answers what the state is now. Both are functions of the same records. A release that changes what a choice asks, rather than how its value is written, gives the choice's declaration a new name, because no translation turns an answer to one question into an answer to another. Open choices of the old declaration then receive a recorded fallback.
+Records can therefore be read in two ways, and each answers a different question. The *historical reading* evaluates each record under the functions in force when the record was made, and answers what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and answers what the state is now. Both are functions of the same records. A release changes only the current reading of a final value. A release that changes what a choice asks, rather than how its value is written, gives the choice's declaration a new name, because no translation turns an answer to one question into an answer to another. Open choices of the old declaration then receive a recorded fallback, which is "unknown" for a choice whose effect may already have started.
 
-Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{R} \to S_v$ compute state of type $S_v$ from a set of records under version $v$, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
+Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{A}_v \to S_v$ compute state of type $S_v$ from a set of records reachable under version $v$, let $\tau$ translate records made under $v$ into records that $v'$ reads, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
 
 $$
-\mu\big(\mathrm{state}_v(R)\big) = \mathrm{state}_{v'}(R) \quad \text{for every set of records } R
+\mu\big(\mathrm{state}_v(R)\big) = \mathrm{state}_{v'}\big(\tau(R)\big) \quad \text{for every } R \in \mathcal{A}_v
 $$
 
-In words: migrating the old state gives the same result as recomputing the state from the records under the new version, which reads old records through translation functions. A diagram of this kind is called a *commuting square*, because both paths around the square arrive at the same value. Where replicas merge state with an operation $\sqcup$, the migration must also preserve merges: $\mu(s_1 \sqcup s_2) = \mu(s_1) \sqcup \mu(s_2)$ for any two states $s_1$ and $s_2$.
+In words: migrating the old state gives the same result as translating the records and recomputing the state under the new version. Both paths around this *commuting square* arrive at the same value. A correct $\mu$ exists exactly when the old state keeps everything the new state needs: any two reachable sets of records with the same old state also have the same new state. A balance cannot be migrated to a count of transactions, because $\{+10\}$ and $\{+15, -5\}$ have the same balance, and only recomputation from the records gives the count.
 
-The records contain real past runs, so the condition can be tested by replaying those runs along both paths. A finite library of migration operators, each with a known inverse or complement, satisfies the condition by construction. Three such libraries exist: [schema modification operators](https://doi.org/10.14778/1453856.1453939), [bidirectional lenses](https://doi.org/10.1145/1232420.1232424), and [functorial data migration](https://arxiv.org/abs/1009.1166).
+The records contain real past runs, so the condition can be tested by replaying those runs along both paths. Operator libraries such as [schema modification operators](https://doi.org/10.14778/1453856.1453939), [bidirectional lenses](https://doi.org/10.1145/1232420.1232424), and [functorial data migration](https://arxiv.org/abs/1009.1166) build $\tau$ and $\mu$ from parts that compose, but none of them establishes the square, which also depends on what the new version's functions compute.
 
 One requirement has no exception. If a release changes what an earlier view showed, after someone selected a value based on that view, the change must itself be recorded, as a restatement is in accounting. Otherwise the selection loses the context that gave it meaning.
 
