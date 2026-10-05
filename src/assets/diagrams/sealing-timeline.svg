@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 350" role="img" aria-labelledby="title desc">
-  <title id="title">A running count is correct at any time; a winner is final only after the seal</title>
-  <desc id="desc">Votes for A and B arrive over time from three polling stations. A running count of each option only grows, so it is correct at every moment and every replica reaches the same count. Who won is a conclusion about votes that have not arrived, so it is final only after the seal, when the polls close. At the seal A leads eight to five and A has won. A vote that arrives after the seal is refused or recorded as a correction.</desc>
+  <title id="title">A running count only rises; a winner is final only after the seal</title>
+  <desc id="desc">Votes for A and B arrive over time from three polling stations. A running count of each option only rises, so a count shown early is later added to but never taken back. Who won is a conclusion about votes that have not arrived, so it is final only after the seal, when the polls close. At the seal A leads eight to five and A has won. A vote that arrives after the seal is refused or recorded as a correction.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
   </defs>
@@ -31,7 +31,7 @@
   </g>
 
   <text class="label strong" x="20" y="176">Running count</text>
-  <text class="note" x="20" y="194">correct at any time</text>
+  <text class="note" x="20" y="194">only rises</text>
   <line class="grid" x1="120" y1="236" x2="660" y2="236"/>
   <g class="pine">
     <path class="line-hue" d="M120 236 H140 V226 H190 V216 H245 V206 H280 V196 H310 V186 H385 V176 H415 V166 H450 V156 H660"/>

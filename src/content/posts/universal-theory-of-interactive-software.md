@@ -102,15 +102,15 @@ In programming-language terms, a choice is an [algebraic effect](https://arxiv.o
 
 Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, as one that asks about an unknown payment until the network answers does. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
-| Principle | Constraint it follows from | What it requires |
+| Principle | Constraint it answers | What it requires |
 | --- | --- | --- |
-| Derivation | Functions are deterministic. | Store every value supplied at a choice, and compute everything else from the stored values. |
+| Derivation | Only values supplied at choices carry new information. | Store every value supplied at a choice, and compute everything else from the stored values. |
 | Binding | Different resolvers can supply the same choice. | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
 | Sealing | Records reach different places at different times. | Conclude that a record does not exist only over a sealed scope. |
-| Prediction | A response can be needed sooner than records can travel. | When the response deadline is shorter than the time to seal, show provisional values, and recompute them when the seal arrives. |
+| Prediction | A response can be needed sooner than records can travel. | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Presenting a choice can change the world, and the reply can be lost. | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
-| Goals | Bindings can be compared only against a direction. | State each goal as a function with a direction and limits. |
+| Goals | Bindings can be ranked only against a direction. | State each goal as a function with a direction and limits. |
 | Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
 
 ## Derivation: store supplied values and compute everything else
@@ -217,7 +217,7 @@ One late record can make such a conclusion false. A value is *final* when no rec
 
 The [CALM theorem](https://arxiv.org/abs/1901.01930) draws the same line for queries, whose outputs are sets ordered by inclusion. When no place knows how records are divided among places, a query has a consistent distributed implementation that needs no coordination if and only if the query is monotone. Even "the current value" is a conclusion about absence, as is any value that a correction or an undo could supersede: last-writer-wins replication orders writes by timestamp, but no replica can tell that no later write exists.
 
-![Records arriving over time, a running count that is correct at every moment, and a winner that is final only after the seal](../../assets/diagrams/sealing-timeline.svg "A monotone function is correct at every moment. A conclusion about absence is final only after the seal.")
+![Records arriving over time, a running count that only rises, and a winner that is final only after the seal](../../assets/diagrams/sealing-timeline.svg "A monotone function's output only grows. A conclusion about absence is final only after the seal.")
 
 Seals appear at every scale under other names:
 
@@ -326,7 +326,7 @@ Two people booking the same seat are order-coupled. Two people commenting on the
 
 Each use cuts different edges: sequencer scopes keep order edges inside, experiment units keep read edges inside, and sync follows read edges. Exact derivation is undecidable for general code, so a compiler keeps an edge wherever a function, or a resolver that learns from records, reads another choice's records. Extra edges cost coordination or statistical power, not correctness.
 
-![A graph of choices joined by read coupling and order coupling, divided into three parts, with the edges that cross parts marked](../../assets/diagrams/coupling-graph.svg "One partition of the coupling graph sets what syncs live, where sequencers sit, and which units share an experiment variant.")
+![A graph of choices joined by read coupling and order coupling, divided into three parts, with the edges that cross parts marked](../../assets/diagrams/coupling-graph.svg "Order edges stay inside parts, so each part can have one sequencer. The read edges that cross parts need sync and carry treatment between variants.")
 
 Most of what a product does about other people uses one of the two relations:
 
@@ -419,7 +419,7 @@ The four primitives and the eight principles introduce ten terms. Each term afte
 4. Each record holds one value. What the records mean together, such as the current state, the next view, and the next open choice, is computed by a **function**.
 5. Functions are deterministic, so what a program does depends on which resolver supplies each choice. A **binding** states that dependence.
 6. Functions combine records from different resolvers, which couples choices. When two records cannot both be admitted, one resolver has to put them in order: a **sequencer** orders a **scope** of records, and a **seal** states that the scope is complete up to a position.
-7. Bindings can be compared only against a direction, which a **goal** states.
+7. Bindings can be ranked only against a direction, which a **goal** states.
 8. Choices, functions, bindings, and goals change as the program changes, and each change is a new **version**.
 
 The matrix below lists the terms in that order and states how each term acts on the others. Each filled cell holds a verb, and the cell reads as a sentence from the term on its row to the term on its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice". Cells on the diagonal relate two instances of one term, such as a record that supersedes an earlier record.
@@ -453,7 +453,7 @@ The principles are independent in a similar sense: each can be broken while the 
 | Version history, audit, undo | derivation | functions over the records; undo appends a reversing record |
 | Caches, indexes, search | derivation | stored outputs of functions |
 | Analytics, funnels, attribution | derivation, goals | goals and provenance over the records |
-| Feature flags, A/B tests, staged rollouts | binding, coupling, goals | a randomized resolver with recorded probabilities, units from a coupling partition, and a goal |
+| Feature flags, A/B tests, staged rollouts | binding, coupling, goals | a randomized resolver with recorded probabilities, units from a partition of the read-coupling graph, and a goal |
 | Personalization, recommendation | binding, goals | a learned resolver that reads a goal |
 | Automation, escalation, delegation | binding, coupling | changing a binding, within rules on the binding table |
 | Simulated users, regression replay | derivation, binding | resolvers that return values written into a test, or recorded values |
