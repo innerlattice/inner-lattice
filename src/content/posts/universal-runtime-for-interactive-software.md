@@ -22,7 +22,7 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 
 | Term | Meaning |
 | --- | --- |
-| choice | a point where a run needs a value from outside its code; a choice has a stable identifier, a view, options, a timeout, and a default |
+| choice | a point where a run needs a value from outside its code; a choice has a stable identifier (its declaration's name and its address in the run), a view, options, a timeout, and a default |
 | resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or an external system |
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
 | function | a deterministic map from a set of records to a value; state, views, indexes, and the set of open choices are function outputs |
@@ -31,7 +31,7 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | scope | a set of records picked out by a condition, such as every booking for one performance |
 | sequencer | the single resolver that admits records into a scope in one order and writes the scope's seals |
 | seal | a record stating that a scope is complete up to a position |
-| provisional value | the output of a function over a scope that is not yet sealed, shown before the seal and replaced after the seal |
+| provisional value | a function's output that is not yet final, shown before the seal and replaced after it |
 | read coupling | a record from one choice can change another choice's view or options |
 | order coupling | records from two choices can each be admitted alone but not together |
 | response deadline | the longest time that can pass between supplying a value and showing its consequence before the interaction fails |
@@ -44,7 +44,7 @@ The eight principles, by name:
 | Derivation | Store every value supplied at a choice, and compute everything else from the stored values. |
 | Binding | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
 | Sealing | Conclude that a record does not exist only over a sealed scope. |
-| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and recompute them when the seal arrives. |
+| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
 | Goals | State each goal as a function of the records with a direction and guardrails. |
@@ -232,7 +232,7 @@ A release is a record. Its value is the new program version, and each choice kee
 - **Changing an AI agent's model** is a release. Replaying recent choices with both models before the release shows what the change would have done.
 - **The migration square is tested by replay.** The theory post defines a migration $\mu$ from stored state under version $v$ to stored state under version $v'$ as correct when $\mu(\mathrm{state}_v(R)) = \mathrm{state}_{v'}(\tau(R))$ for every set of records $R$ that runs can produce before the release, where $\tau$ translates old records: migrating the old state gives the same result as translating the records and recomputing under the new version. Before the release record is appended, the evaluator computes both sides over every prefix of the stored records and reports each prefix on which the two sides differ.
 
-![Two paths from the records to state under version 2, which must agree, above a timeline in which a release record separates records made under version 1 from records made under version 2, and an open choice keeps its stable identifier across the release](../../assets/diagrams/migration-square.svg "A migration is correct when migrating the old state and recomputing under the new version agree. Open choices move across a release by stable identifier.")
+![Two paths from the records to state under version 2, which must agree, above a timeline in which a release record separates records made under version 1 from records made under version 2, and an open choice keeps its stable identifier across the release](../../assets/diagrams/migration-square.svg "A migration is correct when migrating the old state and recomputing under the new version agree. Open choices carry over a release by stable identifier.")
 
 [Temporal's versioning API](https://docs.temporal.io/develop/typescript/versioning) is a small instance of the same design: workflow code branches on a version marker recorded in the workflow's own event history, so a workflow started under old code replays under old code. Erlang's [`code_change` callback](https://www.erlang.org/doc/apps/stdlib/gen_server.html) converts a running process's state when new code is loaded.
 

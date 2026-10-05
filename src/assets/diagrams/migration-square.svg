@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" role="img" aria-labelledby="title desc">
   <title id="title">A migration as a commuting square, and a release among the records</title>
-  <desc id="desc">Top: two paths lead from the records to the state under version 2. One computes the state under version 1 and then applies the migration. The other computes the state under version 2 directly. A migration is correct when both paths give the same state, and it must also preserve merges. Bottom: a timeline of records. A release record changes the program version. Records before it were made under version 1 and records after it under version 2, except a record from a client still running version 1, which is read under version 1. An open choice with stable identifier q7 under version 1 moves to the choice q7 under version 2 at the release.</desc>
+  <desc id="desc">Top: two paths lead from the records to the state under version 2. One computes the state under version 1 and then applies the migration. The other translates the records and computes the state under version 2. A migration is correct when both paths give the same state. Bottom: a timeline of records. A release record changes the program version. Records before it were made under version 1 and records after it under version 2, except a record from a client still running version 1, which is read under version 1. An open choice with stable identifier q7 under version 1 keeps that identifier under version 2 across the release.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="arrowhead" d="M1 1 L9 5 L1 9 Z"/></marker>
   </defs>
@@ -22,12 +22,11 @@
   </g>
   <g class="label">
     <text x="216" y="62">compute under v1</text>
-    <text x="216" y="152">compute under v2</text>
+    <text x="216" y="152">translate, compute under v2</text>
     <text x="550" y="110">migrate: μ</text>
   </g>
   <g class="note" text-anchor="middle">
-    <text x="330" y="104">both paths must agree,</text>
-    <text x="330" y="120">and μ must preserve merges</text>
+    <text x="330" y="112">both paths must agree</text>
   </g>
 
   <text class="axis" x="40" y="236">Records</text>
@@ -59,5 +58,5 @@
     <rect class="box" x="364" y="296" width="146" height="22" rx="4"/>
     <text class="note ink" x="437" y="311" text-anchor="middle">open choice q7, v2</text>
   </g>
-  <text class="note" x="360" y="346" text-anchor="middle">an open choice moves across the release by stable identifier</text>
+  <text class="note" x="360" y="346" text-anchor="middle">an open choice keeps its stable identifier across the release</text>
 </svg>
