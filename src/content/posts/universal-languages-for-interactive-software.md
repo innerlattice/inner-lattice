@@ -195,7 +195,7 @@ Arranging components on a screen is itself a choice. Its options are the arrange
 
 ### Versions
 
-A `release` declaration names a new program version and the migrations that read old records or convert stored state. Choices keep their identifiers across releases, so an open choice's answer still counts under the new version, as the versions principle requires.
+A `release` declaration names a new program version and the migrations that read old records or convert stored state. Choices keep their identifiers across releases that do not change what they ask, so an open choice's answer still counts under the new version, as the versions principle requires.
 
 ## Modules organized by notion architecture
 
@@ -280,7 +280,7 @@ fn suggest_alternatives(party: Party, wanted: Time) -> Set<Id<Slot>>
   ensures size(result) <= 3 and result ⊆ ids(open_slots(party.size))
 ```
 
-`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver answers it. `acts` marks a choice whose presentation changes the world. `reconcile_deposit` is a choice of its own that asks the network about the `pay_deposit` choice for the same hold, under that choice's identifier. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
+`choice` starts a declaration, with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver answers it. `acts` marks a choice whose presentation changes the world. `reconcile_deposit` is a choice of its own that asks the network about the `pay_deposit` choice for the same hold, under that choice's identifier. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
 
 ### The booking flow
 
@@ -376,7 +376,7 @@ The language has three kinds of definition and five kinds of declaration.
 2. **Laws** state invariants, temporal properties, and properties of bindings, merges, and migrations. Each law is checked by the method its content allows: derived sequencing, model checking, SMT solving, construction, replay, proof, or runtime monitoring.
 3. **Goals** declare a function, a direction, and guardrails, read by analytics, experiments, and learning resolvers.
 4. **Presentation** maps views to intents and intents to components per channel. Layout is a choice over a component catalog.
-5. **Releases** declare program versions and migrations. Choice identifiers are stable across releases.
+5. **Releases** declare program versions and migrations. Choice identifiers are stable across releases that do not change what a choice asks.
 
 **Organization.** Files belong to notions, one per concept. Each file has an orientation (inward, process, outward), a determination (universal, particular, individual), a power level, and an effect. Imports point only toward inward and universal files.
 
