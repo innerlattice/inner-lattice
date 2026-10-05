@@ -224,7 +224,7 @@ fn near(size: Nat, t: Time) =
   { s in open_slots(size) | abs(s.start - t) <= 2 h }
 ```
 
-`type` declares the value types that choices produce; `Id<Slot>` is the identifier of a record whose value is a `Slot`, and `|` separates alternatives. `fn` defines a function, and every function implicitly reads the current records. `values(c)` is the set of values counted for choice `c`, `records(c)` is the set of counted records for choice `c`, each carrying the choice's arguments and the supplied value, and `admitted(T)` is the set of records of type `T` that a sequencer has admitted. All six functions are first-order queries, so they are at level 1, and the compiler can determine that `live_holds` and `open_slots` conclude something from absence (`not released`, `== {}`).
+`type` declares the value types that choices produce; `Id<Slot>` is the identifier of a record whose value is a `Slot`, and `|` separates alternatives. In set braces, `|` reads "such that", and `x.id` is the identifier of the record that holds `x`. `fn` defines a function, and every function implicitly reads the current records. `values(c)` is the set of values counted for choice `c`, `records(c)` is the set of counted records for choice `c`, each carrying the choice's arguments and the supplied value, and `admitted(T)` is the set of records of type `T` that a sequencer has admitted. All six functions are first-order queries, so they are at level 1, and the compiler can determine that `live_holds` and `open_slots` conclude something from absence (`not released`, `== {}`).
 
 ### Choices and an unresolved function
 
