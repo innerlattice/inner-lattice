@@ -1,6 +1,6 @@
 ---
 title: "Toward a universal theory of interactive software"
-description: "A theory of interactive software with four primitives (choices, resolvers, records, and functions) and eight principles, each following from a constraint every interactive system faces. Undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration follow from the principles."
+description: "A theory of interactive software with four primitives (choices, resolvers, records, and functions) and eight principles, each answering a constraint every interactive system faces. Undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration follow from the principles."
 date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
@@ -18,7 +18,7 @@ Teams build these products with different architectures:
 
 Each architecture has its own vocabulary, and several problems are solved in each under different names. Offline editing in a document, rollback in a fighting game, and a pending transaction in a banking app are one mechanism. The shards of a database and the units of an A/B test can be computed from the same graph.
 
-This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and eight principles. Each principle follows from a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration.
+This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and eight principles. Each principle answers a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration.
 
 Two later posts build on the theory. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes a runtime that executes programs built on the theory, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes a language for writing programs in it.
 
@@ -100,7 +100,7 @@ In programming-language terms, a choice is an [algebraic effect](https://arxiv.o
 
 ## Eight principles
 
-Each principle starts from a constraint that is true of every interactive system and states what the constraint requires of a system whose results must agree across devices and survive failures and releases. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
+Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, as one that asks about an unknown payment until the network answers does. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
 | Principle | Constraint it follows from | What it requires |
 | --- | --- | --- |
@@ -323,7 +323,7 @@ In words: for some reachable set of records, adding either record alone keeps th
 
 Order-coupled choices need a sequencer to admit one record first and refuse the other. Sets of records merge by union and each admission adds one record, so a set of choices is invariant-confluent exactly when no order coupling holds among them: a failure over longer histories always contains a failing pair. Order coupling can hold without read coupling. When $b$'s options ignore $a$'s records, as a sign-up form that accepts any email address does, the sequencer refuses $b$'s record at admission.
 
-Two people booking the same seat are order-coupled. Two people commenting on the same post are read-coupled. Two people typing into the same paragraph of a shared document are read-coupled when a merge algorithm combines their edits, because every combination of concurrent edits then merges into a valid document.
+Two people booking the same seat are order-coupled. Two people commenting on the same post are read-coupled. Two people typing into the same paragraph of a shared document are read-coupled when a merge algorithm combines their edits, because every combination of concurrent edits then merges into a valid document, though not always into the text either person meant.
 
 **Coupling principle:** derive which choices affect each other from the functions, and use the resulting graph to set what is synchronized, which records share a sequencer, and which units share an experiment variant, and to locate the edges that access rules remove.
 
@@ -432,6 +432,20 @@ Every filled cell lies on or below the diagonal. Each relation runs from a later
 The top-left block traces the interaction loop: a function opens a choice, a resolver resolves the choice, the record of the resolver's value answers the choice, and a function reads the record. The rows for scope, sequencer, and seal repeat the first three primitives with records as their subject. A sequencer orders a scope as a resolver resolves a choice, and a seal closes the scope and names its sequencer as a record answers a choice and names its resolver. Two of these terms are cases of the primitives they repeat: a sequencer is a resolver, and a seal is a record. A goal is also a function, and a release is a record.
 
 Four principles add no term. Coupling appears in one cell: a function couples choices. Prediction needs no term, because a provisional value is a function's output that is not yet final. Effects needs no term, because the key that makes a repeat harmless is the choice's identifier and "unknown" is one of the choice's options. Derivation appears as an absence: no term in the matrix denotes stored state.
+
+The principles are independent in a similar sense: each can be broken while the other seven hold. The table gives one such failure per principle, with the two sentences of Binding taken separately, and what goes wrong.
+
+| Principle broken | A failure in which every other principle holds | What goes wrong |
+| --- | --- | --- |
+| Derivation | A seat count kept by handler code drifts from the bookings after a failed request. | a wrong result |
+| Binding, first sentence | The payment choice names its card network, so a test cannot bind a scripted resolver. | changing a resolver needs new code |
+| Binding, second sentence | Any signed-in user can approve a refund bound to the support lead. | an unauthorized result |
+| Sealing | A results page declares a final winner before every precinct has reported. | a wrong result |
+| Prediction | A game waits for the server before moving the player. | a late result |
+| Effects | A retry after a lost reply carries a new key, and the card is charged twice. | a repeated effect |
+| Coupling | An experiment randomizes riders who draw on the same drivers. | a biased estimate |
+| Goals | A bandit maximizes clicks while the declared goal is completed bookings. | the wrong target optimized |
+| Versions | A workflow paused under one version resumes under the next and reads an old field with its new meaning. | a misread record |
 
 ## Features built from the principles
 
