@@ -18,7 +18,7 @@ One interactive product is usually written in many languages:
 
 Each language describes the same entities in its own terms, and none of them can read the others. Properties that span them, such as whether every recorded choice appears in the tracking plan or whether an AI agent's tools obey the permission rules, are checked by review, if at all.
 
-[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and seven principles. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds a runtime for that theory from four components. This post derives a language for writing programs that run on that runtime.
+[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and eight principles. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds a runtime for that theory from four components. This post derives a language for writing programs that run on that runtime.
 
 The method is to start from particular languages. Each successful special-purpose language gives something up, and the restriction buys a guarantee that tools can rely on. Sorting those trades shows two independent axes along which code varies. A language built on the two axes, plus a small set of declarations, can express every part of the theory. A reservation module written in the language shows what a compiler can derive from source, a comparison with other products tests whether the constructs generalize, and the last section states the language on one page.
 
@@ -30,23 +30,24 @@ The method is to start from particular languages. Each successful special-purpos
 | resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or an external system |
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
 | function | a deterministic map from a set of records to a value |
-| binding | configuration stating which resolver supplies the value for which choice |
+| binding | configuration stating which resolver supplies the value for which choice; only a value from the bound resolver counts |
 | scope, seal, sequencer | a set of records picked out by a condition; a record stating that the scope is complete up to a position; the single resolver that admits records into the scope in one order |
 | invariant | a condition that every set of admitted records must satisfy |
 | read coupling, order coupling | a record from one choice can change another choice's view or options; records from two choices can each be admitted alone but not together |
 | goal | a function of the records with a direction and guardrails |
 | release | a record that changes the program version |
 
-The seven principles, by name:
+The eight principles, by name:
 
 | Principle | What it requires |
 | --- | --- |
 | Derivation | Store every value supplied at a choice, and compute everything else from the stored values. |
-| Binding | Specify each choice without naming its resolver, and set the resolver separately. |
+| Binding | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
 | Sealing | Conclude that a record does not exist only over a sealed scope. |
-| Prediction | When the response deadline is shorter than the time to seal, show provisional values. |
-| Coupling | Derive which choices affect each other from the functions, and use that one graph for sync, ordering, experiments, and access. |
-| Goals | State each goal as a function with a direction and guardrails. |
+| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and recompute them when the seal arrives. |
+| Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
+| Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
+| Goals | State each goal as a function of the records with a direction and guardrails. |
 | Versions | Store the program version with every record, and translate old records instead of rewriting them. |
 
 ## What existing languages give up and what they gain
@@ -111,7 +112,7 @@ where $C$ is the set of declared choices and $X_c$ is the value type of choice $
 | a model call | a choice bound to an AI model |
 | a database transaction | a choice bound to a sequencer: admit or refuse a record into a scope |
 
-A `choice` declaration gives the choice's stable identifier, view, options, timeout, and default, and the set of declared choices is the program's record schema, which makes the analytics tracking plan a compiler output.
+A `choice` declaration gives the choice's stable identifier, view, options, timeout, and default, and the set of declared choices is the program's record schema, which makes the analytics tracking plan a compiler output. A declaration can also mark the choice `acts`, meaning that presenting it changes the world, as a payment or an email does. The runtime presents such a choice under its identifier, and the compiler checks that its view reads only final outputs (effects principle). This is a property of a choice, separate from the programming-language sense in which `choose` is the only effect.
 
 The table is the binding principle in language form. In programming-language terms, `choose` is an [algebraic effect](https://arxiv.org/abs/1312.1399) and a resolver is the effect's handler, so the code that opens a choice never names the resolver. The binding names the resolver, and a test, a replay, or an experiment substitutes a different handler without changing the code. Koka shows that an effect can be tracked in types. With one effect, the type of every definition states whether the definition can open choices at all, and pure code can be cached, moved, and replayed freely.
 
@@ -226,13 +227,13 @@ type Slot    = { start: Time, seats: Nat }
 type Party   = { size: Nat, contact: Contact }
 type Hold    = { slot: Id<Slot>, party: Party }
 type Release = { hold: Id<Hold> }
-type Payment = approved(Reference) | declined
+type Payment = approved(Reference) | declined | unknown
 
 -- level 1: functions over the records
 fn slots = values(publish_slot)
 
 fn released(h: Id<Hold>) = exists r in admitted(Release) where r.hold == h
-fn paid(h: Id<Hold>)     = exists p in records(pay_deposit) where p.hold == h, p.value is approved
+fn paid(h: Id<Hold>)     = exists p in records(pay_deposit) ∪ records(reconcile_deposit) where p.hold == h, p.value is approved
 
 fn live_holds(s: Id<Slot>) =
   { h in admitted(Hold) | h.slot == s, not released(h.id) }
@@ -257,16 +258,21 @@ choice pick_slot(party: Party, offered: Set<Id<Slot>>) -> Id<Slot>? {
   timeout 15 min, default none
 }
 
-choice pay_deposit(hold: Id<Hold>) -> Payment {
+choice pay_deposit(hold: Id<Hold>) -> Payment acts {
   view    deposit_for(hold)
-  timeout 10 min, default declined
+  timeout 10 min, default unknown
+}
+
+choice reconcile_deposit(hold: Id<Hold>) -> Payment {
+  view    deposit_for(hold)
+  timeout 1 h, default unknown
 }
 
 fn suggest_alternatives(party: Party, wanted: Time) -> Set<Id<Slot>>
   ensures size(result) <= 3 and result ⊆ ids(open_slots(party.size))
 ```
 
-`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
+`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. `acts` marks a choice whose presentation changes the world. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
 
 ### The booking flow
 
@@ -279,11 +285,12 @@ flow book(party: Party, wanted: Time) {
     hold    = admit Hold { slot: slot, party: party }
   } until hold != refused
   payment = choose pay_deposit(hold)
+  while payment == unknown { payment = choose reconcile_deposit(hold) }
   if payment == declined { admit Release { hold: hold } }
 }
 ```
 
-`a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow. If another party takes the slot first, the hold is refused and the loop offers slots again. The control has finitely many locations and one loop back, so the control is at level 1 and can be model-checked.
+`a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow, and `while` repeats its body as long as its condition holds. If another party takes the slot first, the hold is refused and the loop offers slots again. If the card network's reply to the deposit is lost, the hold stays in place and the flow asks the network for the outcome until it learns one, because releasing the slot while the card may have been charged would keep a deposit for nothing. The control has finitely many locations and two loops back, so the control is at level 1 and can be model-checked.
 
 ### Laws, bindings, goals, access, and presentation
 
@@ -295,6 +302,7 @@ law agents_never_pay: resolver(pay_deposit) is not model
 bind publish_slot         to person in role staff
 bind pick_slot            to person
 bind pay_deposit          to external card_network
+bind reconcile_deposit    to external card_network
 bind suggest_alternatives to random { 0.5: model "assistant-2026-09", 0.5: fn nearest_open }
 
 goal fill_rate = seats_booked / seats_published, maximize
@@ -316,10 +324,11 @@ release v2 {
 
 | Output | How the compiler derives it |
 | --- | --- |
-| Record schema and analytics tracking plan | the declared choices (`publish_slot`, `pick_slot`, `pay_deposit`, `suggest_alternatives`) and the admissions of `Hold` and `Release` |
+| Record schema and analytics tracking plan | the declared choices (`publish_slot`, `pick_slot`, `pay_deposit`, `reconcile_deposit`, `suggest_alternatives`) and the admissions of `Hold` and `Release` |
 | One ordered scope per slot, with a sequencer | `one_live_hold` is not invariant-confluent: two holds on one slot each satisfy the law alone and violate the law together. The law reads holds and releases for one slot, so those records form the scope. The compiler also checks that every `Hold` enters through `admit`. |
 | Final and provisional labels | `open_slots` uses `not exists`, so availability is provisional until the slot's scope is sealed, and views that show availability are labeled provisional until then |
-| A model-checking result for `hold_resolves` | the flow's control graph, and the timeout on `pay_deposit`, which guarantees a record |
+| A model-checking result for `hold_resolves` | the flow's control graph and the timeouts, which guarantee records. The reconciliation loop ends only if the card network eventually reports an outcome other than `unknown`, so the compiler states that assumption alongside the result |
+| A check that effects follow final values | `pay_deposit` is marked `acts`, and its view reads `hold`, which `admit` returned, so the view is final |
 | An SMT check of `agents_never_pay` | the binding table at deployment |
 | An experiment design, with a warning | the randomized binding and `fill_rate`. Suggestions shown to one party change which slots are open for others, so randomizing per party lets read coupling cross between variants; the compiler reports the spillover and outputs a design that randomizes by venue and day |
 | An agent API | the choices and their types, without presentation |
@@ -349,7 +358,7 @@ The language has three kinds of definition and five kinds of declaration.
 
 1. **Types** describe the values that choices produce. They are constraints at level 0, and combining types is unification.
 2. **Functions** are deterministic maps from a set of records to a value. Each function has a power level from 0 to 4: constraints, queries, recursive queries, total functions, or general recursion. The compiler infers the lowest level that fits and checks it against the level the file declares.
-3. **Choices** have a stable identifier, a view, options, a timeout, and a default. `choose` is the only effect. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
+3. **Choices** have a stable identifier, a view, options, a timeout, and a default. `choose` is the only effect. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and the compiler checks that it opens only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
 
 **Declarations.**
 
@@ -361,7 +370,7 @@ The language has three kinds of definition and five kinds of declaration.
 
 **Organization.** Files belong to notions, one per concept. Each file has an orientation (inward, process, outward), a determination (universal, particular, individual), a power level, and an effect. Imports point only toward inward and universal files.
 
-**Compiler outputs.** From the source, the compiler derives the record schema, the ordered scopes and their sequencers, final and provisional labels on every view, model-checking and solver results for laws, experiment designs with coupling warnings, an API for AI agents, and migration checks. The runtime's configuration is read from the same source.
+**Compiler outputs.** From the source, the compiler derives the record schema, the ordered scopes and their sequencers, final and provisional labels on every view, checks that choices that act open only from final outputs, model-checking and solver results for laws, experiment designs with coupling warnings, an API for AI agents, and migration checks. The runtime's configuration is read from the same source.
 
 ## Open problems
 

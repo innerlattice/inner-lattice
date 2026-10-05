@@ -2,6 +2,7 @@
 # One snippet per line; a flagged clause containing the snippet is skipped.
 
 # universal-theory-of-interactive-software.md
+answers a choice, which settles duplicate replies and a
 as a resolver, so a function and a
 supplies a value, later computation reads the record and does
 is an interview, such as a tax questionnaire or a
@@ -22,6 +23,8 @@ reply arrives first, the dispatcher records the reply and the
 names the record, the outcome (admitted or refused
 
 # universal-languages-for-interactive-software.md
+deposit is lost, the hold stays in place and the
+changes the world, as a payment or an
 any data type, including trees and higher-order
 the sketch syntax, defines interactive code and starts
 down the side, with example languages and the
