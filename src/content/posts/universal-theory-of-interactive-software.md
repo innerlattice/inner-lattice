@@ -252,7 +252,7 @@ Each choice involves two durations:
 - The **response deadline** is the longest time that can pass between supplying a value and showing its consequence before the interaction fails, for example because a game stops feeling responsive or a person concludes that a button did nothing.
 - The **sealing latency** is the time between supplying a value and the arrival of the sequencer's admission at the place where the value was supplied. The sealing latency is at least the round trip to the sequencer.
 
-Human perception and physics set both durations. Responses within about 0.1 s [feel immediate](https://doi.org/10.1145/1476589.1476628). Animation at 60 Hz needs a new frame every 16.7 ms. For telephone calls, ITU-T Recommendation G.114 recommends at most 150 ms of one-way delay. On the other side, light in optical fiber travels about 200,000 km/s, so each 100 km of fiber adds about 1 ms to a round trip before any routing or processing. A sealed result within one 60 Hz frame needs the sequencer within about 1,700 km of fiber, and a round trip between London and Sydney takes at least 170 ms.
+Human perception and physics set both durations. Responses within about 0.1 s [feel immediate](https://www.nngroup.com/articles/response-times-3-important-limits/). Animation at 60 Hz needs a new frame every 16.7 ms. For telephone calls, ITU-T Recommendation G.114 recommends at most 150 ms of one-way delay. On the other side, light in optical fiber travels about 200,000 km/s, so each 100 km of fiber adds about 1 ms to a round trip before any routing or processing. A sealed result within one 60 Hz frame needs the sequencer within about 1,700 km of fiber, and a round trip between London and Sydney takes at least 170 ms.
 
 When the response deadline is shorter than the sealing latency, the view has to include records that the sequencer has not yet admitted. Functions evaluated over those records give **provisional values**, which are replaced when the sequencer's admissions arrive.
 
@@ -341,7 +341,7 @@ Most of what a product does about other people uses one of the two relations:
 
 The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) includes the requirement that one unit's outcome not depend on another unit's treatment. Read coupling that crosses between variants can break the requirement, and so can contact outside the program, which no function shows. Software rarely has this property by default, so the property has to be engineered. Three methods are in use:
 
-- **Partition the graph.** [Graph cluster randomization](https://arxiv.org/abs/1305.6979) assigns variants to clusters of a social graph. The same year, [balanced label propagation](https://web.stanford.edu/~jugander/papers/wsdm13-blp.pdf) partitioned that graph across servers, so experiment units and shards were computed from one graph.
+- **Partition the graph.** [Graph cluster randomization](https://arxiv.org/abs/1305.6979) assigns variants to clusters of a social graph. The same year, [balanced label propagation](https://doi.org/10.1145/2433396.2433461) partitioned Facebook's social graph across servers, so experiment units and shards can be computed from one graph.
 - **Randomize over time.** When coupling runs through a shared pool, as when every rider in a city draws on the same drivers, the graph has no useful clusters. [Switchback designs](https://arxiv.org/abs/2009.00148) randomize time periods instead.
 - **Change the functions to remove edges.** A [budget-split design](https://arxiv.org/abs/2012.08724) for ad experiments gives each variant its own share of every advertiser's budget, so the variants cannot draw on the same money. This design is the escrow method from the sealing principle, used to obtain statistical independence instead of coordination-free writes.
 
@@ -378,7 +378,7 @@ where:
 - $g_i$ is the outcome of the $i$-th record, for a goal that averages one outcome per record;
 - $\hat{G}(\pi')$ is the estimated value of that goal had $\pi'$ been bound to those choices.
 
-In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate is unbiased when each $p_i$ is correct, $\pi$ gives a positive probability to every value $\pi'$ might select in the same view, and no record's value changes another record's view or outcome. The second condition is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives without a model of the outcomes they never show. An opaque resolver's probabilities can only be estimated, which assumes that nothing outside the recorded view affected both the value and the outcome. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied this estimator to a log of randomly selected articles, and [a decision service built on the method](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
+In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate is unbiased when each $p_i$ is correct, $\pi$ gives a positive probability to every value $\pi'$ might select in the same view, and no record's value changes another record's view or outcome. The second condition is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives without a model of the outcomes they never show. An opaque resolver's probabilities can only be estimated, which assumes that nothing outside the recorded view affected both the value and the outcome. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied a closely related replay method to a log of randomly selected articles, and [a decision service built on the estimator](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
 
 Counterfactual replay evaluates a change to one run instead of a binding's average. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver that the change could reach, through its view or outside the program. A pinned AI model can be asked again, but a person cannot and needs a stand-in, such as a model of the person's behavior.
 
@@ -508,7 +508,7 @@ Groupware research classified collaboration tools by whether people work [at the
 
 1. **A sealed result for an order-coupled choice sooner than the round trip to its sequencer.** A sealed result within one 60 Hz frame requires a sequencer within about 1,700 km of fiber. Anything faster is provisional.
 2. **A final conclusion about absence over an unsealed scope.** A record still in transit can make the conclusion false.
-3. **An unbiased per-person estimate of an effect when read coupling crosses between variants.** Randomizing per person then measures a mixture of direct effects and spillover.
+3. **An estimate of what launching a variant to everyone would change, from per-person randomization, when read coupling crosses between variants and no [exposure model](https://doi.org/10.1214/16-AOAS1005) states how treatment spreads along it.** The comparison then measures a mixture of direct effects and spillover, the [expected average treatment effect](https://doi.org/10.1214/20-AOS1973), which differs from the effect of a launch.
 4. **Exact counterfactual replay past an opaque resolver whose view would have changed.**
 5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send the refusal through another channel, but cannot remove the refusal.
 6. **Changing what a past view showed without recording the change.**
@@ -532,12 +532,19 @@ Several fields reached this structure independently and named its parts differen
 
 Results proved in one field apply in the others:
 
-- The coordination results behind the sealing principle, from distributed systems, explain why checking an experiment's significance every day produces false positives.
-- The budget-split design from ad experiments, described under the coupling principle, uses escrow, a database method, to obtain statistical independence.
-- Game theory's *information set*, the set of situations a player cannot tell apart, implies that each record should contain the view shown to its resolver.
+- Game theory's *information set*, the set of situations a player cannot tell apart, is the counterpart of the view. A selection can be judged only against what its resolver could tell apart, so each record contains the view shown to its resolver.
 - Probabilistic programming [names each random choice by a stable *address*](https://proceedings.mlr.press/v15/wingate11a.html), so that an inference algorithm can change one choice, re-run the program, and reuse every other recorded value at the same address. This procedure is the counterfactual replay described under the goals principle.
 
-Older work reached parts of the structure. [Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006) argued that the only essential state in a system is the input its users supply, and that everything else should be derived. [The Elm Architecture](https://guide.elm-lang.org/architecture/) applies the derivation principle to one person on one device: messages are records, and `update` and `view` are functions. Double-entry bookkeeping has derived balances from a journal for more than five centuries.
+Older work reached each principle, usually in one kind of system:
+
+| Principle | Earlier form |
+| --- | --- |
+| Derivation | double-entry bookkeeping; derived state in [Out of the Tar Pit](https://curtclifton.net/papers/MoseleyMarks06a.pdf) (2006); [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html), which also stores external systems' replies for replay; [The Elm Architecture](https://guide.elm-lang.org/architecture/) on one device |
+| Binding | effect handlers; [Daml](https://docs.daml.com/daml/reference/choices.html), where only a choice's controllers may exercise it |
+| Sealing | Helland's [entities](https://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf), each one scope of serializability |
+| Prediction | tentative writes in [Bayou](https://www.cs.princeton.edu/courses/archive/fall15/cos518/papers/bayou.pdf), until a primary server commits them; Helland's [guesses and apologies](https://arxiv.org/abs/0909.1788) |
+| Effects | the output commit rule of [log-based rollback recovery](https://doi.org/10.1145/568522.568525), which also logs every nondeterministic event, as derivation does |
+| Coupling, Goals, Versions | the work cited in each section |
 
 ## Open problems
 
@@ -545,7 +552,7 @@ Older work reached parts of the structure. [Out of the Tar Pit](https://curtclif
 2. **Estimating coupling.** Read and order coupling can be derived from functions and weighted from the records. No published method says when a runtime may repartition a changing graph without invalidating experiments already running.
 3. **Declaring response deadlines.** Products do not record a response deadline per choice. Without one, the prediction principle cannot be applied mechanically.
 4. **Specifications for AI agent resolvers.** A choice bound to an agent needs a specification: what the view includes, which options exist, what budget applies, which results a person must confirm, and what must be recorded for replay.
-5. **Stand-ins for people.** Counterfactual replay past a person needs a stand-in, and no accepted method validates one.
-6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. No catalog maps sealing methods to the behavior each one produces.
+5. **Stand-ins for people.** Counterfactual replay past a person needs a stand-in. For averages over many runs, the [g-formula](https://doi.org/10.1016/0270-0255(86)90088-6) states when models of each step suffice, but no accepted method validates a stand-in for one run.
+6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also decides whose record goes first, and no principle constrains that decision when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
 
 [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the theory as four runtime components: one for records, one for functions, one for choices and their resolvers, and one for seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the theory, so that a compiler can check the principles.
