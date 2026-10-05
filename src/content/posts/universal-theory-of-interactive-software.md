@@ -266,7 +266,7 @@ Several familiar features are this one mechanism:
 - rollback netcode in fighting games;
 - the pending line in a banking app after a card payment.
 
-The card payment shows the mechanism plainly. The authorization is a provisional record, labeled pending, and settlement days later is the seal that posts the payment.
+The card payment shows the mechanism plainly. The pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment.
 
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
@@ -475,7 +475,7 @@ The principles are independent in a similar sense: each can be broken while the 
 
 Two quantities defined in the sealing, prediction, and coupling principles determine what a runtime must do for a choice:
 
-- its coupling: independent, read-coupled, or order-coupled;
+- its coupling: order-coupled if it has any order coupling, read-coupled if it has only read coupling, and independent otherwise;
 - its response deadline: long (a second or more, enough for a network round trip) or short (below about 100 ms, shorter than many round trips).
 
 | | Independent | Read-coupled | Order-coupled |
@@ -499,7 +499,7 @@ Products combine classes, so the classes describe choices, not products. A ride-
 | Accept the trip | driver | about 15 s | order | wait for the sequencer |
 | Car on the map | GPS receiver | short | read | merge, deliver live; the view interpolates between samples |
 | Message the driver | rider or driver | long | read | merge, deliver later |
-| Payment | card network | long | order, over funds | authorization is provisional; capture is the seal |
+| Payment | card network | long | order, over funds | wait for the card network; authorize at the request, capture the final fare |
 | Rating | rider | long | independent | compute anywhere |
 
 Groupware research classified collaboration tools by whether people work [at the same or different times, and in the same or different places](https://en.wikipedia.org/wiki/Computer-supported_cooperative_work#CSCW_Matrix). The table above keeps that matrix's shape and replaces both axes with quantities that determine the architecture: place becomes coupling, and time becomes the response deadline compared with the round trip.
