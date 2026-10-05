@@ -169,7 +169,7 @@ Examples of placements in use:
 
 Escrow changes the scope a sequencer covers. A box office holding a block of seats is the sequencer for that block until it returns the unsold seats, and the allocation and the return are both records. Moving a scope to a new sequencer is a handoff: the old sequencer seals the scope at its last position, and the new one admits from the next position. A failed sequencer cannot seal, so a quorum seals for it: in [Raft](https://raft.github.io/), a majority that votes in a new numbered term refuses the old leader's entries, and the new leader already holds every committed entry.
 
-A choice whose invariant spans two scopes, such as a transfer between accounts held on different shards, needs both sequencers. [Two-phase commit](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) admits the record in both scopes or in neither. A [saga](https://microservices.io/patterns/data/saga.html) admits it in one scope and, if the second refuses, appends a compensating record to the first. Both cost extra round trips, so scopes are drawn to keep most order coupling inside one scope.
+A choice whose invariant spans two scopes, such as a transfer between accounts held on different shards, needs both sequencers. [Two-phase commit](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) admits the record in both scopes or in neither. A [saga](https://doi.org/10.1145/38713.38742) admits it in one scope and, if the second refuses, appends a compensating record to the first. Both cost extra round trips, so scopes are drawn to keep most order coupling inside one scope.
 
 ## Replicas on devices
 
@@ -181,7 +181,7 @@ A device runs replicas of the record store, the evaluator, and the dispatcher, p
 | Read | records merge by set union and are forwarded to subscribers | CRDT sync |
 | Order | outputs that depend on the record stay provisional until admission; after a refusal, each local record made from a view that showed the refused record is refused, asked again, or reapplied on top of the admitted ones, as its choice states, or the simulation rolls back and recomputes | optimistic UI with rebase; rollback netcode |
 
-[Replicache](https://doc.replicache.dev/concepts/how-it-works) reapplies pending local changes on top of the server's admitted state. [GGPO](https://www.ggpo.net/) rolls a fighting game back to the last frame with confirmed inputs and recomputes the frames since. Both implement the third row, at different response deadlines.
+[Bayou](https://www.cs.princeton.edu/courses/archive/fall15/cos518/papers/bayou.pdf) kept writes tentative until a primary server committed them, and rolled back and reapplied tentative writes to follow the committed order. [Replicache](https://doc.replicache.dev/concepts/how-it-works) reapplies pending local changes on top of the server's admitted state. [GGPO](https://www.ggpo.net/) rolls a fighting game back to the last frame with confirmed inputs and recomputes the frames since. All three implement the third row, at different response deadlines.
 
 ## A seat booking through the four components
 
@@ -242,13 +242,13 @@ Every component has mature partial implementations:
 
 | Component | Systems |
 | --- | --- |
-| Record store | Kafka, Datomic, the event histories of durable execution engines |
+| Record store | Kafka with retention disabled, Datomic, the event histories of durable execution engines |
 | Evaluator | Feldera (DBSP), Materialize (differential dataflow), spreadsheet recalculation engines |
 | Dispatcher | Temporal and Restate; feature-flag services; a [contextual-bandit service](https://arxiv.org/abs/1606.03966) that records each probability at the moment of selection |
 | Sequencers | Spanner, CockroachDB, FoundationDB, [Cloudflare Durable Objects](https://developers.cloudflare.com/durable-objects/), authoritative game servers |
-| Several components in one system | SpacetimeDB, Replicache, Zero, LiveStore, Automerge, Yjs |
+| Several components in one system | SpacetimeDB, Replicache, Zero, LiveStore, Automerge, Yjs, [Daml](https://arxiv.org/abs/2303.03749) |
 
-No existing system combines three capabilities:
+None of these systems combines three capabilities:
 
 - bindings with interchangeable resolvers and recorded probabilities;
 - sequencer scopes, sync, and experiment units computed from one coupling graph;
