@@ -247,7 +247,7 @@ fn near(size: Nat, t: Time) =
   { s in open_slots(size) | abs(s.start - t) <= 2 h }
 ```
 
-`type` declares the value types that choices produce; `Id<Slot>` is the identifier of a record whose value is a `Slot`, and `|` separates alternatives. `fn` defines a function, and every function implicitly reads the current records. `values(c)` is the set of values recorded for choice `c`, `records(c)` is the set of records for choice `c`, each carrying the choice's arguments and the supplied value, and `admitted(T)` is the set of records of type `T` that a sequencer has admitted. Set-builder braces read as in mathematics: `{ s in slots | condition }` is the set of slots meeting the condition. All six functions are first-order queries, so they are at level 1, and the compiler can determine that `live_holds` and `open_slots` conclude something from absence (`not released`, `== {}`).
+`type` declares the value types that choices produce; `Id<Slot>` is the identifier of a record whose value is a `Slot`, and `|` separates alternatives. `fn` defines a function, and every function implicitly reads the current records. `values(c)` is the set of values counted for choice `c`, `records(c)` is the set of counted records for choice `c`, each carrying the choice's arguments and the supplied value, and `admitted(T)` is the set of records of type `T` that a sequencer has admitted. Set-builder braces read as in mathematics: `{ s in slots | condition }` is the set of slots meeting the condition. All six functions are first-order queries, so they are at level 1, and the compiler can determine that `live_holds` and `open_slots` conclude something from absence (`not released`, `== {}`).
 
 ### Choices and an unresolved function
 
@@ -316,12 +316,12 @@ bind settle_deposit       to person in role staff
 bind suggest_alternatives to random { 0.5: model "assistant-2026-09", 0.5: fn nearest_open }
 
 goal fill_rate = seats_booked / seats_published, maximize
-  guardrail no_show_rate <= 0.08
+  guardrail abandon_rate <= 0.2
 
 access Hold.party visible to { staff, the party }
 
-present pick_slot   as select_one(offered, label: start)
-present pay_deposit as confirm(amount: deposit_for(hold))
+present pick_slot      as select_one(offered, label: start)
+present settle_deposit as confirm(amount: deposit_for(hold))
 
 release v2 {
   migrate Slot { start, seats } -> { start, seats, accessible: false }
@@ -340,7 +340,7 @@ release v2 {
 | A model-checking result for `hold_resolves` | the flow's control graph and the timeouts, which guarantee records. Every path from an admitted hold reaches a payment or a release, because neither the options nor the default of `settle_deposit` is `unknown` |
 | A check that effects follow final values | `pay_deposit` is marked `acts`. The flow opens it only after `admit` returns `hold`, and its view reads `hold`, so both are final |
 | An SMT check of `agents_never_pay` | the binding table at deployment |
-| An experiment design, with a warning | the randomized binding and `fill_rate`. Suggestions shown to one party change which slots are open for others, so randomizing per party lets read coupling cross between variants; the compiler reports the spillover and outputs a design that randomizes by venue and day |
+| An experiment design, with a warning | the randomized binding and `fill_rate`. Suggestions shown to one party change which slots are open for others, so randomizing per party lets read coupling cross between variants; the compiler reports the spillover and outputs a switchback design that randomizes by day |
 | An agent API | the choices and their types, without presentation |
 | A migration check | replaying stored records through the `migrate` operator and through recomputation under version 2 |
 
