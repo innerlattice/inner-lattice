@@ -70,7 +70,7 @@ Seals are records, so a fifth primitive is not needed for them. A separate compo
 
 ## The record store
 
-The record store contains every record. Every other store in the system, including caches, indexes, search engines, and the analytics warehouse, contains outputs of functions and can be rebuilt from the record store. Replicas merge by set union, so merging is commutative, associative, and idempotent, and replicas that store the same records compute the same state.
+The record store contains every record. Every other store in the system, including caches, indexes, search engines, and the analytics warehouse, contains outputs of functions and can be rebuilt from the record store. Replicas merge by set union, so merging is commutative, associative, and idempotent, and replicas that store the same records and run the same program version compute the same state.
 
 ### Record fields
 
@@ -85,7 +85,7 @@ Each field exists because some principle reads it.
 | `snapshot` | the records from which the view was computed, identified by a version vector | recomputing the view exactly; causal order |
 | `version` | the program version whose functions computed the view and options | reading the record under the functions in force when the record was made (versions principle) |
 | `probability` | the probability with which the resolver selected the value: 1 for a deterministic resolver, the recorded value for a randomized one, and absent for an opaque one | off-policy evaluation (goals principle) |
-| `time` | the wall-clock time where the value was supplied | display and timeouts; not order, because clocks drift |
+| `time` | the wall-clock time where the value was supplied | display and timeouts; not order, because clocks drift by unknown amounts |
 
 A [version vector](https://en.wikipedia.org/wiki/Version_vector) has one counter per replica that creates records. The counter for a replica states how many of that replica's records are included, so a snapshot is identified in a few numbers instead of a copy of the screen. Given the snapshot and the version, the evaluator can recompute the view exactly. The snapshot also orders records causally: record $a$ precedes record $b$ when $a$ is inside $b$'s snapshot, and two records are concurrent when neither precedes the other. Devices usually receive other parties' records through a server, so a device's snapshot can be stated as the server's position plus the device's own counter.
 
@@ -120,7 +120,7 @@ Four services that products usually run as separate systems are outputs of the e
 Each element of an output is *final* when no later record can retract it, and *provisional* otherwise. The evaluator labels an element final only when one of two checks proves it.
 
 1. **A check on the function's definition.** A function built only from monotone operators (selection, projection, join, union, and recursion without negation) can only gain elements as records are admitted. Every element it outputs from admitted records is final.
-2. **A check on seals.** A function that uses negation, aggregation over a scope, or "the latest value" can lose elements when a record arrives. For each such function the evaluator tracks the scopes it reads, and an element becomes final once the evaluator has received seals covering every position the element depends on.
+2. **A check on seals.** A function that uses negation, aggregation over a scope, or "the latest value" can lose elements when a record arrives. For each such function the evaluator tracks the scopes it reads, and an element becomes final once the evaluator holds seals covering every position the element depends on, from each part's sequencer when the scope is split, and the records at those positions. Positions are consecutive, so a gap shows a missing record.
 
 A seat map for one performance shows both. "Seat C14 has a hold" is final as soon as the hold is admitted. "Seat C15 is free" states that no hold exists, so it stays provisional until the performance's sequencer has sealed the positions it covers. Stream processors apply the second check with *watermarks*, which are seals over time windows. Views use the label to show what is still pending.
 
@@ -138,9 +138,9 @@ One table covers automation, delegation, escalation, and an experiment that comp
 
 For each choice the dispatcher also:
 
-- **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot; any other value is recorded as refused. For an order-coupled choice the sequencer also checks the invariant at admission, because records admitted since the snapshot can make the value violate it.
+- **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot, or if it is the default recorded at the timeout; any other value is recorded as refused. For an order-coupled choice the sequencer also checks the invariant and the binding at admission, because records admitted since the snapshot can make the value violate the invariant or revoke the binding.
 - **checks access rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
-- **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher is the sequencer of each choice with a timeout and records whichever arrives first. An escalation is a choice whose default opens another choice bound to a different resolver.
+- **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher that runs the choice's timer is its sequencer and records whichever reaches it first. An escalation is a choice whose default opens another choice bound to a different resolver.
 - **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice that asks the same resolver for the outcome under the first choice's identifier.
 - **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) covers how a choice declares what any presentation must convey.
 
@@ -153,7 +153,7 @@ Every scope that contains order-coupled choices needs exactly one sequencer at a
 Where a sequencer runs is configuration. Three requirements of the scope set it:
 
 - **which parties' records enter the scope.** A scope that contains only one device's records can be sequenced on that device.
-- **how many failures the scope must survive.** A single server stops admitting while it is down, and a quorum of replicas keeps admitting while a majority is up.
+- **how many failures the scope must survive.** A single server stops admitting while it is down, and a quorum of replicas keeps admitting while a majority is up and can reach one another.
 - **whether the parties trust a common operator.** Parties that do not trust a common operator need [Byzantine fault tolerance](https://en.wikipedia.org/wiki/Byzantine_fault), which keeps admitting correctly while some participants send false messages.
 
 Each requirement rules out some of the placements in the figure below. Admission time grows down the list, so the best placement is the highest one that meets all three requirements.
@@ -167,7 +167,7 @@ Examples of placements in use:
 - A bank sequences transfers with a quorum of replicas.
 - A multiplayer game sequences contested actions at one server per match or zone. Players far from that server see more provisional values and more corrections.
 
-Escrow changes the scope a sequencer covers. A box office holding a block of seats is the sequencer for that block until it returns the unsold seats, and the allocation and the return are both records. Moving a scope to a new sequencer is a handoff: the old sequencer seals the scope at its last position, and the new one admits from the next position. [Raft](https://raft.github.io/) handles leader changes the same way, with numbered terms.
+Escrow changes the scope a sequencer covers. A box office holding a block of seats is the sequencer for that block until it returns the unsold seats, and the allocation and the return are both records. Moving a scope to a new sequencer is a handoff: the old sequencer seals the scope at its last position, and the new one admits from the next position. A failed sequencer cannot seal, so a quorum seals for it: in [Raft](https://raft.github.io/), a majority that votes in a new numbered term refuses the old leader's entries, and the new leader already holds every committed entry.
 
 A choice whose invariant spans two scopes, such as a transfer between accounts held on different shards, needs both sequencers. [Two-phase commit](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) admits the record in both scopes or in neither. A [saga](https://microservices.io/patterns/data/saga.html) admits it in one scope and, if the second refuses, appends a compensating record to the first. Both cost extra round trips, so scopes are drawn to keep most order coupling inside one scope.
 
