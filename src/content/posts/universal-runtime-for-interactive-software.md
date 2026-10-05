@@ -117,7 +117,7 @@ Four services that products usually run as separate systems are outputs of the e
 
 ### Final and provisional outputs
 
-Each element of an output is *final* when no later record can retract it, and *provisional* otherwise. The evaluator labels an element final only when one of two checks proves it.
+Each element of an output is *final* when no record that can still be admitted would retract it, and *provisional* otherwise. The evaluator labels an element final only when one of two checks proves it.
 
 1. **A check on the function's definition.** A function built only from monotone operators (selection, projection, join, union, and recursion without negation) can only gain elements as records are admitted. Every element it outputs from admitted records is final.
 2. **A check on seals.** A function that uses negation, aggregation over a scope, or "the latest value" can lose elements when a record arrives. For each such function the evaluator tracks the scopes it reads, and an element becomes final once the evaluator holds seals covering every position the element depends on, from each part's sequencer when the scope is split, and the records at those positions. Positions are consecutive, so a gap shows a missing record.
