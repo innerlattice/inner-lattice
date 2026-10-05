@@ -199,9 +199,21 @@ A `release` declaration names a new program version and the migrations that read
 
 ## Modules organized by notion architecture
 
-The declarations above need an organization that keeps related code together and keeps dependencies pointing one way. [Notion architecture](https://github.com/ayahohner/notion-architecture) provides one. A codebase is divided into *notions*. A notion is a module that owns one concept, such as Reservation, Payment, or Venue, together with everything that changes when the concept changes, so most changes to how reservations work stay inside one notion.
+The declarations above need an organization that keeps related code together and keeps dependencies pointing one way. [Notion architecture](https://github.com/ayahohner/notion-architecture) provides one. A codebase is divided into *notions*. A notion is a module that owns one concept, such as Reservation, Payment, or Venue, together with everything that changes when the concept changes. Grouping by concept, rather than by technical layer, means most changes to how reservations work stay inside one notion.
 
-Inside a notion, each file has two coordinates. Its *orientation* is inward (what the concept is: types, stored values, and invariants), process (what the concept does: transformations, policies, and coordination), or outward (how the concept meets everything else: pages, endpoints, events, and APIs). Its *determination* is universal (laws and contracts true of every instance), particular (implementations of the contracts), or individual (wiring, bindings, and configuration for one product). A file may import only files that are at least as inward and at least as universal as itself, so files that change rarely sit where everything depends on them, and files that change often sit where nothing does.
+Inside a notion, each file has two coordinates. The first, *orientation*, is the side of the concept the file faces:
+
+- **Inward:** what the concept is. Types, stored values, and invariants.
+- **Process:** what the concept does. Transformations, policies, and coordination.
+- **Outward:** how the concept meets everything else. Pages, endpoints, events, and APIs.
+
+The second, *determination*, is how specific the file is:
+
+- **Universal:** what is true of every instance of the concept. Laws and contracts.
+- **Particular:** what is true of one kind or strategy. Implementations of the contracts.
+- **Individual:** one concrete composition. Wiring, bindings, and configuration for a specific product.
+
+The import direction combines both coordinates. A file may import only files that are at least as inward and at least as universal as itself. Laws, which are inward and universal, import nothing from their notion, and a concrete page, which is outward and individual, may import anything. Files that change rarely sit where everything depends on them, and files that change often sit where nothing does.
 
 The language adds the two axes as further coordinates. Each file declares its power level and whether it is interactive, and the compiler checks three things together: that the code stays within its declared level, that imports follow the import direction, and that laws sit at universal positions. The parts of the theory map onto these coordinates: types and laws are inward and universal, functions and flows are process files, presentation is outward, and bindings are individual.
 
