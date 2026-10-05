@@ -149,7 +149,7 @@ The lead story on a news site's front page was once chosen by an editor. Today t
 
 The view, the options, and the timeout stay the same, and only the resolver changes.
 
-**Binding principle:** specify each choice (its view, options, timeout, and default) without naming a resolver, and set the resolver by configuration, in a binding. A record counts only if its resolver was bound to the choice and its value is among the options the resolver was offered.
+**Binding principle:** specify each choice (its view, options, timeout, and default) without naming a resolver, and set the resolver by configuration, in a binding. A record counts only if its resolver was bound to the choice and its value is among the options, both as of the view the resolver was shown. A default recorded at the timeout counts even outside the options.
 
 With one specification per choice and a separately configured resolver, several features become one construct:
 
@@ -182,10 +182,10 @@ The choice with the largest effect on a product is which step comes next, and pr
 
 Two properties of a binding limit what an AI agent can do:
 
-- **Discretion** is the size of the option set of a choice bound to the agent. "Select one of three refund amounts" allows little discretion, and "reply to the customer" allows a great deal. Splitting a choice with a large option set into choices with small ones lowers discretion and makes each part checkable, so how finely a task is divided sets how much autonomy an agent has. [Levels of automation](https://doi.org/10.1109/3468.844354) can be set separately for gathering information, analyzing the information, selecting an action, and carrying the action out, which amounts to one binding per stage.
-- **Authority** is the set of choices bound to the agent. Authority is set by the binding, independently of what the agent is capable of, a point developed in [Old Foundations, New Agents](/durable-universals-agentic-ai-engineering).
+- **Discretion** is the number of outcomes that the choices bound to the agent can reach. "Select one of three refund amounts" allows little discretion, and "reply to the customer" allows a great deal. Splitting a choice with a large option set into choices with small ones makes each part checkable, and lowers discretion when some parts are bound to someone else, so how finely a task is divided and bound sets how much autonomy an agent has. [Levels of automation](https://doi.org/10.1109/3468.844354) can be set separately for gathering information, analyzing the information, selecting an action, and carrying the action out, which amounts to one binding per stage.
+- **Authority** is the set of choices bound to the agent. Authority is set by the binding, independently of what the agent is capable of, provided the agent can act only through the program's choices, a point developed in [Old Foundations, New Agents](/durable-universals-agentic-ai-engineering).
 
-The binding is the program's only authorization rule. Releases, changes to a binding, and seals are values supplied at choices too, so the question of who may do any of them has one answer: whoever is bound to that choice. A value from a resolver that was not bound, or outside the options offered, is recorded as refused, and no function other than an audit reads it. Checking that a record really came from the resolver it names is a matter of signatures, not of the theory.
+The binding is the program's only rule for who may supply a value. Releases, seals, and records that a binding reads, such as a grant of a role, are values supplied at choices too, so the question of who may do any of them has one answer: whoever is bound to that choice in the version in force. A value from a resolver that was not bound, or outside the options offered, is recorded as refused, and no function other than an audit reads it. Checking that a record really came from the resolver it names is a matter of signatures, not of the theory.
 
 Cybernetics sets a limit on deterministic bindings. The [law of requisite variety](https://en.wikipedia.org/wiki/Variety_(cybernetics)#Law_of_requisite_variety) says that a regulator keeps outcomes within bounds only if it can produce as many distinct responses as there are distinct disturbances to counter. In other words, a controller with fewer possible responses than the situations it faces will meet a situation for which it has no correct response. A deterministic resolver produces only the responses its author anticipated, so a choice whose views vary in ways nobody listed in advance needs a person or an AI model.
 
@@ -294,12 +294,12 @@ Presenting a choice to a resolver outside the system boundary can change the wor
 Each part uses something the theory already has:
 
 - **The choice's identifier is the idempotency key.** Payment networks and many APIs accept [a key with each request](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) and return the first result when a key repeats. A retry presents the same choice, so it carries the same key.
-- **Effects follow final values.** A provisional value can be wrong, and a sent email cannot be unsent, so a confirmation is opened only after the booking it confirms is admitted. An effect that must start sooner needs a compensating choice, such as a refund, for when the provisional value is corrected.
-- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, that asks for the outcome under the first choice's identifier.
+- **Effects follow final values.** A provisional value can be wrong, and a sent email cannot be unsent, so a confirmation is opened only after the booking it confirms is admitted. An effect that must start sooner is split, as a card authorization holds funds when a trip is requested and the capture waits for the final fare. A compensating choice, such as a refund, is an effect too, and opens from the final record that calls for it.
+- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, that asks for the outcome under the first choice's identifier, and a late reply to the first choice answers it. If the second choice also ends in "unknown", a person decides.
 
 Whether a choice has effects is a property of the choice, not of its resolver. The same card network resolves a balance inquiry, which has no effect, and a charge, which has one.
 
-No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot tell whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver honors the identifier, and a recorded "unknown" everywhere else.
+No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot tell whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver keeps the identifier for longer than the choice's timeout, and a recorded "unknown" everywhere else.
 
 ## Coupling: derive which choices affect each other from the functions
 
@@ -456,7 +456,7 @@ The principles are independent in a similar sense: each can be broken while the 
 | Analytics, funnels, attribution | derivation, goals | goals and provenance over the records |
 | Feature flags, A/B tests, staged rollouts | binding, coupling, goals | a randomized resolver with recorded probabilities, units from a coupling partition, and a goal |
 | Personalization, recommendation | binding, goals | a learned resolver that reads a goal |
-| Automation, escalation, delegation | binding, coupling | changing a binding, within access rules on bindings |
+| Automation, escalation, delegation | binding, coupling | changing a binding, within rules on the binding table |
 | Simulated users, regression replay | derivation, binding | resolvers that return values written into a test, or recorded values |
 | Voice interfaces, accessibility, agent APIs | binding | one choice presented differently per resolver |
 | Durable workflows, reminders | derivation, binding | open choices are functions of the records; timeouts record defaults |
