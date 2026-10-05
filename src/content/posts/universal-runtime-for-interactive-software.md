@@ -37,7 +37,20 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | response deadline | the longest time that can pass between supplying a value and showing its consequence before the interaction fails |
 | release | a record that changes the program version |
 
-The eight principles are derivation, binding, sealing, prediction, effects, coupling, goals, and versions. [The theory's table](/universal-theory-of-interactive-software#eight-principles) states what each requires, and the sections below restate each requirement where a component meets it.
+The eight principles, as stated in [the theory](/universal-theory-of-interactive-software#eight-principles):
+
+| Principle | What it requires |
+| --- | --- |
+| Derivation | Store every value supplied at a choice, and compute everything else from the stored values. |
+| Binding | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
+| Sealing | Conclude that a record does not exist only over a sealed scope. |
+| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
+| Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
+| Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
+| Goals | State each goal as a function of the records with a direction and guardrails. |
+| Versions | Store the program version with every record, and translate old records instead of rewriting them. |
+
+The sections below restate each requirement where a component meets it.
 
 ## Four components, one per part of the theory
 
