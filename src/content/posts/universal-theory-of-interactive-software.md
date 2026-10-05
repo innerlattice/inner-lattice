@@ -248,7 +248,7 @@ Each choice involves two durations:
 - The **response deadline** is the longest time that can pass between supplying a value and showing its consequence before the interaction fails, for example because a game stops feeling responsive or a person concludes that a button did nothing.
 - The **sealing latency** is the time between supplying a value and the arrival of the sequencer's admission at the place where the value was supplied. The sealing latency is at least the round trip to the sequencer.
 
-Human perception and physics set both durations. Responses within about 0.1 s [feel immediate](https://www.nngroup.com/articles/response-times-3-important-limits/). Animation at 60 Hz needs a new frame every 16.7 ms. For telephone calls, ITU-T Recommendation G.114 recommends at most 150 ms of one-way delay. On the other side, light in optical fiber travels about 200,000 km/s, so each 100 km of fiber adds about 1 ms to a round trip before any routing or processing. A sealed result within one 60 Hz frame needs the sequencer within about 1,700 km of fiber, and a round trip between London and Sydney takes at least 170 ms.
+Human perception and physics set both durations. Responses within about 0.1 s [feel immediate](https://www.nngroup.com/articles/response-times-3-important-limits/). Animation at 60 Hz needs a new frame every 16.7 ms. For telephone calls, ITU-T Recommendation G.114 recommends at most 150 ms of one-way delay. On the other side, light in optical fiber travels about 200,000 km/s, so each 100 km of fiber adds about 1 ms to a round trip before any routing or processing. A sealed result within one 60 Hz frame needs the sequencer within about 1,700 km of fiber, and a round trip between London and Sydney over fiber takes at least 170 ms.
 
 When the response deadline is shorter than the sealing latency, the view has to include records that the sequencer has not yet admitted. Functions evaluated over those records give **provisional values**, which are replaced when the sequencer's admissions arrive.
 
@@ -449,7 +449,7 @@ The principles are independent in a similar sense: each can be broken while the 
 | Analytics, funnels, attribution | derivation, goals | goals and provenance over the records |
 | Feature flags, A/B tests, staged rollouts | binding, coupling, goals | a randomized resolver with recorded probabilities, units from a partition of the read-coupling graph, and a goal |
 | Personalization, recommendation | binding, goals | a learned resolver that reads a goal |
-| Automation, escalation, delegation | binding, coupling | changing a binding, within rules on the binding table |
+| Automation, escalation, delegation | binding | changing a binding, within rules on the binding table |
 | Simulated users, regression replay | derivation, binding | resolvers that return values written into a test, or recorded values |
 | Voice interfaces, accessibility, agent APIs | binding | one choice presented differently per resolver |
 | Durable workflows, reminders | derivation, binding | open choices are functions of the records; timeouts record defaults |
@@ -469,7 +469,7 @@ The principles are independent in a similar sense: each can be broken while the 
 
 Two quantities defined in the sealing, prediction, and coupling principles determine what a runtime must do for a choice:
 
-- its coupling: order-coupled if it has any order coupling, read-coupled if it has only read coupling, and independent otherwise;
+- its coupling with choices in other runs: order-coupled if it has any order coupling, read-coupled if it has only read coupling, and independent otherwise;
 - its response deadline: long (a second or more, enough for a network round trip) or short (below about 100 ms, shorter than many round trips).
 
 | | Independent | Read-coupled | Order-coupled |
@@ -483,7 +483,7 @@ The runtime's work grows from the top-left class to the bottom-right one. The re
 
 The usual taxonomy of forms, editors, and games hides two of the classes. Comment threads, wikis, and email are read-coupled with long deadlines. Bookings, username registration, and bank transfers are order-coupled with long deadlines: they wait for a sequencer and do not predict.
 
-Products combine classes, so the classes describe choices, not products. A ride-hailing trip uses five of the six:
+Products combine classes, so the classes describe choices, not products. A ride-hailing trip uses four of the six:
 
 | Choice | Resolver | Response deadline | Coupling | Runtime behavior |
 | --- | --- | --- | --- | --- |
@@ -494,7 +494,7 @@ Products combine classes, so the classes describe choices, not products. A ride-
 | Car on the map | GPS receiver | short | read | merge, deliver live; the view interpolates between samples |
 | Message the driver | rider or driver | long | read | merge, deliver later |
 | Payment | card network | long | order, over funds | wait for the card network; authorize at the request, capture the final fare |
-| Rating | rider | long | independent | compute anywhere |
+| Rating | rider | long | read, through the driver's average | merge, deliver later |
 
 Groupware research classified collaboration tools by whether people work [at the same or different times, and in the same or different places](https://en.wikipedia.org/wiki/Computer-supported_cooperative_work#CSCW_Matrix). The table above keeps that matrix's shape and replaces both axes with quantities that determine the architecture: place becomes coupling, and time becomes the response deadline compared with the round trip.
 
