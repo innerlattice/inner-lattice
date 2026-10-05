@@ -44,7 +44,7 @@ A running program alternates between computing and waiting for input. Computing 
 
 A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype an address and a sensor can drift. Records are never modified, and at most one record answers a choice, so a wrong record is corrected by the answer to a later choice, such as an edit, whose record names the record it supersedes.
 
-The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records compute the same state.
+The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records and run the same program version compute the same state.
 
 ### How a resolver differs from a function
 
@@ -57,7 +57,7 @@ A price shows the difference. If the price of an order is a function of the cata
 
 ### Resolvers ordered by determinacy
 
-Resolvers differ along one axis, determinacy, which sets what can be learned from their records.
+Of the ways resolvers differ, determinacy sets what can be learned from their records.
 
 | Determinacy | Examples | Repeating the choice | Probability of the supplied value |
 | --- | --- | --- | --- |
@@ -94,9 +94,9 @@ where:
 - $t_c$ is the timeout;
 - $d_c \in X_c$ is the default, recorded when the timeout passes.
 
-A binding $\beta$ maps each choice to a resolver. A function is a map $f : \mathcal{R} \to Y$ for some output type $Y$. The view and the options are themselves functions, so they change as records arrive.
+A binding $\beta$ maps each choice to a resolver. A resolver selects a value in $\mathrm{opt}_c(R)$ given $\mathrm{view}_c(R)$. A deterministic resolver is a function of the view and the options, a randomized resolver is a probability distribution $\pi(x \mid v)$ over the options for each view $v$, and an opaque resolver is one whose distribution the program does not know. A function is a map $f : \mathcal{R} \to Y$ for some output type $Y$. The view, the options, and the binding are themselves functions, so they change as records arrive.
 
-In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed the operation. A resolver is a handler. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the records list the responses along the path. Replaying a run means supplying recorded responses in place of live ones, and testing means supplying responses written into the test in advance.
+In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed the operation. A resolver is a handler that supplies one value per choice, and the value is recorded. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the records list the responses along the path.
 
 ## Eight principles
 
