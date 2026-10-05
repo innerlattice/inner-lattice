@@ -110,7 +110,7 @@ Each principle starts from a constraint that is true of every interactive system
 | Prediction | A response can be needed sooner than records can travel. | Show provisional values, and replace them when the records arrive. |
 | Effects | Presenting a choice can change the world, and the reply can be lost. | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one structure for sync, ordering, experiments, and access. |
-| Goals | Systems are built to change something. | State each goal as a function with a direction and limits. |
+| Goals | Bindings can be compared only against a direction. | State each goal as a function with a direction and limits. |
 | Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
 
 ## Derivation: store supplied values and compute everything else
@@ -350,7 +350,7 @@ Economics sorts goods into *rival* goods, whose use by one party prevents use by
 
 ## Goals: functions with a direction and guardrails
 
-Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails.
+Several resolvers can be bound to one choice, and they can be compared only against a direction. Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails. The period over which a goal is evaluated belongs in its definition, because a metric that rises over a week can fall over a year.
 
 **Goals principle:** state each goal as a function of the records with a direction and guardrails, and compute analytics, experiments, and optimization from that one definition.
 
