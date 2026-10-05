@@ -87,7 +87,7 @@ Each field exists because some principle reads it.
 | `probability` | the probability with which the resolver selected the value given its view: 1 for a deterministic resolver, the recorded value for a randomized one, and absent for an opaque one | off-policy evaluation (goals principle) |
 | `time` | the wall-clock time where the value was supplied | display and timeouts; not order, because clocks drift by unknown amounts |
 
-A [version vector](https://en.wikipedia.org/wiki/Version_vector) has one counter per replica that creates records. The counter for a replica states how many of that replica's records are included, so a snapshot is identified in a few numbers instead of a copy of the screen. Given the snapshot and the version, the evaluator can recompute the view exactly. The snapshot also orders records causally: record $a$ precedes record $b$ when $a$ is inside $b$'s snapshot, and two records are concurrent when neither precedes the other. Devices usually receive other parties' records through a server, so a device's snapshot can be stated as the server's position plus the device's own counter.
+A [version vector](https://en.wikipedia.org/wiki/Version_vector) has one counter per replica that creates records. The counter for a replica states that every record of that replica up to the count, of those the view reads, is included. Each replica's records must therefore arrive in order, and a snapshot is then identified in a few numbers instead of a copy of the screen. Given the snapshot and the version, the evaluator can recompute the view exactly, as long as none of those records has been erased or compacted. The snapshot also orders records causally: record $a$ precedes record $b$ when $a$ is inside $b$'s snapshot, and two records are concurrent when neither precedes the other. Devices usually receive other parties' records through a server, so a device's snapshot can be stated as the server's position plus the device's own counter.
 
 Causal inference calls the `probability` field a *propensity*. It records the resolver's own randomization. When a binding itself selects a resolver at random, as the refund holdout below does, that selection is a separate choice resolved by a randomizer, and it gets its own record and probability.
 
@@ -106,7 +106,7 @@ Records are never modified, so deleting a person's data on request needs a separ
 
 ## The evaluator
 
-The evaluator computes every function output: state, views, indexes, goals, access rules, and the set of open choices. Recomputing every function over all records after each new record would be correct and far too slow, so the evaluator maintains outputs incrementally, processing only the change. [DBSP](https://arxiv.org/abs/2203.16684) converts any query built from its operators into an incremental query, and [differential dataflow](https://www.cidrdb.org/cidr2013/Papers/CIDR13_Paper111.pdf) does the same for iterative computation, including recursion.
+The evaluator computes every function output: state, views, indexes, goals, access rules, and the set of open choices. Recomputing every function over all records after each new record would be correct and far too slow, so the evaluator maintains outputs incrementally, processing only the change. [DBSP](https://arxiv.org/abs/2203.16684) converts any query built from its operators into an incremental query, and [differential dataflow](https://www.cidrdb.org/cidr2013/Papers/CIDR13_Paper111.pdf) does the same for iterative computation, including recursion. Other code, such as a game's step function, is incremental only when written as a step from its previous output.
 
 Four services that products usually run as separate systems are outputs of the evaluator:
 
@@ -173,7 +173,7 @@ A choice whose invariant spans two scopes, such as a transfer between accounts h
 
 ## Replicas on devices
 
-A device runs replicas of the record store, the evaluator, and the dispatcher, plus a sequencer for scopes that contain only the device's own records. The local record store contains the device's own records and the records the device subscribes to. When a person selects a value, the local dispatcher records the value immediately and the local evaluator updates the view within the frame. The record then travels to the server, and what happens next depends on the choice's coupling:
+A device runs replicas of the record store, the evaluator, and the dispatcher, plus a sequencer for scopes that contain only the device's own records. The local record store contains the device's own records and the records the device subscribes to, without the fields that access rules hide from the device. When a person selects a value, the local dispatcher records the value immediately and the local evaluator updates the view within the frame. The record then travels to the server, and what happens next depends on the choice's coupling:
 
 | Coupling | Reconciliation | Usual name |
 | --- | --- | --- |
@@ -259,7 +259,7 @@ These are the parts the theory adds, and they are where much of today's glue cod
 ## Limits
 
 - **Hard real-time control.** Recording a selection takes time, which a motor controller with microsecond deadlines cannot spare.
-- **Media.** Video and audio frames are sensor readings far too dense to record. The records contain references and summaries, and the media travels on a separate path.
+- **Media.** Video and audio frames are sensor readings too dense to store one record per frame. The records contain references and summaries, and the media travels on a separate path.
 - **Expensive simulations.** A physics or weather simulation can cost too much to recompute from the records. Its stored checkpoints then contain state that cannot be cheaply recomputed, and the runtime should label the checkpoints as such.
 - **Parties without mutual trust.** Such parties require Byzantine fault tolerance, and every order-coupled choice among them pays its latency.
 
