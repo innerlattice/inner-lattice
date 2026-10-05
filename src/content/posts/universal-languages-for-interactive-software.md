@@ -352,7 +352,7 @@ A language for the theory should express other products without new constructs. 
 
 | Product | Choices and resolvers | Functions and power level | Ordered scopes | Characteristic law |
 | --- | --- | --- | --- | --- |
-| Shared document | edits by people and by an AI co-editor, short response deadline | the document is the merge of edits, a level-0 unification for text and a level-2 query for the outline | structural moves, one scope per document | concurrent edits merge to the same document in any order |
+| Shared document | edits by people and by an AI co-editor, short response deadline | the document is a level-2 query over the edits for both the text, as in a sequence CRDT, and the outline | structural moves, one scope per document | concurrent edits merge to the same document in any order |
 | Multiplayer game | inputs per tick by players and bots | the next state is a level-3 total step function of the previous state and the inputs | one per match, sequenced on a server at a fixed tick rate | the step function is deterministic, so every replica computes the same state |
 | Tax interview | answers by a person, some prefilled by a model from uploaded documents | the next question is level-1 control over earlier answers | the submission, sealed on the person's device | every required answer is present before submission, checked by enumerating paths |
 | Coding agent | the next step by an AI agent; tool results from external systems; pushes and deployments by a person | level-4 control in the agent; repository state as a function of edits | pushes to each branch | deployments are never bound to a model |
