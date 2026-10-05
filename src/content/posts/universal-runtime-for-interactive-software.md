@@ -16,7 +16,7 @@ A product with accounts, live collaboration, and an AI assistant typically runs 
 
 Each system keeps its own copy of what happened, and glue code keeps the copies consistent. Many familiar bugs are disagreements between copies: a cache that differs from the database, an experiment analysis missing assignments that a feature flag made, or a workflow that resumes under code that changed while the workflow waited.
 
-[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and seven principles. This post derives a runtime from that theory. Each component implements one part of the theory, the principles set what each component must guarantee, and the systems listed above turn out to be partial implementations or configurations of four components.
+[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and eight principles. This post derives a runtime from that theory. Each component implements one part of the theory, the principles set what each component must guarantee, and the systems listed above turn out to be partial implementations or configurations of four components.
 
 ## Terms and principles from the theory
 
@@ -26,7 +26,7 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or an external system |
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
 | function | a deterministic map from a set of records to a value; state, views, indexes, and the set of open choices are function outputs |
-| binding | configuration stating which resolver supplies the value for which choice |
+| binding | configuration stating which resolver supplies the value for which choice; only a value from the bound resolver counts |
 | snapshot | the set of records from which a view was computed |
 | scope | a set of records picked out by a condition, such as every booking for one performance |
 | sequencer | the single resolver that admits records into a scope in one order and writes the scope's seals |
@@ -37,16 +37,17 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | response deadline | the longest time that can pass between supplying a value and showing its consequence before the interaction fails |
 | release | a record that changes the program version |
 
-The seven principles, by name:
+The eight principles, by name:
 
 | Principle | What it requires |
 | --- | --- |
 | Derivation | Store every value supplied at a choice, and compute everything else from the stored values. |
-| Binding | Specify each choice without naming its resolver, and set the resolver separately. |
+| Binding | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
 | Sealing | Conclude that a record does not exist only over a sealed scope. |
-| Prediction | When the response deadline is shorter than the time to seal, show provisional values. |
-| Coupling | Derive which choices affect each other from the functions, and use that one graph for sync, ordering, experiments, and access. |
-| Goals | State each goal as a function with a direction and guardrails. |
+| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and recompute them when the seal arrives. |
+| Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
+| Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
+| Goals | State each goal as a function of the records with a direction and guardrails. |
 | Versions | Store the program version with every record, and translate old records instead of rewriting them. |
 
 ## Four components, one per part of the theory
@@ -57,7 +58,7 @@ The seven principles, by name:
 | --- | --- | --- | --- |
 | Records | record store | every acknowledged record is durable, never modified, and reaches every replica that subscribes to it | derivation, sealing, versions |
 | Functions | evaluator | every output equals the function applied to the records the evaluator has received, and is labeled final or provisional | derivation, sealing, prediction, coupling, goals |
-| Choices, resolvers, and bindings | dispatcher | every open choice reaches its bound resolver, every recorded value is one of the choice's options, and every timeout records the default | binding, prediction, goals, versions |
+| Choices, resolvers, and bindings | dispatcher | every open choice reaches its bound resolver under the choice's identifier, a value counts only from the bound resolver and within the choice's options, and every timeout records the default | binding, prediction, effects, goals, versions |
 | Scopes and seals | sequencers | each scope that needs order has exactly one sequencer at a time, which admits the scope's records in one order and writes the scope's seals | sealing, prediction, coupling |
 
 Seals are records, so a fifth primitive is not needed for them. A separate component is needed, because a sequencer has properties that storage does not: there is one per scope, its placement sets the latency of every order-coupled choice, and its failure stops admission to its scope. Each of the four components owns one concern and changes for one reason:
@@ -137,9 +138,10 @@ One table covers automation, delegation, escalation, and an experiment that comp
 
 For each choice the dispatcher also:
 
-- **checks the value against the options** computed from the resolver's snapshot. For an order-coupled choice the options may have changed since the snapshot, so the sequencer checks the invariant again at admission.
+- **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot; any other value is recorded as refused. For an order-coupled choice the options may have changed since the snapshot, so the sequencer checks the invariant again at admission.
 - **checks access rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
-- **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. An escalation is a choice whose default opens another choice bound to a different resolver.
+- **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher is the sequencer of each choice with a timeout and records whichever arrives first. An escalation is a choice whose default opens another choice bound to a different resolver.
+- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice that asks the same resolver for the outcome under the same identifier.
 - **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) covers how a choice declares what any presentation must convey.
 
 Open choices survive restarts without further machinery. An insurance claim waiting three weeks for a document is not a suspended process or a sleeping thread. The open choice is an output of a function over the records, and after a restart the evaluator computes the same set of open choices from the same records. [Durable execution](https://docs.temporal.io/workflows) engines such as Temporal and Restate reach the same property by a different route: they record the result of every step and rebuild a workflow's position by replaying its deterministic code against those results.
@@ -188,8 +190,8 @@ A person books a theater seat on a phone for performance 311.
 1. **Evaluator.** The phone's evaluator computes the seat map from the records stored on the phone and outputs the open choice `seat.select` with a view of the free seats. A bandit has recommended C14, and the bandit's record contains the probability of that recommendation.
 2. **Dispatcher, on the phone.** The person selects C14. The local dispatcher appends a record, and the local evaluator draws C14 as held but provisional, because the record has not been admitted.
 3. **Sequencer.** The record reaches the server, and the dispatcher there forwards it to the sequencer for performance 311. The sequencer finds no earlier admitted hold on C14 and admits the record at position 88.
-4. **Evaluator, on the server.** The seat map changes. Subscriptions deliver the change to everyone else viewing the performance, and an access rule removes the holder's identity from their views. The evaluator opens `payment.authorize`, bound to the card network, with a timeout at 20:10 and the default "no payment".
-5. **Dispatcher, on the server.** If the card network's reply arrives first, the dispatcher records the reply and the sequencer admits the record. If 20:10 passes first, the dispatcher records the default, the sequencer admits that record, and the seat-map function computes C14 as free again.
+4. **Evaluator, on the server.** The seat map changes. Subscriptions deliver the change to everyone else viewing the performance, and an access rule removes the holder's identity from their views. The hold is now final, so the evaluator can open `payment.authorize`, a choice with effects, bound to the card network, with a timeout at 20:10 and the default "unknown".
+5. **Dispatcher, on the server.** The dispatcher presents `payment.authorize` under its identifier, so a retry cannot charge the card twice. If the card network's reply arrives first, the dispatcher records the reply and the sequencer admits the record. If 20:10 passes first, the dispatcher records "unknown", and the evaluator opens `payment.reconcile`, which asks the card network for the outcome under the same identifier. The seat-map function computes C14 as free again only after a record states that no payment was authorized.
 6. **Evaluator, for goals.** The fill-rate goal reads the same records. Because the recommendation's probability is recorded, a different recommender can later be evaluated against this booking.
 
 The booking appends these records:
