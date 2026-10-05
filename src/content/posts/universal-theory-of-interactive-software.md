@@ -18,7 +18,7 @@ Teams build these products with different architectures:
 
 Each architecture has its own vocabulary, and several problems are solved in each under different names. Offline editing in a document, rollback in a fighting game, and a pending transaction in a banking app are one mechanism. The shards of a database and the units of an A/B test can be computed from the same graph.
 
-This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and eight principles. Each principle answers a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration.
+This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and eight principles. Each principle addresses a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration.
 
 Two later posts build on the theory. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes a runtime that executes programs built on the theory, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes a language for writing programs in it.
 
@@ -27,7 +27,7 @@ Two later posts build on the theory. [Toward a universal runtime for interactive
 A running program alternates between computing and waiting for input. Computing is deterministic: the same inputs give the same outputs. Waiting happens where the program needs a value that its code does not determine. The theory names the point where the program waits, the source of the value, the stored value, and the computation.
 
 - A **choice** is a point where a run needs a value from outside its code. The program specifies what the value must satisfy, but not how the value is produced. Every input to a program is the value of some choice, so choices include form fields, button presses, sensor readings, random draws, clock readings, and replies from other systems. Each choice has:
-  - a stable identifier: the name of the declaration in the code that opens the choice, and the choice's *address*, which says where in its run it opened;
+  - a stable identifier: the name of the declaration in the code that opens the choice, and the choice's *address*, its position in the run that opened it;
   - a *view*: the information shown to whatever supplies the value;
   - *options*: the set of values the choice accepts;
   - a *timeout*: how long the choice waits for a value;
@@ -42,7 +42,7 @@ A running program alternates between computing and waiting for input. Computing 
 
 ![A loop from the records through functions to views and open choices, then to resolvers, whose values are appended to the records](../../assets/diagrams/interaction-loop.svg "Functions compute views and open choices from the records. A resolver supplies a value for each open choice, and the value is appended as a record.")
 
-A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype a name and a sensor can drift. Records are never modified, and at most one record answers a choice, so a wrong record is corrected by the answer to a later choice, such as an edit, whose record names the record it supersedes.
+A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype a name and a sensor can drift. Records are never modified, and each choice has at most one record, so a wrong record is corrected by the record of a later choice, such as an edit, whose record names the record it supersedes.
 
 The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records and run the same program version compute the same state.
 
@@ -94,15 +94,15 @@ where:
 - $t_c$ is the timeout;
 - $d_c \in X_c$ is the default, recorded when the timeout passes.
 
-A binding $\beta$ maps each choice to a resolver. A resolver selects a value in $\mathrm{opt}_c(R)$ given $\mathrm{view}_c(R)$. A deterministic resolver is a function of the view and the options, a randomized resolver is a probability distribution $\pi(x \mid v)$ over the options for each view $v$, and an opaque resolver is one whose distribution the program does not know. A function is a map $f : \mathcal{R} \to Y$ for some output type $Y$. The view, the options, and the binding are themselves functions, so they change as records arrive.
+A binding $\beta$ maps each choice to a resolver. A resolver selects a value in $\mathrm{opt}_c(R)$ given $\mathrm{view}_c(R)$. A deterministic resolver is a function of the view and the options, a randomized resolver is a probability distribution $\pi(x \mid v)$ over the options for each view $v$, and an opaque resolver is one whose distribution is not part of the program. A function is a map $f : \mathcal{R} \to Y$ for some output type $Y$. The view, the options, and the binding are themselves functions, so they change as records arrive.
 
 In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed the operation. A resolver is a handler that supplies one value per choice, and the value is recorded. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the records list the responses along the path.
 
 ## Eight principles
 
-Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, such as one that asks again about an unknown payment until the network answers. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
+Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, such as a new reconciliation choice for an unknown payment each time the last one times out, until the network replies. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
-| Principle | Constraint it answers | What it requires |
+| Principle | Constraint it addresses | What it requires |
 | --- | --- | --- |
 | Derivation | Only values supplied at choices carry new information. | Store every value supplied at a choice, and compute everything else from the stored values. |
 | Binding | Different resolvers can supply the same choice. | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
@@ -188,7 +188,7 @@ Determinacy also sets what the records can contain. A randomized resolver can re
 
 Records reach different places at different times, so the records available at one place differ from those available at another. The set of records available to a resolver at a given moment is that resolver's *snapshot*.
 
-"These people have voted" and "this document contains these edits" only grow as records arrive, so an answer given early is later added to but never taken back. Such a function is *monotone*:
+"These people have voted" and "this document contains these edits" only grow as records arrive, so an output computed early is later added to but never retracted. Such a function is *monotone*:
 
 $$
 R \subseteq R' \implies f(R) \sqsubseteq f(R')
@@ -211,7 +211,7 @@ One late record can make such a conclusion false. A value is *final* when no rec
 
 **Sealing principle:** later records only add to a monotone function's output over admitted records. A conclusion that depends on records being absent is final only over a sealed scope.
 
-The [CALM theorem](https://arxiv.org/abs/1901.01930) draws the same line for queries, whose outputs are sets ordered by inclusion. When no place knows how records are divided among places, a query has a consistent distributed implementation that needs no coordination if and only if the query is monotone. Even "the current value" is a conclusion about absence, as is any value that a correction or an undo could supersede: last-writer-wins replication orders writes by timestamp, but no replica can tell that no later write exists.
+The [CALM theorem](https://arxiv.org/abs/1901.01930) draws the same line for queries, whose outputs are sets ordered by inclusion. When no place holds information about how records are divided among places, a query has a consistent distributed implementation that needs no coordination if and only if the query is monotone. Even "the current value" is a conclusion about absence, as is any value that a correction or an undo could supersede: last-writer-wins replication orders writes by timestamp, but no replica can rule out a later write.
 
 ![Records arriving over time, a running count that only rises, and a winner that is final only after the seal](../../assets/diagrams/sealing-timeline.svg "A monotone function's output only grows. A conclusion about absence is final only after the seal.")
 
@@ -278,7 +278,7 @@ Designers have three levers:
 
 ## Effects: present each choice so that a repeat changes nothing
 
-Presenting a choice to a resolver outside the system boundary can change the world. A request to a card network moves money, a message to a mail server reaches a person, and a request to a deployment service changes what people run. The presentation and the record that answers it are separate events, and a run can fail between them: the card network approves a charge, and the reply is lost or arrives after the timeout. The derivation principle covers replay, because later computation reads the record instead of presenting the choice again. It does not cover a retry before any record exists, or a default recorded after the world has already changed.
+Presenting a choice to a resolver outside the system boundary can change the world. A request to a card network moves money, a message to a mail server reaches a person, and a request to a deployment service changes what people run. The presentation and the record of the choice are separate events, and a run can fail between them: the card network approves a charge, and the reply is lost or arrives after the timeout. The derivation principle covers replay, because later computation reads the record instead of presenting the choice again. It does not cover a retry before any record exists, or a default recorded after the world has already changed.
 
 **Effects principle:** present each choice under its stable identifier, so that presenting it again has no further effect; open a choice that has effects only from final values; and when the reply can be lost, make "unknown" the default.
 
@@ -286,11 +286,11 @@ Each part uses something the theory already has:
 
 - **The choice's identifier is the idempotency key.** Payment networks and many APIs accept [a key with each request](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/) and return the first result when a key repeats. A retry presents the same choice, so it carries the same key.
 - **Effects follow final values.** A provisional value can be wrong, and a sent email cannot be unsent, so a confirmation is opened only after the booking it confirms is admitted. An effect that must start sooner is split, as a card authorization holds funds when a trip is requested and the capture waits for the final fare. A compensating choice, such as a refund, is an effect too, and opens from the final record that calls for it.
-- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, that asks for the outcome under the first choice's identifier, and a late reply to the first choice answers it. If the second choice also ends in "unknown", a person decides.
+- **"Unknown" is an option.** A default of "declined" for a payment is wrong whenever the network approved the charge and the reply was lost: the program releases the seat and keeps the money. A default of "unknown" opens a second choice, bound to the same network, whose value is the outcome under the first choice's identifier, and a late reply to the first choice supplies that value. If the second choice also ends in "unknown", a person decides.
 
 Whether a choice has effects is a property of the choice, not of its resolver. The same card network resolves a balance inquiry, which has no effect, and a charge, which has one.
 
-No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot tell whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver keeps the identifier for longer than the choice's timeout, and a recorded "unknown" everywhere else.
+No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot determine whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver keeps the identifier for longer than the choice's timeout, and a recorded "unknown" everywhere else.
 
 ## Coupling: derive which choices affect each other from the functions
 
@@ -339,7 +339,7 @@ The last row is where statistics and systems engineering meet. Causal inference'
 - **Randomize over time.** When coupling runs through a shared pool, as when every rider in a city draws on the same drivers, the graph has no useful clusters. [Switchback designs](https://arxiv.org/abs/2009.00148) randomize time periods instead.
 - **Change the functions to remove edges.** A [budget-split design](https://arxiv.org/abs/2012.08724) for ad experiments gives each variant its own share of every advertiser's budget, so the variants cannot draw on the same money. This design is the escrow method from the sealing principle, used to obtain statistical independence instead of coordination-free writes.
 
-An access rule removes an edge only when nothing $b$ sees, counts and refusals included, changes with $a$'s records, the property called [noninterference](https://doi.org/10.1109/SP.1982.10014). Access rules can remove read coupling but not order coupling. If two people try to register the same email address, the second person learns that the first exists, whatever the access rules say, because the refusal itself carries the information. A sign-up form that reports "this email is already registered" therefore lets anyone test whether a person has an account. The standard fix moves the outcome to a channel only the address's owner can read: "If an account exists, we have sent a link."
+An access rule removes an edge only when nothing in $b$'s view, counts and refusals included, changes with $a$'s records, the property called [noninterference](https://doi.org/10.1109/SP.1982.10014). Access rules can remove read coupling but not order coupling. If two people try to register the same email address, the second person learns that the first exists, whatever the access rules say, because the refusal itself carries the information. A sign-up form that reports "this email is already registered" therefore lets anyone test whether a person has an account. The standard fix moves the outcome to a channel only the address's owner can read: "If an account exists, we have sent a link."
 
 ## Goals: functions with a direction and guardrails
 
@@ -387,7 +387,7 @@ Programs change while choices are open. Some people still run last year's versio
 - **Open choices carry over by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
 - **Changing a binding's definition is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
 
-Records can therefore be read in two ways, and each answers a different question. The *historical reading* evaluates each record under the functions in force when the record was made, and answers what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and answers what the state is now. Both are functions of the same records. A release changes only the current reading of a final value. A release that changes what a choice asks, rather than how its value is written, gives the choice's declaration a new name, because no translation turns an answer to one question into an answer to another. Open choices of the old declaration then receive a recorded fallback, which is "unknown" for a choice whose effect may already have started.
+Records can therefore be read in two ways, for two different questions. The *historical reading* evaluates each record under the functions in force when the record was made, and gives what a person was shown and why they selected what they did. The *current reading* evaluates every record under the newest functions, and gives what the state is now. Both are functions of the same records. A release changes only the current reading of a final value. A release that changes what a choice's value means, rather than how it is written, gives the choice's declaration a new name, because no translation turns a value with one meaning into a value with another. Open choices of the old declaration then receive a recorded fallback, which is "unknown" for a choice whose effect may already have started.
 
 Rewriting stored state, as a database migration or a codemod does, is an optimization of the same idea, and its correctness condition is exact. Let $\mathrm{state}_v : \mathcal{A}_v \to S_v$ compute state of type $S_v$ from a set of records reachable under version $v$, let $\tau$ translate records made under $v$ into records that $v'$ reads, and let $\mu : S_v \to S_{v'}$ migrate stored state from version $v$ to version $v'$. The migration is correct when
 
@@ -525,10 +525,10 @@ Older work reached each principle, usually in one kind of system:
 ## Open problems
 
 1. **Inferring scopes.** A compiler could read functions and invariants and report which choices need a sequencer, over which scope, and where escrow would remove the need. [Indigo](https://www.dpss.inesc-id.pt/~rodrigo/indigo_eurosys15.pdf) and [Hamsaz](https://doi.org/10.1145/3290387) perform this analysis for invariants written in restricted logics.
-2. **Estimating coupling.** Read and order coupling can be derived from functions and weighted from the records. No published method says when a runtime may repartition a changing graph without invalidating experiments already running.
+2. **Estimating coupling.** Read and order coupling can be derived from functions and weighted from the records. No published method determines when a runtime may repartition a changing graph without invalidating experiments already running.
 3. **Declaring response deadlines.** Products do not record a response deadline per choice. Without one, the prediction principle cannot be applied mechanically.
 4. **Specifications for AI agent resolvers.** A choice bound to an agent needs a specification: what the view includes, which options exist, what budget applies, which results a person must confirm, and what must be recorded for replay.
 5. **Stand-ins for people.** Counterfactual replay past a person needs a stand-in. For averages over many runs, the [g-formula](https://doi.org/10.1016/0270-0255(86)90088-6) states when models of each step suffice, but no accepted method validates a stand-in for one run.
-6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also decides whose record goes first, and no principle constrains that order when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
+6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also determines whose record goes first, and no principle constrains that order when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
 
 [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the theory as four runtime components: one for records, one for functions, one for choices and their resolvers, and one for seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the theory, so that a compiler can check the principles.

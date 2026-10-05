@@ -159,7 +159,7 @@ A binding maps each choice, optionally under a condition, to a resolver. A bindi
 
 ### Laws
 
-A law is a property the program promises. How a law is checked depends on what it says and on the power level of the code it covers. Each law below comes from the reservation module later in this post or from the runtime post:
+A law is a property that every run of the program has. How a law is checked depends on what it states and on the power level of the code it covers. Each law below comes from the reservation module later in this post or from the runtime post:
 
 | Law | Plain statement | How it is checked |
 | --- | --- | --- |
@@ -180,11 +180,11 @@ A goal declares a function, a direction, and guardrails, as the goals principle 
 
 A choice's view states what the resolver must be able to perceive and do, as *intents*: select one of several options, enter an amount, confirm, or follow a status. A design system maps each intent to a component for each channel: a screen, a voice interface, or a typed schema for an AI agent. Priorities among the parts of a view are data, so a small-screen layout or a spoken summary can be computed from the same declaration.
 
-Arranging components on a screen is itself a choice. Its options are the arrangements that a component catalog allows, and its resolver can be a designer who fixes the layout, a layout function that responds to screen size, or an AI model that composes an arrangement per person. [A2UI](https://a2ui.org) has agents send declarative interfaces built from a catalog of components the client trusts, and [MCP Apps](https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/), the first official extension to the Model Context Protocol, lets tools return interactive interfaces that a host renders. In A2UI, the catalog is the option set of the layout choice.
+Arranging components on a screen is itself a choice. Its options are the arrangements that a component catalog allows, and its resolver can be a designer who fixes the layout, a layout function that responds to screen size, or an AI model that composes an arrangement per person. [A2UI](https://a2ui.org) has agents send declarative interfaces built from a catalog of trusted client components, and [MCP Apps](https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/), the first official extension to the Model Context Protocol, lets tools return interactive interfaces that a host renders. In A2UI, the catalog is the option set of the layout choice.
 
 ### Versions
 
-A `release` declaration names a new program version and the migrations that read old records or convert stored state. Choices keep their identifiers across releases that do not change what they ask, so an open choice's answer still counts under the new version, as the versions principle requires.
+A `release` declaration names a new program version and the migrations that read old records or convert stored state. Choices keep their identifiers across releases that do not change what their values mean, so an open choice's value still counts under the new version, as the versions principle requires.
 
 ## Modules organized by notion architecture
 
@@ -257,7 +257,7 @@ fn suggest_alternatives(party: Party, wanted: Time) -> Set<Id<Slot>>
   ensures size(result) <= 3 and result ⊆ ids(open_slots(party.size))
 ```
 
-`choice` starts a declaration, with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver answers it. `acts` marks a choice whose presentation changes the world. `reconcile_deposit` is a choice of its own that asks the network about the `pay_deposit` choice for the same hold, under that choice's identifier. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
+`choice` starts a declaration, with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver supplies a value. `acts` marks a choice whose presentation changes the world. `reconcile_deposit` is a choice of its own, bound to the network, whose value is the outcome of the `pay_deposit` choice for the same hold, under that choice's identifier. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
 
 ### The booking flow
 
@@ -276,7 +276,7 @@ flow book(party: Party, wanted: Time) {
 }
 ```
 
-`a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow. If another party takes the slot first, the hold is refused and the loop offers slots again. If the card network's reply to the deposit is lost, the hold stays in place and the flow asks the network for the outcome, because releasing the slot while the card may have been charged would keep a deposit for nothing. If the network cannot say, a staff member decides; after two days without an answer the hold counts as paid, so the venue bears the risk. The control has finitely many locations and one loop back, so the control is at level 1 and its control graph can be model-checked.
+`a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow. If another party takes the slot first, the hold is refused and the loop offers slots again. If the card network's reply to the deposit is lost, the hold stays in place and the flow opens a choice for the network to supply the outcome, because releasing the slot while the card may have been charged would keep a deposit for nothing. If the network supplies no outcome, a staff member decides; after two days without an answer the hold counts as paid, so the venue bears the risk. The control has finitely many locations and one loop back, so the control is at level 1 and its control graph can be model-checked.
 
 ### Laws, bindings, goals, access, and presentation
 
@@ -353,7 +353,7 @@ The language has three kinds of definition and five kinds of declaration.
 2. **Laws** state invariants, temporal properties, and properties of bindings, merges, and migrations. Each law is checked by the method its content allows: derived sequencing, model checking, SMT solving, construction, replay, proof, or runtime monitoring.
 3. **Goals** declare a function, a direction, and guardrails, read by analytics, experiments, and learning resolvers.
 4. **Presentation** maps views to intents and intents to components per channel. Layout is a choice over a component catalog.
-5. **Releases** declare program versions and migrations. Choice identifiers are stable across releases that do not change what a choice asks.
+5. **Releases** declare program versions and migrations. Choice identifiers are stable across releases that do not change what a choice's value means.
 
 **Organization.** Files belong to notions, one per concept. Each file has an orientation (inward, process, outward), a determination (universal, particular, individual), a power level, and an effect. Imports point only toward inward and universal files.
 
