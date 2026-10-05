@@ -44,7 +44,7 @@ The eight principles, by name:
 | Derivation | Store every value supplied at a choice, and compute everything else from the stored values. |
 | Binding | Specify each choice without naming its resolver, and set separately which resolvers may supply it. A record counts only if its resolver was bound and its value is among the options. |
 | Sealing | Conclude that a record does not exist only over a sealed scope. |
-| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and recompute them when the seal arrives. |
+| Prediction | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
 | Goals | State each goal as a function of the records with a direction and guardrails. |
@@ -367,8 +367,8 @@ The language has three kinds of definition and five kinds of declaration.
 **Definitions.**
 
 1. **Types** describe the values that choices produce. They are constraints at level 0, and combining types is unification.
-2. **Functions** are deterministic maps from a set of records to a value. Each function has a power level from 0 to 4: constraints, queries, recursive queries, total functions, or general recursion. The compiler infers the lowest level that fits and checks it against the level the file declares.
-3. **Choices** are declared with a name, a view, options, a timeout, and a default, and each `choose` opens a choice identified by the name and its address in the run. `choose` is the only effect. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and the compiler checks that it opens only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
+2. **Functions** are deterministic maps from a set of records to a value. Each function has a power level from 0 to 4: constraints, queries, recursive queries, total functions, or general recursion. The compiler infers the lowest level whose syntax the code fits and checks it against the level the file declares.
+3. **Choices** are declared with a name, a view, options, a timeout, and a default, and each `choose` opens a choice identified by the name and its address in the run. `choose` is the only effect apart from nontermination at level 4. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and opens it only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
 
 **Declarations.**
 
@@ -380,7 +380,7 @@ The language has three kinds of definition and five kinds of declaration.
 
 **Organization.** Files belong to notions, one per concept. Each file has an orientation (inward, process, outward), a determination (universal, particular, individual), a power level, and an effect. Imports point only toward inward and universal files.
 
-**Compiler outputs.** From the source, the compiler derives the record schema, the ordered scopes and their sequencers, final and provisional labels on every view, checks that choices that act open only from final outputs, model-checking and solver results for laws, experiment designs with coupling warnings, an API for AI agents, and migration checks. The runtime's configuration is read from the same source.
+**Compiler outputs.** From the source, the compiler derives the record schema, the ordered scopes and their sequencers, the views that can show provisional values, the scopes whose seals each choice that acts must wait for, model-checking and solver results for laws, experiment designs with coupling warnings, an API for AI agents, and migration checks. The runtime's configuration is read from the same source.
 
 ## Open problems
 
