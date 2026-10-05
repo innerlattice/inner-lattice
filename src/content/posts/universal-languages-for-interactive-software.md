@@ -229,13 +229,13 @@ type Slot    = { start: Time, seats: Nat }
 type Party   = { size: Nat, contact: Contact }
 type Hold    = { slot: Id<Slot>, party: Party }
 type Release = { hold: Id<Hold> }
-type Payment = approved(Reference) | declined | unknown
+type Payment = approved | declined | unknown
 
 -- level 1: functions over the records
 fn slots = values(publish_slot)
 
 fn released(h: Id<Hold>) = exists r in admitted(Release) where r.hold == h
-fn paid(h: Id<Hold>)     = exists p in records(pay_deposit) ∪ records(reconcile_deposit) where p.hold == h, p.value is approved
+fn paid(h: Id<Hold>)     = exists p in records(pay_deposit) ∪ records(reconcile_deposit) ∪ records(settle_deposit) where p.hold == h, p.value is approved
 
 fn live_holds(s: Id<Slot>) =
   { h in admitted(Hold) | h.slot == s, not released(h.id) }
@@ -270,11 +270,17 @@ choice reconcile_deposit(hold: Id<Hold>) -> Payment {
   timeout 1 h, default unknown
 }
 
+choice settle_deposit(hold: Id<Hold>) -> Payment {
+  view    deposit_for(hold)
+  options { approved, declined }
+  timeout 2 d, default approved
+}
+
 fn suggest_alternatives(party: Party, wanted: Time) -> Set<Id<Slot>>
   ensures size(result) <= 3 and result ⊆ ids(open_slots(party.size))
 ```
 
-`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver answers it. `acts` marks a choice whose presentation changes the world. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
+`choice` declares a choice with its parameters and value type; `?` makes the value optional, so `none` is a valid default. A declaration that no flow opens, such as `publish_slot`, opens a new choice each time a bound resolver answers it. `acts` marks a choice whose presentation changes the world. `reconcile_deposit` is a choice of its own that asks the network about the `pay_deposit` choice for the same hold, under that choice's identifier. `view` is the function whose output is shown to the resolver, `options` restricts the admissible values (all values of the type when omitted), and `timeout ... default ...` gives the deadline and the value recorded if the deadline passes. `suggest_alternatives` has a signature and an `ensures` clause but no body, so each call to `suggest_alternatives` is a choice: the dispatcher accepts only a set of at most three slots that are open, and refuses anything else.
 
 ### The booking flow
 
@@ -287,12 +293,13 @@ flow book(party: Party, wanted: Time) {
     hold    = admit Hold { slot: slot, party: party }
   } until hold != refused
   payment = choose pay_deposit(hold)
-  while payment == unknown { payment = choose reconcile_deposit(hold) }
+  if payment == unknown { payment = choose reconcile_deposit(hold) }
+  if payment == unknown { payment = choose settle_deposit(hold) }
   if payment == declined { admit Release { hold: hold } }
 }
 ```
 
-`a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow, and `while` repeats its body as long as its condition holds. If another party takes the slot first, the hold is refused and the loop offers slots again. If the card network's reply to the deposit is lost, the hold stays in place and the flow asks the network for the outcome until it learns one, because releasing the slot while the card may have been charged would keep a deposit for nothing. The control has finitely many locations and two loops back, so the control is at level 1 and can be model-checked.
+`a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow. If another party takes the slot first, the hold is refused and the loop offers slots again. If the card network's reply to the deposit is lost, the hold stays in place and the flow asks the network for the outcome, because releasing the slot while the card may have been charged would keep a deposit for nothing. If the network cannot say, a staff member decides; after two days without an answer the hold counts as paid, so the venue bears the risk. The control has finitely many locations and one loop back, so the control is at level 1 and its control graph can be model-checked.
 
 ### Laws, bindings, goals, access, and presentation
 
@@ -305,6 +312,7 @@ bind publish_slot         to person in role staff
 bind pick_slot            to person
 bind pay_deposit          to external card_network
 bind reconcile_deposit    to external card_network
+bind settle_deposit       to person in role staff
 bind suggest_alternatives to random { 0.5: model "assistant-2026-09", 0.5: fn nearest_open }
 
 goal fill_rate = seats_booked / seats_published, maximize
@@ -326,11 +334,11 @@ release v2 {
 
 | Output | How the compiler derives it |
 | --- | --- |
-| Record schema and analytics tracking plan | the declared choices (`publish_slot`, `pick_slot`, `pay_deposit`, `reconcile_deposit`, `suggest_alternatives`) and the admissions of `Hold` and `Release` |
+| Record schema and analytics tracking plan | the declared choices (`publish_slot`, `pick_slot`, `pay_deposit`, `reconcile_deposit`, `settle_deposit`, `suggest_alternatives`) and the admissions of `Hold` and `Release`; for the plan's metrics, the goal `fill_rate` |
 | One ordered scope per slot, with a sequencer | `one_live_hold` is not invariant-confluent: two holds on one slot each satisfy the law alone and violate the law together. The law reads holds and releases for one slot, so those records form the scope. The compiler also checks that every `Hold` enters through `admit`. |
 | Final and provisional labels | `open_slots` uses `not exists`, so availability is provisional until the slot's scope is sealed, and views that show availability are labeled provisional until then |
-| A model-checking result for `hold_resolves` | the flow's control graph and the timeouts, which guarantee records. The reconciliation loop ends only if the card network eventually reports an outcome other than `unknown`, so the compiler states that assumption alongside the result |
-| A check that effects follow final values | `pay_deposit` is marked `acts`, and its view reads `hold`, which `admit` returned, so the view is final |
+| A model-checking result for `hold_resolves` | the flow's control graph and the timeouts, which guarantee records. Every path from an admitted hold reaches a payment or a release, because neither the options nor the default of `settle_deposit` is `unknown` |
+| A check that effects follow final values | `pay_deposit` is marked `acts`. The flow opens it only after `admit` returns `hold`, and its view reads `hold`, so both are final |
 | An SMT check of `agents_never_pay` | the binding table at deployment |
 | An experiment design, with a warning | the randomized binding and `fill_rate`. Suggestions shown to one party change which slots are open for others, so randomizing per party lets read coupling cross between variants; the compiler reports the spillover and outputs a design that randomizes by venue and day |
 | An agent API | the choices and their types, without presentation |
