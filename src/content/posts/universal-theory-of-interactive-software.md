@@ -218,7 +218,7 @@ One late record can make such a conclusion false. A value is *final* when no rec
 
 **Sealing principle:** later records only add to a monotone function's output over admitted records. A conclusion that depends on records being absent is final only over a sealed scope.
 
-The [CALM theorem](https://arxiv.org/abs/1901.01930) makes the principle exact. A problem has a consistent distributed implementation that needs no coordination if and only if the problem is monotone, so coordination is needed exactly where a conclusion about absence is drawn. Even "the current value" is such a conclusion, and last-writer-wins replication uses timestamps as the sequencer.
+The [CALM theorem](https://arxiv.org/abs/1901.01930) draws the same line for queries, whose outputs are sets ordered by inclusion. When no place knows how records are divided among places, a query has a consistent distributed implementation that needs no coordination if and only if the query is monotone. Even "the current value" is a conclusion about absence, as is any value that a correction or an undo could supersede: last-writer-wins replication orders writes by timestamp, but no replica can tell that no later write exists.
 
 ![Records arriving over time, a running count that is correct at every moment, and a winner that is final only after the seal](../../assets/diagrams/sealing-timeline.svg "A monotone function is correct at every moment. A conclusion about absence is final only after the seal.")
 
@@ -235,18 +235,18 @@ Seals appear at every scale under other names:
 | Closing the books | one accounting period | the accounting department |
 | Polls closing | one precinct's ballots | the precinct's officials |
 
-The smallest scope is one choice. A choice with a timeout can receive both its resolver's value and its default, and each can be admitted alone but not both, so each such choice has a sequencer of its own that admits whichever value arrives first. At most one record answers a choice, which settles duplicate replies and a reply that races its timeout without a further rule.
+The smallest scope is one choice. A choice with a timeout can receive both its resolver's value and its default, and each can be admitted alone but not both, so each such choice is a scope with a sequencer of its own, which runs the timer and admits whichever value reaches it first. At most one record answers a choice, which settles duplicate replies and a reply that races its timeout without a further rule.
 
 The sealing method changes what agents do. A [study of online auctions](https://www.cs.princeton.edu/courses/archive/spr08/cos444/papers/roth_ockenfels02.pdf) compared eBay, where auctions ended at a fixed time, with Amazon, where auctions continued until ten minutes passed without a bid. Bids in the final seconds were far more common on eBay. Bidders with more experience bid later on eBay and earlier on Amazon. The sealing method worked as a mechanism in the game-theoretic sense: the method set the incentives, and bidders adapted to the method.
 
 Two methods avoid waiting for a sequencer:
 
-- **Use choices whose records always merge.** Operations are [invariant-confluent](https://arxiv.org/abs/1402.2237) when any two valid sets of records merge into a valid set. Likes on a post are invariant-confluent, and seats in a theater are not.
+- **Use choices whose records always merge.** Operations are [invariant-confluent](https://arxiv.org/abs/1402.2237) when any two valid sets of records they produce from a common valid set merge into a valid set. Likes on a post are invariant-confluent, and seats in a theater are not.
 - **Split the scope.** The escrow method divides a shared quantity into shares, and each share has its own sequencer. A box office holding a block of seats can sell those seats without contacting the central system, and a warehouse can promise its own stock.
 
 Offline work follows from both methods: a disconnected device can admit any record that is invariant-confluent or that falls in a share escrowed to the device.
 
-The same structure explains a common statistical error. A fixed-horizon significance test is valid only at its declared cutoff, which is a seal. Checking the result every day and stopping once the result looks significant draws a conclusion before the seal, and false positives multiply. [Always-valid inference](https://arxiv.org/abs/1512.04922) makes the conclusion valid whenever the experimenter stops.
+The sealing method also sets what a statistical conclusion means. A fixed-horizon significance test assumes that its cutoff, which is a seal, was chosen without reading the outcomes. Sealing once the result looks significant reads them, and false positives multiply although the scope is sealed. [Always-valid inference](https://arxiv.org/abs/1512.04922) stays valid at any cutoff, however it was chosen.
 
 ## Prediction: show provisional values when records cannot arrive in time
 
@@ -273,7 +273,7 @@ The card payment shows the mechanism plainly. The authorization is a provisional
 
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
-For invariant-confluent choices, the provisional value is already final, and only other places' copies of the value are delayed. For other choices the provisional value can be wrong. The cost of prediction grows with how often provisional values are wrong, because each wrong provisional value becomes a correction that someone sees.
+For invariant-confluent choices, the device admits the record itself, so monotone outputs over it are final at once. For other choices the provisional value can be wrong. The cost of prediction grows with how often provisional values are wrong, because each wrong provisional value becomes a correction that someone sees.
 
 A provisional value can also reach a record. A person who holds seat C14 provisionally and then adds a meal for C14 makes the meal record from a view that showed the hold. If the sequencer refuses the hold, the meal record rests on a record that was never admitted, which rollback recovery calls an *orphan*. Its choice states what happens then: the record is refused, the choice is asked again, or the value is applied again on top of the admitted records, as rollback netcode replays a player's inputs.
 
@@ -508,7 +508,7 @@ Groupware research classified collaboration tools by whether people work [at the
 ## Designs the principles rule out
 
 1. **A sealed result for an order-coupled choice sooner than the round trip to its sequencer.** A sealed result within one 60 Hz frame requires a sequencer within about 1,700 km of fiber. Anything faster is provisional.
-2. **A conclusion about absence without coordination.** The CALM theorem rules this design out.
+2. **A final conclusion about absence over an unsealed scope.** A record still in transit can make the conclusion false.
 3. **An unbiased per-person estimate of an effect when read coupling crosses between variants.** Randomizing per person then measures a mixture of direct effects and spillover.
 4. **Exact counterfactual replay past an opaque resolver whose view would have changed.**
 5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send the refusal through another channel, but cannot remove the refusal.
