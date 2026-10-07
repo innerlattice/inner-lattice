@@ -18,7 +18,7 @@ One interactive product is usually written in many languages:
 
 Each language describes the same entities in its own terms, and none of them can read the others. Properties that span them, such as whether every recorded choice appears in the tracking plan or whether an AI agent's tools obey the permission rules, are checked by review, if at all.
 
-[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and eight principles. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds a runtime for that theory from four components. This post derives a language for writing programs that run on that runtime.
+[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and nine principles. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds a runtime for that theory from four components. This post derives a language for writing programs that run on that runtime.
 
 The method is to start from particular languages. Each successful special-purpose language gives something up, and the restriction buys a guarantee that tools can rely on. Sorting those trades shows two independent axes along which code varies. A language built on the two axes, plus a small set of declarations, can express every part of the theory. A reservation module written in the language shows what a compiler can derive from source, a comparison with other products tests whether the constructs generalize, and the last section states the language on one page.
 
@@ -37,7 +37,7 @@ The method is to start from particular languages. Each successful special-purpos
 | goal | a function of the records with a direction and guardrails |
 | release | a record that changes the program version |
 
-The eight principles, as stated in [the theory](/universal-theory-of-interactive-software#eight-principles):
+The nine principles, as stated in [the theory](/universal-theory-of-interactive-software#nine-principles):
 
 | Principle | What it requires |
 | --- | --- |
@@ -47,6 +47,7 @@ The eight principles, as stated in [the theory](/universal-theory-of-interactive
 | Prediction | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
+| Grounding | Interpret each value against the view it was selected from, and record any interpretation that the view does not determine as a choice of its own. |
 | Goals | State each goal as a function of the records with a direction and guardrails. |
 | Versions | Store the program version with every record, and translate old records instead of rewriting them. |
 

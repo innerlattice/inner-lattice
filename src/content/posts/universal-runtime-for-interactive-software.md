@@ -16,7 +16,7 @@ A product with accounts, live collaboration, and an AI assistant typically runs 
 
 Each system keeps its own copy of what happened, and glue code keeps the copies consistent. Many familiar bugs are disagreements between copies: a cache that differs from the database, an experiment analysis missing assignments that a feature flag made, or a workflow that resumes under code that changed while the workflow waited.
 
-[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and eight principles. This post derives a runtime from that theory. Each component implements one part of the theory, the principles set what each component must guarantee, and the systems listed above turn out to be partial implementations or configurations of four components.
+[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and nine principles. This post derives a runtime from that theory. Each component implements one part of the theory, the principles set what each component must guarantee, and the systems listed above turn out to be partial implementations or configurations of four components.
 
 ## Terms and principles from the theory
 
@@ -37,7 +37,7 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | response deadline | the longest time that can pass between supplying a value and showing its consequence before the interaction fails |
 | release | a record that changes the program version |
 
-The eight principles, as stated in [the theory](/universal-theory-of-interactive-software#eight-principles):
+The nine principles, as stated in [the theory](/universal-theory-of-interactive-software#nine-principles):
 
 | Principle | What it requires |
 | --- | --- |
@@ -47,6 +47,7 @@ The eight principles, as stated in [the theory](/universal-theory-of-interactive
 | Prediction | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
+| Grounding | Interpret each value against the view it was selected from, and record any interpretation that the view does not determine as a choice of its own. |
 | Goals | State each goal as a function of the records with a direction and guardrails. |
 | Versions | Store the program version with every record, and translate old records instead of rewriting them. |
 

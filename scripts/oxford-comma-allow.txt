@@ -11,6 +11,7 @@ through its view or through outside information
 another organization's system, with choices and records
 such as a person's memory and conversations
 once its code is included, its choices and records
+snapshot.** A position, such as "row 3" or "offset
 but a person cannot and needs
 count of transactions, because and have
 answers a choice, which settles duplicate replies and a

@@ -1,6 +1,6 @@
 ---
 title: "Toward a universal theory of interactive software"
-description: "One model for almost all interactive software: four primitives and eight principles, grounded in constraints that are true of all interactive software, from which features now built as separate services follow."
+description: "One model for almost all interactive software: four primitives and nine principles, grounded in constraints that are true of all interactive software, from which features now built as separate services follow."
 date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
@@ -13,7 +13,7 @@ What if one model covered almost all interactive software? A program would be de
 
 That has become possible within the last fifteen years. Work on conflict-free replicated data types (CRDTs) showed that people can change the same data on separate devices and merge their work without anyone ordering the changes first. With the CALM theorem, there is now an exact line between the computations that can run this way and the ones that must wait for agreement.
 
-The theory in this post builds on those results. If it is right, interactive software stops being a collection of special cases and becomes one subject. The theory is small: four primitives, and eight principles grounded in constraints that are true of all interactive software.
+The theory in this post builds on those results. If it is right, interactive software stops being a collection of special cases and becomes one subject. The theory is small: four primitives, and nine principles grounded in constraints that are true of all interactive software.
 
 ## Four primitives: choices, resolvers, records, and functions
 
@@ -108,9 +108,9 @@ A binding $\beta$ maps each choice to a resolver. A resolver selects a value in 
 
 In programming-language terms, a choice is an [algebraic effect](https://arxiv.org/abs/1312.1399): an operation a program performs, whose result is supplied by a *handler* defined outside the code that performed the operation. A resolver is a handler that supplies one value per choice, and the value is recorded. [Interaction trees](https://arxiv.org/abs/1906.00046) give whole programs a semantics in these terms. A program denotes a possibly infinite tree whose nodes are requests to the environment and whose branches are the possible responses. A run is a path through the tree, and the records list the responses along the path.
 
-## Eight principles
+## Nine principles
 
-Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time, and they let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, such as a new reconciliation choice for an unknown payment each time the last one times out, until the network replies. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
+Each principle starts from a constraint that is true of every interactive system and states a rule that meets it. Together the rules keep results agreeing across devices, surviving failures and releases, and arriving in time; keep each value referring to what its resolver was shown; and let resolvers be replaced and compared. They do not guarantee progress: every choice ends at its timeout, but a flow can keep opening new choices, such as a new reconciliation choice for an unknown payment each time the last one times out, until the network replies. The sections that follow explain each constraint, state the principle precisely, and list what follows from it.
 
 | Principle | Constraint it addresses | What it requires |
 | --- | --- | --- |
@@ -120,6 +120,7 @@ Each principle starts from a constraint that is true of every interactive system
 | Prediction | A response can be needed sooner than records can travel. | When the response deadline is shorter than the time to seal, show provisional values, and treat a record made from a provisional view as provisional too. |
 | Effects | Presenting a choice can change the world, and the reply can be lost. | Present each choice under its identifier so that a repeat has no further effect, open a choice with effects only from final values, and make "unknown" the default when the reply can be lost. |
 | Coupling | Functions combine records from more than one resolver. | Derive which choices affect each other from the functions, and use that one graph to place sequencers, sync, and experiment units, and to state what access rules must cut. |
+| Grounding | Resolvers see the same things through different views. | Interpret each value against the view it was selected from, and record any interpretation that the view does not determine as a choice of its own. |
 | Goals | Bindings can be ranked only against a direction. | State each goal as a function of the records with a direction and guardrails. |
 | Versions | The program changes while its records persist. | Store the program version with every record, and translate old records instead of rewriting them. |
 
@@ -351,6 +352,24 @@ The last row is where statistics and systems engineering meet. Causal inference'
 
 An access rule removes an edge only when nothing in $b$'s view, counts and refusals included, changes with $a$'s records, the property called [noninterference](https://doi.org/10.1109/SP.1982.10014). Access rules can remove read coupling but not order coupling. If two people try to register the same email address, the second person learns that the first exists, whatever the access rules say, because the refusal itself carries the information. A sign-up form that reports "this email is already registered" therefore lets anyone test whether a person has an account. The standard fix moves the outcome to a channel only the address's owner can read: "If an account exists, we have sent a link."
 
+## Grounding: interpret each value against the view it was selected from
+
+Resolvers see the same things through different views. A collaborator's view of a shared spreadsheet differs from an AI agent's when their snapshots differ, an access rule can hide a row from one of them, and a phone and a voice interface present the same view differently. A value that refers to something, such as "delete row 3", "the later slot", or a tap at a point on a screen, refers through the view it was selected from. Read against any other view, it can pick out a different thing.
+
+**Grounding principle:** interpret every value against the view it was selected from. Resolve each reference to the identifier of the thing it picks out in that view, and when the view does not determine the thing, as with free text, make the interpretation a choice of its own, whose record the value's author can see and supersede.
+
+The name comes from [grounding in communication](https://doi.org/10.1037/10096-006), the process by which people in a conversation establish that they refer to the same things. The record already identifies its view by snapshot and version, so the principle needs no new storage. It needs identifiers that stay fixed when the view changes. Every thing a view shows was introduced by some record: a seat by the record that published the seating plan, a paragraph by the edit that created it, a row by its insertion. The identifier of that record names the thing in every view, whatever its position, presentation, or version.
+
+Three methods meet the principle, in increasing order of cost:
+
+1. **Options are identifiers.** The presentation converts a tap or a click into the identifier of the thing under it, on the device where the presentation is known, and only the identifier is recorded. Sequence CRDTs give every character of a shared document an identifier for the same reason, so an insertion after a given character means the same on every replica.
+2. **A function interprets the value against its snapshot.** A position, such as "row 3" or "offset 12", is read in the record's snapshot and moved past every concurrent record. [Operational transformation](https://doi.org/10.1145/67544.66963) moves text positions this way.
+3. **A choice interprets the value.** When the view does not determine the thing, as with "move my booking to the later slot" typed into a chat, a choice bound to an AI model or a function selects an identifier. Its view contains the original value and that value's snapshot, and its record enters the author's view, where the author can supersede it. A search engine that reports "showing results for" a corrected query uses this method, and so does an agent that states its reading of a request before acting on it.
+
+Choices with effects make the third method costly to skip. An agent that reads "delete the old drafts" against the wrong view deletes the wrong files, and the effects principle allows no correction once the effect has started, so an interpretation that leads to an effect is shown to its author first. Plan reviews and approval prompts for AI agents are this step.
+
+The principle matters more as presentations multiply. When an AI model composes the layout for each person, two people looking at one view see it arranged differently, and only identifiers let one of them refer to what the other sees. Grounding does for the things a view shows what stable identifiers do for choices: a choice keeps its identifier across retries and releases, and a thing keeps its identifier across views.
+
 ## Goals: functions with a direction and guardrails
 
 Several resolvers can be bound to one choice, and they can be ranked only against a direction. Systems are built to change something: more completed bookings, fewer refunds, faster answers. A goal states such a change as a function of the records, together with limits the change must respect. Formally, a goal is a function $g : \mathcal{R} \to \mathbb{R}$ ($\mathbb{R}$ is the real numbers) to be increased or decreased, together with guardrails $c_i(R) \le k_i$: functions $c_i$ that must stay within bounds $k_i$ while $g$ changes. Conversion rate is a goal, and refund rate, latency, and complaint rate are typical guardrails. The period over which a goal is evaluated belongs in its definition, because a metric that rises over a week can fall over a year.
@@ -417,9 +436,9 @@ The matrix below relates ten of the theory's terms, primitives first, and states
 
 ![A matrix of ten terms, from choice to version, with a verb in each cell where the row term acts on the column term, and every filled cell on or below the diagonal](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives and the terms added by each principle.")
 
-Every filled cell lies on or below the diagonal, so no term acts on a term that comes after it. Several terms are cases of the primitives: a binding and a goal are functions, a sequencer is a resolver, and a seal and a release are records. Four principles add no term. Coupling is one cell: a function couples choices. For prediction, a provisional value is a function's output that is not yet final. For effects, the key that makes a repeat harmless is the choice's identifier, and "unknown" is one of the choice's options. Derivation appears as an absence: no term denotes stored state.
+Every filled cell lies on or below the diagonal, so no term acts on a term that comes after it. Several terms are cases of the primitives: a binding and a goal are functions, a sequencer is a resolver, and a seal and a release are records. Five principles add no term. Coupling is one cell: a function couples choices. For prediction, a provisional value is a function's output that is not yet final. For effects, the key that makes a repeat harmless is the choice's identifier, and "unknown" is one of the choice's options. For grounding, a value refers through the view it was selected from, which its record identifies by snapshot and version. Derivation appears as an absence: no term denotes stored state.
 
-The principles are independent: each can be broken while the other seven hold. The table gives one such failure per principle, with the two sentences of Binding taken separately, and what goes wrong.
+The principles are independent: each can be broken while the other eight hold. The table gives one such failure per principle, with the two sentences of Binding taken separately, and what goes wrong.
 
 | Principle broken | A failure in which every other principle holds | What goes wrong |
 | --- | --- | --- |
@@ -430,6 +449,7 @@ The principles are independent: each can be broken while the other seven hold. T
 | Prediction | A game waits for the server before moving the player. | a late result |
 | Effects | A retry after a lost reply carries a new key, and the card is charged twice. | a repeated effect |
 | Coupling | An experiment randomizes riders who draw on the same drivers. | a biased estimate |
+| Grounding | An agent's "delete row 3", read against the current sheet instead of the agent's snapshot, deletes a different row after a collaborator inserts one above it. | the wrong thing changed |
 | Goals | A bandit maximizes clicks while the declared goal is completed bookings. | the wrong target optimized |
 | Versions | A workflow paused under one version resumes under the next and reads an old field with its new meaning. | a misread record |
 
@@ -451,6 +471,8 @@ The principles are independent: each can be broken while the other seven hold. T
 | Offline mode | sealing | admitting invariant-confluent or escrowed records on the device |
 | Optimistic UI, client prediction, rollback | prediction | provisional values |
 | Retries, idempotent payments, reconciliation | effects | presentation keyed by the choice's identifier; an "unknown" default that opens a reconciliation choice |
+| Permalinks, comment anchors, positions in shared text | grounding | references by identifier, or positions read in the record's snapshot |
+| Disambiguation, plan review before an agent acts | grounding | an interpretation choice whose record its author can supersede |
 | Presence, live cursors, notifications | prediction, coupling | read coupling, delivered by response deadline |
 | Access control, privacy, blocking | coupling | removed read-coupling edges |
 | Sharding | coupling | a partition of the order-coupling graph |
@@ -500,6 +522,7 @@ Groupware research classified collaboration tools by whether people work [at the
 5. **Hiding the result of an order-coupled choice from the party whose record was refused.** An access rule can make the refusal less specific or send the refusal through another channel, but cannot remove the refusal.
 6. **Changing what a past view showed without recording the change.**
 7. **Performing an effect exactly once through a system that does not deduplicate by identifier.**
+8. **Reading a reference against a view other than the one its value was selected from.**
 
 ## The same structure in five other fields
 
@@ -530,6 +553,7 @@ Older work reached each principle, usually in one kind of system:
 | Sealing | Helland's [entities](https://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf), each one scope of serializability |
 | Prediction | tentative writes in [Bayou](https://www.cs.princeton.edu/courses/archive/fall15/cos518/papers/bayou.pdf), until a primary server commits them; Helland's [guesses and apologies](https://arxiv.org/abs/0909.1788) |
 | Effects | the output commit rule of [log-based rollback recovery](https://doi.org/10.1145/568522.568525), which also logs every nondeterministic event, as derivation does |
+| Grounding | [grounding in communication](https://doi.org/10.1037/10096-006) between people; positions moved past concurrent edits in [operational transformation](https://doi.org/10.1145/67544.66963) |
 | Coupling, Goals, Versions | the work cited in each section |
 
 ## Open problems
