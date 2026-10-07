@@ -20,7 +20,7 @@ Each language describes the same entities in its own terms, and none of them can
 
 [Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and nine principles. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds a runtime for that theory from four components. This post derives a language for writing programs that run on that runtime.
 
-The method is to start from particular languages. Each successful special-purpose language gives something up, and the restriction buys a guarantee that tools can rely on. Sorting those trades shows two independent axes along which code varies. A language built on the two axes, plus a small set of declarations, can express every part of the theory. A reservation module written in the language shows what a compiler can derive from source, a comparison with other products tests whether the constructs generalize, and the last section states the language on one page.
+The method is to start from particular languages. Each successful special-purpose language gives something up, and the restriction makes possible a guarantee that tools can rely on. Sorting those trades shows two independent axes along which code varies. A language built on the two axes, plus a small set of declarations, can express every part of the theory. A reservation module written in the language shows what a compiler can derive from source, a comparison with other products tests whether the constructs generalize, and the last section states the language on one page.
 
 ## Terms and principles from the theory
 

@@ -335,7 +335,7 @@ These are the parts the theory adds, and they are where much of today's glue cod
 - **Hard real-time control.** Recording a selection takes time, which a motor controller with microsecond deadlines cannot spare.
 - **Media.** Video and audio frames are sensor readings too dense to store one record per frame. The records contain references and summaries, and the media travels on a separate path.
 - **Expensive simulations.** A physics or weather simulation can cost too much to recompute from the records. Its stored checkpoints then contain state that cannot be cheaply recomputed, and the runtime should label the checkpoints as such.
-- **Parties without mutual trust.** Such parties can check each other's commitments against signed records, but they require Byzantine fault tolerance, and every order-coupled choice among them pays its latency.
+- **Parties without mutual trust.** Such parties can check each other's commitments against signed records, but they require Byzantine fault tolerance, and every order-coupled choice among them waits for that protocol to admit its records.
 
 ## Open problems
 
