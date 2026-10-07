@@ -6,14 +6,15 @@ agent = ["AI agent", "agent", "model", "person", "player", "user", "staff", "ope
 physical = ["server", "device", "phone", "host", "machine", "client", "computer", "disk", "network", "data center"]
 abstract = [
   "sequencer", "evaluator", "dispatcher", "scope", "seal", "choice", "record", "function", "theorem", "runtime",
-  "compiler", "language", "program", "system", "protocol", "query", "rule", "value", "state", "step", "release",
+  "compiler", "language", "program", "system", "protocol", "query", "value", "state", "step", "release",
   "version", "relation", "table", "transaction", "output", "input", "test", "label", "declaration", "type",
 ]
+text = ["rule", "message", "request", "prompt"]
 mixed = ["resolver", "participant", "party", "place", "replica", "node", "process", "service"]
 
 [rules.literal-verbs]
 severity = "warning"
-allow = []
+allow = ["field contribute"]  # a field of study contributes through its researchers
 
 [rules.ambiguous-pronouns]
 severity = "warning"
