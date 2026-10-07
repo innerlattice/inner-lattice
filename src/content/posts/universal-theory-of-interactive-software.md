@@ -5,22 +5,15 @@ date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
 
-A booking site, a shared document, a multiplayer game, a tax questionnaire, and a coding agent are all interactive software. Each one runs until it needs a value it cannot compute, such as a person's input, a sensor reading, or a payment network's reply, and its next output depends on the value that arrives.
+Every interactive program faces the same problem. It has to act on values it does not control, and those values arrive on the world's schedule rather than the program's.
 
-Teams build these products with different architectures:
+There is no general theory of this problem. There are many partial theories, each developed for one kind of product, and building real software means stitching them together. A great deal of the effort of building software goes into those seams.
 
-- forms use request handlers and a database;
-- shared editors use merge algorithms;
-- games use an authoritative server and client-side prediction;
-- long processes run on workflow engines;
-- A/B tests run on experimentation platforms;
-- AI agents run on agent frameworks.
+What if one model covered almost all interactive software? A program would be described once, and the features that are now built as separate services would follow from the description.
 
-Each architecture has its own vocabulary, and several problems are solved in each under different names. Offline editing in a document, rollback in a fighting game, and a pending transaction in a banking app are one mechanism. The shards of a database and the units of an A/B test can be computed from the same graph.
+That has become possible within the last fifteen years. Work on conflict-free replicated data types (CRDTs) showed that people can change the same data on separate devices and merge their work without anyone ordering the changes first. With the CALM theorem, there is now an exact line between the computations that can run this way and the ones that must wait for agreement.
 
-This post describes a theory small enough to cover all of these. It has four primitives, called *choices*, *resolvers*, *records*, and *functions*, and eight principles. Each principle addresses a constraint that every interactive system faces, such as the time information takes to travel, or programs changing while people are using them. Features usually built as separate products follow from the principles: undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration.
-
-Two later posts build on the theory. [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) describes a runtime that executes programs built on the theory, and [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes a language for writing programs in it.
+The theory in this post builds on those results. If it is right, interactive software stops being a collection of special cases and becomes one subject. The theory is small: four primitives, and eight principles grounded in constraints that are true of all interactive software.
 
 ## Four primitives: choices, resolvers, records, and functions
 
