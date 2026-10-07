@@ -232,6 +232,7 @@ Seals appear at every scale under other names:
 | --- | --- | --- |
 | Pressing submit | one person's answers on a form | that person's device |
 | A hold's timeout | one held seat | the booking system |
+| A tick in a lockstep game | every player's input for one tick | the match's host |
 | A transaction commit | the rows the transaction read and wrote | the database |
 | An entry reaching consensus | one position in a replicated log | a quorum of replicas |
 | A watermark in a stream processor | one input's events before a timestamp | that input's source |
@@ -248,7 +249,29 @@ Two methods avoid waiting for a sequencer:
 - **Use choices whose records always merge.** Operations are [invariant-confluent](https://arxiv.org/abs/1402.2237) when any two valid sets of records they produce from a common valid set merge into a valid set. Likes on a post are invariant-confluent, and seats in a theater are not.
 - **Split the scope.** The escrow method divides a shared quantity into shares, and each share has its own sequencer. A box office holding a block of seats can sell those seats without contacting the central system, and a warehouse can promise its own stock.
 
+Splitting works because coordination is needed only between places. When every record that a conclusion about absence reads is admitted at one place, the seal is local, and no other place takes part. [Ameloot and colleagues](https://doi.org/10.1145/2594538.2594541) showed that when places hold information about how records are divided among them, more queries than the monotone ones have implementations that need no coordination, which extends the CALM theorem's line to programs that place their scopes.
+
 The sealing method also sets what a statistical conclusion means. A fixed-horizon significance test assumes that its cutoff, which is a seal, was chosen without reading the outcomes. Sealing once the result looks significant reads them, and false positives multiply although the scope is sealed. [Always-valid inference](https://arxiv.org/abs/1512.04922) stays valid at any cutoff, however it was chosen.
+
+### Polarity and strata
+
+A function can be monotone in some of its inputs and not in others. The live holds on a seat are the holds on that seat minus the released ones. A new hold can only add to that output and a new release can only remove from it, so the function is monotone in the holds and *antitone* in the releases, and only the releases must be sealed before an element of the output is final. Each input of a function therefore has a *polarity*:
+
+- **positive**, when more records in the input can only add to the output;
+- **negative**, when more records in the input can only remove from it;
+- **unknown**, when no analysis establishes either, as for most general-purpose code.
+
+Polarities compose like signs. "This seat has no live hold" is antitone in the live holds, which are antitone in the releases, so the conclusion is monotone in the releases: a new release can only make the seat free. It is antitone in the holds, so only the holds must be sealed before "free" is final.
+
+A program's functions form a graph from the records to every view and every open choice, and each edge carries a polarity. Removing the negative and unknown edges divides the graph into *strata*, parts in which every function is monotone in its inputs. In Datalog this structure is called [stratified negation](https://en.wikipedia.org/wiki/Datalog), and it is how monotone and non-monotone parts compose into one program. An output is final when every scope it reads through a negative or unknown edge is sealed up to the positions it depends on, so coordination is needed only at those edges.
+
+Monotonicity is also relative to the order chosen for a function's output. "The latest price" is not monotone under inclusion, because a later price replaces an earlier one. Ordered by the position of the write that set it, the same value only moves forward, and a last-writer-wins register is that choice of order; CRDTs in general choose an order under which merging is monotone. What becomes final under such an order is a bound, such as "the price was set at write 41 or later", not the conclusion that no later write exists. A test on a growing value is final once true only when every larger value also passes it: "at least 100 likes" is such a test, and "exactly 100 likes" is not. [Bloom<sup>L</sup>](https://doi.org/10.1145/2391229.2391230) is a language built on these orders, called lattices, and on such tests.
+
+### Finality relative to scopes
+
+A value is final relative to the scopes whose seals it rests on, and one value can be final relative to one scope and provisional relative to a larger one. A card payment is final once the card network settles it, and a dispute can still reverse it until the dispute window closes. The window's end is a seal of its own, written by a timeout. Any function whose output can change only within a known period, such as a count of events that may arrive late, is sealed the same way at the period's end, so its output is provisional until a known time rather than indefinitely.
+
+Admission has the same structure. An admission held only in a sequencer's memory is lost if the sequencer fails before storing it, so an admission is final only once it is stored where it survives the failures its scope must survive. Finality therefore comes in tiers, such as admitted on a device, stored on a quorum of servers, settled by another organization, and past a dispute window. Each tier is a seal, and a view can present each tier differently, as a banking app separates pending payments from posted ones.
 
 ## Prediction: show provisional values when records cannot arrive in time
 
@@ -271,7 +294,7 @@ Several familiar features are this one mechanism:
 - rollback netcode in fighting games;
 - the pending line in a banking app after a card payment.
 
-In the card payment, the pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment.
+In the card payment, the pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment. The end of the dispute window is a later seal, after which the payment cannot be reversed.
 
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
@@ -363,7 +386,7 @@ The name comes from [grounding in communication](https://doi.org/10.1037/10096-0
 Three methods meet the principle, in increasing order of cost:
 
 1. **Options are identifiers.** The presentation converts a tap or a click into the identifier of the thing under it, on the device where the presentation is known, and only the identifier is recorded. Sequence CRDTs give every character of a shared document an identifier for the same reason, so an insertion after a given character means the same on every replica.
-2. **A function interprets the value against its snapshot.** A position, such as "row 3" or "offset 12", is read in the record's snapshot and moved past every concurrent record. [Operational transformation](https://doi.org/10.1145/67544.66963) moves text positions this way.
+2. **A function interprets the value against its snapshot.** A position, such as "row 3" or "offset 12", is read in the record's snapshot and moved past every concurrent record. [Operational transformation](https://doi.org/10.1145/67544.66963) moves text positions this way. Shooter games apply the method to time: with [lag compensation](https://developer.valvesoftware.com/wiki/Lag_Compensation), the server evaluates a shot against the positions the shooter's view showed, not against the positions when the shot arrives.
 3. **A choice interprets the value.** When the view does not determine the thing, as with "move my booking to the later slot" typed into a chat, a choice bound to an AI model or a function selects an identifier. Its view contains the original value and that value's snapshot, and its record enters the author's view, where the author can supersede it. A search engine that reports "showing results for" a corrected query uses this method, and so does an agent that states its reading of a request before acting on it.
 
 Choices with effects make the third method costly to skip. An agent that reads "delete the old drafts" against the wrong view deletes the wrong files, and the effects principle allows no correction once the effect has started, so an interpretation that leads to an effect is shown to its author first. Plan reviews and approval prompts for AI agents are this step.
@@ -411,7 +434,7 @@ Programs change while choices are open. Some people still run last year's versio
 
 **Versions principle:** store the program version with every record, and store each release as a record. A migration is correct when it gives the same state as recomputing from the records under the new version.
 
-- **A release is a record.** Choices opened after the release use the new version.
+- **A release is a record.** It is admitted into a scope's order like any other record, so every replica that reads the scope switches versions at the same position, and choices opened after that position use the new version.
 - **Migrations change how records are read.** Old records stay as they are, and translation between versions is a function.
 - **Open choices carry over by stable identifier.** A form can be edited while thousands of people are partway through the form, as long as every open choice maps to a choice in the new version or to a recorded fallback.
 - **Changing a binding's definition is a release,** because the change alters which resolver supplies each value. Changing an AI agent's model is one case.
@@ -489,11 +512,12 @@ The principles are independent: each can be broken while the other eight hold. T
 | Voice interfaces, accessibility, agent APIs | binding | one choice presented differently per resolver |
 | Durable workflows, reminders | derivation, binding | open choices are functions of the records; timeouts record defaults |
 | Submit buttons, turns, commits | sealing | seals |
+| Pending, posted, and settled states | sealing | seals at several tiers of finality |
 | Inventory, quotas, rate limits | sealing | escrow: a scope split into shares, each with a sequencer |
 | Offline mode | sealing | admitting invariant-confluent or escrowed records on the device |
 | Optimistic UI, client prediction, rollback | prediction | provisional values |
 | Retries, idempotent payments, reconciliation | effects | presentation keyed by the choice's identifier; an "unknown" default that opens a reconciliation choice |
-| Permalinks, comment anchors, positions in shared text | grounding | references by identifier, or positions read in the record's snapshot |
+| Permalinks, comment anchors, positions in shared text, lag compensation | grounding | references by identifier, or positions and times read in the record's snapshot |
 | Disambiguation, plan review before an agent acts | grounding | an interpretation choice whose record its author can supersede |
 | Third-party APIs, webhooks, service-level agreements | effects | programs bound to each other's choices; commitments checked against the records |
 | Presence, live cursors, notifications | prediction, coupling | read coupling, delivered by response deadline |
@@ -501,7 +525,7 @@ The principles are independent: each can be broken while the other eight hold. T
 | Sharding | coupling | a partition of the order-coupling graph |
 | Experiments with interference | coupling, goals | a partition of the read-coupling graph, or functions that remove edges |
 | Off-policy evaluation, counterfactuals | derivation, binding, goals | recorded probabilities and replay |
-| Live updates, schema migration, old clients | versions | versioned records and translation functions |
+| Live updates, hot code loading, schema migration, old clients | versions | versioned records, releases that take effect at a position, and translation functions |
 
 ## Six classes of choices by coupling and response deadline
 
@@ -589,5 +613,6 @@ Older work reached each principle, usually in one kind of system:
 6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also determines whose record goes first, and no principle constrains that order when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
 7. **Legibility of functions over a person's records.** Personalization and ranking compute what a person is shown from that person's own records. Provenance can trace a view to the records it was computed from, but no method states which of those functions a view must present, or how a person can supersede the records they read, without the view becoming an audit log.
 8. **A common unit of cost across resolvers.** Guardrails can bound a person's attention and a model's tokens separately. A goal that trades one against the other needs a common unit, and no unit is accepted.
+9. **Synthesizing bindings.** For a program with finitely many states, selecting the deterministic binding that best serves a goal is a [stochastic game](https://doi.org/10.1016/0890-5401(92)90048-K). The bound resolver is one player, opaque resolvers treated as adversaries are the other, and randomized resolvers are chance moves with known probabilities. A goal averaged over long runs is a mean-payoff objective, and guardrails are further conditions on the run. In many such games an optimal strategy depends only on the current state, which corresponds to a resolver that reads only its view when the view contains the state. Which goals and guardrails admit exact and efficient synthesis, and how to model people as neither adversaries nor chance, is open.
 
 [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the theory as four runtime components: one for records, one for functions, one for choices and their resolvers, and one for seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the theory, so that a compiler can check the principles.
