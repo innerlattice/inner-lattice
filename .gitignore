@@ -32,3 +32,5 @@ __pycache__/
 
 # Parse caches
 .cache/
+.coverage
+.coverage.json
