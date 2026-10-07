@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 350" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 404" role="img" aria-labelledby="title desc">
   <title id="title">Resolvers ordered by determinacy</title>
-  <desc id="desc">One choice, with its view, options, and timeout, can be bound to any of five resolvers, ordered from most to least determinate. A deterministic function and a randomizer are inside the system boundary, as versioned code. An AI model, a person, and an external system are outside the system boundary, in the environment. A function supplies its value with probability 1, repeats exactly, and responds in microseconds. A randomizer's probability is known and recorded, a randomizer repeats given its seed, and it responds in microseconds. The probability of an AI model's whole output is unknown, the output repeats only approximately even when the model and context are pinned, and the model responds in seconds. A person's probability is unknown, a person cannot be asked again with nothing else changed, and a person responds in seconds to days. An external system's probability is unknown, its values can only be read back from the record, and its latency varies.</desc>
+  <desc id="desc">One choice, with its view, options, and timeout, can be bound to any of five resolvers, ordered from most to least determinate. A deterministic function and a randomizer are inside the system boundary, as versioned code. An AI model, a person, and an external system are outside the system boundary, in the environment. A function supplies its value with probability 1, repeats exactly, and responds in microseconds. A randomizer's probability is known and recorded, a randomizer repeats given its seed, and it responds in microseconds. The probability of an AI model's whole output is unknown, the output repeats only approximately even when the model and context are pinned, and the model responds in seconds. A person's probability is unknown, a person cannot be asked again with nothing else changed, and a person responds in seconds to days. An external system's probability is unknown, its values can only be read back from the record, and its latency varies. Beyond the view, a function reads nothing, a randomizer reads a recorded seed, an AI model reads its weights, which are fixed for a pinned version, a person reads anything they know, and an external system reads its own records.</desc>
 
   <g class="gold">
     <rect class="box" x="130" y="16" width="530" height="40" rx="6"/>
@@ -32,20 +32,26 @@
       <text class="note" x="501" y="128">outside: the environment</text>
     </g>
   </g>
-  <line class="cut" x1="342" y1="84" x2="342" y2="300"/>
-  <text class="note" x="348" y="296">system boundary</text>
+  <line class="cut" x1="342" y1="84" x2="342" y2="354"/>
+  <text class="note" x="348" y="350">system boundary</text>
 
   <g class="grid">
     <line x1="20" y1="146" x2="660" y2="146"/>
     <line x1="20" y1="200" x2="660" y2="200"/>
     <line x1="20" y1="254" x2="660" y2="254"/>
+    <line x1="20" y1="308" x2="660" y2="308"/>
   </g>
   <text class="axis" x="20" y="170">Probability</text>
   <text class="note" x="20" y="186">in the record</text>
   <text class="axis" x="20" y="224">Repeatable</text>
   <text class="note" x="20" y="240">ask again</text>
-  <text class="axis" x="20" y="278">Latency</text>
+  <text class="axis" x="20" y="278">Outside</text>
+  <text class="note" x="20" y="294">information</text>
+  <text class="axis" x="20" y="332">Latency</text>
 
+  <g class="pine"><circle class="dot" cx="183" cy="272" r="5"/><circle class="dot" cx="289" cy="272" r="5"/></g>
+  <g class="gold"><circle class="dot" cx="395" cy="272" r="5"/></g>
+  <g class="love"><circle class="dot" cx="501" cy="272" r="5"/><circle class="dot" cx="607" cy="272" r="5"/></g>
   <g class="pine"><circle class="dot" cx="183" cy="164" r="5"/><circle class="dot" cx="289" cy="164" r="5"/><circle class="dot" cx="183" cy="218" r="5"/><circle class="dot" cx="289" cy="218" r="5"/></g>
   <g class="gold"><circle class="dot" cx="395" cy="218" r="5"/></g>
   <g class="love"><circle class="dot" cx="395" cy="164" r="5"/><circle class="dot" cx="501" cy="164" r="5"/><circle class="dot" cx="607" cy="164" r="5"/><circle class="dot" cx="501" cy="218" r="5"/><circle class="dot" cx="607" cy="218" r="5"/></g>
@@ -61,19 +67,24 @@
     <text x="395" y="240">roughly, if pinned</text>
     <text x="501" y="240">no</text>
     <text x="607" y="240">read back only</text>
+    <text x="183" y="294">none</text>
+    <text x="289" y="294">its seed</text>
+    <text x="395" y="294">its weights</text>
+    <text x="501" y="294">anything</text>
+    <text x="607" y="294">its records</text>
   </g>
   <g class="label" text-anchor="middle">
-    <text x="183" y="278">µs</text>
-    <text x="289" y="278">µs</text>
-    <text x="395" y="278">seconds</text>
-    <text x="501" y="278">seconds to days</text>
-    <text x="607" y="278">varies</text>
+    <text x="183" y="332">µs</text>
+    <text x="289" y="332">µs</text>
+    <text x="395" y="332">seconds</text>
+    <text x="501" y="332">seconds to days</text>
+    <text x="607" y="332">varies</text>
   </g>
 
-  <g class="pine"><circle class="dot" cx="136" cy="330" r="5"/></g>
-  <text class="note" x="146" y="334">yes</text>
-  <g class="gold"><circle class="dot" cx="196" cy="330" r="5"/></g>
-  <text class="note" x="206" y="334">partly, or under conditions</text>
-  <g class="love"><circle class="dot" cx="380" cy="330" r="5"/></g>
-  <text class="note" x="390" y="334">no</text>
+  <g class="pine"><circle class="dot" cx="136" cy="384" r="5"/></g>
+  <text class="note" x="146" y="388">yes</text>
+  <g class="gold"><circle class="dot" cx="196" cy="384" r="5"/></g>
+  <text class="note" x="206" y="388">partly, or under conditions</text>
+  <g class="love"><circle class="dot" cx="380" cy="384" r="5"/></g>
+  <text class="note" x="390" y="388">no</text>
 </svg>

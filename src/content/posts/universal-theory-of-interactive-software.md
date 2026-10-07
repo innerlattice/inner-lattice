@@ -83,7 +83,7 @@ An AI model sampled at temperature zero is deterministic in principle. In practi
 
 Some opaque resolvers have goals of their own: people, AI agents, and other organizations. These *agents* adapt to the program, so the program's design changes the values they supply. Bidders on auction sites, for example, bid later when auctions end at a fixed time than when auctions end after a period with no bids. A sensor does not adapt to the program in this way.
 
-![Resolvers arranged by determinacy, from deterministic functions through randomized assignment to people, models, and external systems, with the system boundary between randomized and opaque resolvers](../../assets/diagrams/resolvers.svg "A resolver's determinacy sets whether the values it supplies can be reproduced and whether their probabilities are known.")
+![Resolvers arranged by determinacy, from deterministic functions through randomized assignment to people, models, and external systems, with the system boundary between randomized and opaque resolvers](../../assets/diagrams/resolvers.svg "A resolver's determinacy sets whether the values it supplies can be reproduced, whether their probabilities are known, and how much outside information can affect them.")
 
 ### The primitives in formal terms
 
