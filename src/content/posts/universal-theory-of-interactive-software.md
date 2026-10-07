@@ -301,7 +301,7 @@ Each part uses something the theory already has:
 
 Whether a choice has effects is a property of the choice, not of its resolver. The same card network resolves a balance inquiry, which has no effect, and a charge, which has one.
 
-No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot determine whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver keeps the identifier for longer than the choice's timeout, and a recorded "unknown" everywhere else.
+No method performs an effect exactly once through a system that ignores the key. After a lost reply, the sender cannot determine whether the request arrived, which is the [two generals problem](https://en.wikipedia.org/wiki/Two_Generals%27_Problem). The principle therefore gives one effect per choice where the resolver has committed to keeping the identifier for longer than the choice's timeout (see [commitments](#commitments)), and a recorded "unknown" everywhere else.
 
 ## Coupling: derive which choices affect each other from the functions
 
@@ -430,13 +430,33 @@ The records contain real past runs, so the condition can be tested by replaying 
 
 One requirement has no exception. If a release changes what an earlier view showed, after someone selected a value based on that view, the change must itself be recorded, as a restatement is in accounting. Otherwise the selection loses the context that gave it meaning.
 
+## Composition: programs as resolvers
+
+A resolver can be another program. When a booking program binds its payment choice to a card network, the network receives the choice's view and supplies a value from its options. Inside the network, the request is a choice of the network's own, kept in the network's records. The value appears in the records of both programs, linked by the first choice's identifier.
+
+Two programs bound to each other's choices form one larger program. Its open choices are the open choices of the parts that neither part resolves for the other, and its coupling graph has edges between the parts: a seat hold in the booking program and a card authorization in the network are order-coupled, and the hold the authorization places on funds is escrow in the network's scope. [Polynomial functors](https://arxiv.org/abs/2312.00990) give this composition an algebraic form, in which an interface is a set of positions, each with the set of replies it accepts. Here the positions are the open choices with their views, and the replies are their options. Interaction trees compose the same way.
+
+Composition adds no principle, because every principle applies inside each program. It describes how programs connect, which the effects principle already assumes.
+
+### Commitments
+
+A program can observe another program only through views and values, so it can rely on the other's behavior only as far as the other has committed to that behavior. A **commitment** is a record whose value is a law over later records of the commitment's own resolver. A card network's commitment that a repeated key returns the first result for 24 hours is a law over the network's replies. A program's releases are commitments in the same sense: each one fixes, for the program's own records, which resolvers count, which options are accepted, and which default is recorded at each timeout.
+
+Three properties follow from the definition:
+
+- **A resolver can commit only its own records.** A law over another resolver's records is one the committing resolver cannot keep. [Promise Theory](https://doi.org/10.1007/11568285_9) starts from the same rule: an agent can promise only its own behavior.
+- **Commitments are checked against the records.** A law that forbids something, such as two different replies under one key, is broken by records that exist, and stays broken, because records are never modified. A law that something happens by a deadline is broken by an absence, so by the sealing principle the breach is final only once the deadline's scope is sealed, which the timeout of the corresponding choice does.
+- **The effects principle depends on commitments.** One effect per choice requires the resolver to keep each choice's identifier for longer than the choice's timeout, which only the resolver can commit to. Through a resolver without that commitment, a lost reply can only be recorded as "unknown".
+
+Consent, terms of service, rate limits, data-retention policies, and service-level agreements are commitments. Parties that do not trust each other can still check each other's commitments, against signed records.
+
 ## How the terms of the theory relate
 
-The matrix below relates ten of the theory's terms, primitives first, and states how each acts on the others. Each cell reads from its row to its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice".
+The matrix below relates eleven of the theory's terms, primitives first, and states how each acts on the others. A choice's view and options are parts of the choice, so they have no rows of their own. Each cell reads from its row to its column: the cell in row *Resolver* and column *Choice* reads "a resolver resolves a choice".
 
-![A matrix of ten terms, from choice to version, with a verb in each cell where the row term acts on the column term, and every filled cell on or below the diagonal](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives and the terms added by each principle.")
+![A matrix of eleven terms, from choice to commitment, with a verb in each cell where the row term acts on the column term, and every filled cell on or below the diagonal](../../assets/diagrams/term-relations.svg "Read each cell from the row term to the column term. Dashed lines separate the four primitives, the terms added by each principle, and the term added by composition.")
 
-Every filled cell lies on or below the diagonal, so no term acts on a term that comes after it. Several terms are cases of the primitives: a binding and a goal are functions, a sequencer is a resolver, and a seal and a release are records. Five principles add no term. Coupling is one cell: a function couples choices. For prediction, a provisional value is a function's output that is not yet final. For effects, the key that makes a repeat harmless is the choice's identifier, and "unknown" is one of the choice's options. For grounding, a value refers through the view it was selected from, which its record identifies by snapshot and version. Derivation appears as an absence: no term denotes stored state.
+Every filled cell lies on or below the diagonal, so no term acts on a term that comes after it. Several terms are cases of the primitives: a binding and a goal are functions, a sequencer is a resolver, and a seal, a release, and a commitment are records. Five principles add no term. Coupling is one cell: a function couples choices. For prediction, a provisional value is a function's output that is not yet final. For effects, the key that makes a repeat harmless is the choice's identifier, and "unknown" is one of the choice's options. For grounding, a value refers through the view it was selected from, which its record identifies by snapshot and version. Derivation appears as an absence: no term denotes stored state.
 
 The principles are independent: each can be broken while the other eight hold. The table gives one such failure per principle, with the two sentences of Binding taken separately, and what goes wrong.
 
@@ -473,6 +493,7 @@ The principles are independent: each can be broken while the other eight hold. T
 | Retries, idempotent payments, reconciliation | effects | presentation keyed by the choice's identifier; an "unknown" default that opens a reconciliation choice |
 | Permalinks, comment anchors, positions in shared text | grounding | references by identifier, or positions read in the record's snapshot |
 | Disambiguation, plan review before an agent acts | grounding | an interpretation choice whose record its author can supersede |
+| Third-party APIs, webhooks, service-level agreements | effects | programs bound to each other's choices; commitments checked against the records |
 | Presence, live cursors, notifications | prediction, coupling | read coupling, delivered by response deadline |
 | Access control, privacy, blocking | coupling | removed read-coupling edges |
 | Sharding | coupling | a partition of the order-coupling graph |
