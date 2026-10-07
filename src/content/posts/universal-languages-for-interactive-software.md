@@ -1,6 +1,6 @@
 ---
 title: "Toward a universal set of languages for interactive software"
-description: "A language for programs built on the theory of choices, resolvers, records, and functions, derived from what existing languages give up and gain. Code varies along two independent axes: computational power, and whether the code uses the one effect, choose. Laws, bindings, goals, presentation, and versions are declarations. A reservation module shows what a compiler can derive from source."
+description: "A language for programs built on the theory of choices, resolvers, records, and functions, derived from what existing languages give up and gain. Code varies along two independent axes: computational power, and whether the code uses the one effect, choose. Laws, commitments, bindings, goals, presentation, and versions are declarations. A reservation module shows what a compiler can derive from source."
 date: 2026-10-03T12:20:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
@@ -27,8 +27,9 @@ The method is to start from particular languages. Each successful special-purpos
 | Term | Meaning |
 | --- | --- |
 | choice | a point where a run needs a value from outside its code; a choice has a stable identifier (its declaration's name and its address in the run), a view, options, a timeout, and a default |
-| resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or an external system |
+| resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or another program |
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
+| snapshot, view | the records available where a choice's view was computed; the information presented to the choice's resolver, computed from the snapshot |
 | function | a deterministic map from a set of records to a value |
 | binding | configuration stating which resolver supplies the value for which choice; only a value from the bound resolver counts |
 | scope, seal, sequencer | a set of records picked out by a condition; a record stating that the scope is complete up to a position; the single resolver that admits records into the scope in one order |
@@ -36,6 +37,7 @@ The method is to start from particular languages. Each successful special-purpos
 | read coupling, order coupling | a record from one choice can change another choice's view or options; records from two choices can each be admitted alone but not together |
 | goal | a function of the records with a direction and guardrails |
 | release | a record that changes the program version |
+| commitment | a record whose value is a law over its resolver's later records |
 
 The nine principles, as stated in [the theory](/universal-theory-of-interactive-software#nine-principles):
 
@@ -111,7 +113,7 @@ where $C$ is the set of declared choices with their arguments and $X_c$ is the v
 | random numbers | a choice bound to a randomizer, which records its probability |
 | the current time | a choice bound to a clock, treated as a sensor |
 | a timer | a choice whose only outcome is its default, recorded when the timeout passes |
-| an HTTP call, a payment, an email | a choice bound to an external system, whose reply is the value |
+| an HTTP call, a payment, an email | a choice bound to another program, whose reply is the value |
 | a model call | a choice bound to an AI model |
 | a database transaction | a choice bound to a sequencer: admit or refuse a record into a scope |
 
@@ -141,7 +143,7 @@ fn open_choices(R) =
   else {}
 ```
 
-`recorded(R, c)` is true when `R` contains a record answering the choice `c` opened in this run, and `value(R, c)` is that record's value. In a flow with a loop, `c` stands for an address, because each pass opens a new choice. The runtime does not need the second form written out. The runtime computes the same result by replaying the flow against the records, using the record at each `choose`'s address until the replay reaches an address with no record. Semantically, a flow denotes an [interaction tree](https://arxiv.org/abs/1906.00046): each `choose` is a node, each possible value is a branch, and the records determine a path through the tree.
+`recorded(R, c)` is true when `R` contains a record of the choice `c` opened in this run, and `value(R, c)` is that record's value. In a flow with a loop, `c` stands for an address, because each pass opens a new choice. The runtime does not need the second form written out. The runtime computes the same result by replaying the flow against the records, using the record at each `choose`'s address until the replay reaches an address with no record. Semantically, a flow denotes an [interaction tree](https://arxiv.org/abs/1906.00046): each `choose` is a node, each possible value is a branch, and the records determine a path through the tree.
 
 The equivalence places interactive code on the first axis. The control, which determines the next open choice, is a function, and its power level determines what can be checked:
 
@@ -163,7 +165,7 @@ Treating a call to an unresolved name as a choice gives the call everything a ch
 
 ## Declarations that are not code
 
-Some parts of a program are never executed. Bindings configure the code, laws state properties of the code, goals define how outcomes are evaluated, presentation defines how views are shown, and releases define how the program changes. Each is a declaration whose content is code at a low power level.
+Some parts of a program are never executed. Bindings configure the code, laws state properties of the code, commitments state which laws hold across programs, goals define how outcomes are evaluated, presentation defines how views are shown, and releases define how the program changes. Each is a declaration whose content is code at a low power level.
 
 ### Bindings
 
@@ -184,6 +186,10 @@ A law is a property that every run of the program has. How a law is checked depe
 
 Writing proofs has long been the costly step in the last row. A reinforcement-learning system has [written proofs in Lean for olympiad mathematics problems](https://www.nature.com/articles/s41586-025-09833-y), and each proof was verified by Lean's proof checker, a small program whose verdict does not depend on how the proof was produced. If such systems become able to prove properties of programs, the cost of the last row falls, and the work that remains for people is stating the right laws.
 
+### Commitments
+
+A commitment is a law with an owner. `rely` declares a law over another program's records that this program depends on, and the law must match a commitment that the other program has recorded. `commit` publishes one of the program's own laws, as a commitment, to the resolvers bound to its choices. The runtime checks a relied-on law against the other program's replies and records each breach.
+
 ### Goals
 
 A goal declares a function, a direction, and guardrails, as the goals principle requires. Analytics, experiments, and bandit resolvers read the declaration, so the metric an experiment optimizes and the metric a dashboard displays are the same definition.
@@ -193,6 +199,8 @@ A goal declares a function, a direction, and guardrails, as the goals principle 
 A choice's view states what the resolver must be able to perceive and do, as *intents*: select one of several options, enter an amount, confirm, or follow a status. A design system maps each intent to a component for each channel: a screen, a voice interface, or a typed schema for an AI agent. Priorities among the parts of a view are data, so a small-screen layout or a spoken summary can be computed from the same declaration.
 
 Arranging components on a screen is itself a choice. Its options are the arrangements that a component catalog allows, and its resolver can be a designer who fixes the layout, a layout function that responds to screen size, or an AI model that composes an arrangement per person. [A2UI](https://a2ui.org) has agents send declarative interfaces built from a catalog of trusted client components, and [MCP Apps](https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/), the first official extension to the Model Context Protocol, lets tools return interactive interfaces that a host renders. In A2UI, the catalog is the option set of the layout choice.
+
+A layout that changes per person makes positions on the screen useless as references, so options that refer to things have identifier types, such as `Id<Slot>` (grounding principle). The presentation shows each slot by its start time and converts a tap into the slot's identifier on the device, and only the identifier is recorded. When a resolver supplies free text that refers to things, such as a chat message asking for "the later slot", the program reads the text through a choice whose options are identifiers and whose record the author can supersede.
 
 ### Versions
 
@@ -302,12 +310,15 @@ flow book(party: Party, wanted: Time) {
 
 `a or b` evaluates to `a` unless `a` is empty. `choose` opens a choice and evaluates to the recorded value. `admit` is `choose` applied to the admission choice of a scope: `admit` sends a record to the scope's sequencer and evaluates to the admitted record or to `refused`. `stop` ends the flow. If another party takes the slot first, the hold is refused and the loop offers slots again. If the card network's reply to the deposit is lost, the hold stays in place and the flow opens a choice for the network to supply the outcome, because releasing the slot while the card may have been charged would keep a deposit for nothing. If the network supplies no outcome, a staff member decides; after two days without an answer the hold counts as paid, so the venue bears the risk. The control has finitely many locations and one loop back, so the control is at level 1 and its control graph can be model-checked.
 
-### Laws, bindings, goals, access, and presentation
+### Laws, commitments, bindings, goals, access, and presentation
 
 ```text
 law one_live_hold:    forall s. size(live_holds(s)) <= 1
 law hold_resolves:    always (admitted Hold h -> eventually (paid h or released h))
 law agents_never_pay: resolver(pay_deposit) is not model
+
+rely   card_network: repeated key for pay_deposit returns the first reply for 24 h
+commit hold_resolves to party
 
 bind publish_slot         to person in role staff
 bind pick_slot            to person
@@ -329,7 +340,7 @@ release v2 {
 }
 ```
 
-`law` states a property: `paid` and `released` are the functions defined above, `forall` ranges over slots, and `always` and `eventually` are the operators of temporal logic over the order in which records are admitted. `bind` sets each choice's resolver. `random { ... }` picks a resolver at random with the given probabilities and records which one was picked, so the binding for `suggest_alternatives` is an experiment comparing an AI model with a deterministic function, `nearest_open`, defined elsewhere in the module. `goal` declares the function to maximize and its guardrail. `access` removes the holder's identity from every view except those of staff and the party. `present` maps each choice to an intent. `release` declares version 2, in which slots gain a field, and the migration that reads version-1 slots under version 2.
+`law` states a property: `paid` and `released` are the functions defined above, `forall` ranges over slots, and `always` and `eventually` are the operators of temporal logic over the order in which records are admitted. `rely` names the card network's commitment that the module depends on, and `commit` publishes `hold_resolves` to the party as the venue's commitment. `bind` sets each choice's resolver. `random { ... }` picks a resolver at random with the given probabilities and records which one was picked, so the binding for `suggest_alternatives` is an experiment comparing an AI model with a deterministic function, `nearest_open`, defined elsewhere in the module. `goal` declares the function to maximize and its guardrail. `access` removes the holder's identity from every view except those of staff and the party. `present` maps each choice to an intent. `release` declares version 2, in which slots gain a field, and the migration that reads version-1 slots under version 2.
 
 ### What the compiler derives from the module
 
@@ -340,6 +351,7 @@ release v2 {
 | Final and provisional labels | `open_slots` uses `not exists`, so availability is provisional until the slot's scope is sealed, and views that show availability are labeled provisional until then |
 | A model-checking result for `hold_resolves` | the flow's control graph and the timeouts, which guarantee records. Every path from an admitted hold reaches a payment or a release, because neither the options nor the default of `settle_deposit` is `unknown` |
 | A check that effects follow final values | `pay_deposit` is marked `acts`. The flow opens it only after `admit` returns `hold`, and its view reads `hold`, so both are final |
+| A check that the deposit can be retried safely | `pay_deposit` is marked `acts` and bound to `card_network`, whose relied-on commitment keeps keys for 24 hours. The 10-minute timeout plus the 1-hour reconciliation fit inside that window |
 | An SMT check of `agents_never_pay` | the binding table at deployment |
 | An experiment design, with a warning | the randomized binding and `fill_rate`. Suggestions shown to one party change which slots are open for others, so randomizing per party lets read coupling cross between variants; the compiler reports the spillover and outputs a switchback design that randomizes by day |
 | An agent API | the choices and their types, without presentation |
@@ -363,25 +375,26 @@ Each row uses only choices, resolvers, records, functions at some power level, b
 
 ## The language in one page
 
-The language has three kinds of definition and five kinds of declaration.
+The language has three kinds of definition and six kinds of declaration.
 
 **Definitions.**
 
 1. **Types** describe the values that choices produce. They are constraints at level 0, and combining types is unification.
 2. **Functions** are deterministic maps from a set of records to a value. Each function has a power level from 0 to 4: constraints, queries, recursive queries, total functions, or general recursion. The compiler infers the lowest level whose syntax the code fits and checks it against the level the file declares.
-3. **Choices** are declared with a name, a view, options, a timeout, and a default, and each `choose` opens a choice identified by the name and its address in the run. `choose` is the only effect apart from nontermination at level 4. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and opens it only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
+3. **Choices** are declared with a name, a view, options, a timeout, and a default, and each `choose` opens a choice identified by the name and its address in the run. `choose` is the only effect apart from nontermination at level 4. A choice marked `acts` changes the world when presented, so the runtime presents it under its identifier and opens it only from final outputs. Interactive code (`flow`) is notation for a function from the records to the set of open choices, and its control has a power level like any other function. Options that refer to things have identifier types. A signature without a body is a choice whose default resolver is an AI model. `admit` is `choose` applied to a scope's admission choice.
 
 **Declarations.**
 
-1. **Bindings** map choices to resolvers: a function, a randomizer, a person, an AI model, an external system, or a sequencer. A randomized binding records its probabilities and is an experiment.
+1. **Bindings** map choices to resolvers: a function, a randomizer, a person, an AI model, another program, or a sequencer. A randomized binding records its probabilities and is an experiment.
 2. **Laws** state invariants, temporal properties, and properties of bindings, merges, and migrations. Each law is checked by the method its content allows: derived sequencing, model checking, SMT solving, construction, replay, proof, or runtime monitoring.
-3. **Goals** declare a function, a direction, and guardrails, read by analytics, experiments, and learning resolvers.
-4. **Presentation** maps views to intents and intents to components per channel. Layout is a choice over a component catalog.
-5. **Releases** declare program versions and migrations. Choice identifiers are stable across releases that do not change what a choice's value means.
+3. **Commitments** declare laws over other programs' records that the program depends on (`rely`) and laws over its own records that it publishes (`commit`).
+4. **Goals** declare a function, a direction, and guardrails, read by analytics, experiments, and learning resolvers.
+5. **Presentation** maps views to intents and intents to components per channel. Layout is a choice over a component catalog.
+6. **Releases** declare program versions and migrations. Choice identifiers are stable across releases that do not change what a choice's value means.
 
 **Organization.** Files belong to notions, one per concept. Each file has an orientation (inward, process, outward), a determination (universal, particular, individual), a power level, and an effect. Imports point only toward inward and universal files.
 
-**Compiler outputs.** From the source, the compiler derives the record schema, the ordered scopes and their sequencers, the views that can show provisional values, the scopes whose seals each choice that acts must wait for, model-checking and solver results for laws, experiment designs with coupling warnings, an API for AI agents, and migration checks. The runtime's configuration is read from the same source.
+**Compiler outputs.** From the source, the compiler derives the record schema, the ordered scopes and their sequencers, the views that can show provisional values, the scopes whose seals each choice that acts must wait for, the commitments each choice that acts depends on, model-checking and solver results for laws, experiment designs with coupling warnings, an API for AI agents, and migration checks. The runtime's configuration is read from the same source.
 
 ## Open problems
 
