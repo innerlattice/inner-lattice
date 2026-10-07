@@ -111,7 +111,7 @@ Records are never modified, so deleting a person's data on request needs a separ
 
 Stored state is a cache of function outputs. A server recovers by loading a checkpoint of state and replaying the records admitted after it, and replicas of an ordered scope stay identical by receiving its records in the sequencer's order and each computing the outputs, rather than by receiving the rows that changed. Deterministic databases such as [Calvin](https://doi.org/10.1145/2213836.2213838) replicate this way, and because the order is fixed before execution, replicas need no further agreement while executing, and records that touch different rows run in parallel. Replication then costs bandwidth in proportion to the records, not to the state they change. A log of changed rows can still be kept as a second cache that shortens recovery, with a retention of its own.
 
-The design has two costs. The record store grows without bound unless records are compacted, which conflicts with replay ([open problem 2](#open-problems)). Every record also carries its snapshot, version, and resolver, which can exceed the size of a small value. Batching reduces the second cost: one device's inputs for one tick, or the records of one request, share a snapshot and a version.
+The design has two costs. The record store grows without bound unless records are compacted, which conflicts with replay ([open problem 2](#open-problems)). Every record also carries its snapshot, version, and resolver, which can exceed the size of a small value. Batching reduces the second cost: the records one device sends together, or the records of one request, share a snapshot and a version.
 
 ## The evaluator
 
@@ -128,12 +128,12 @@ Four services that products usually run as separate systems are outputs of the e
 
 The evaluator's logical model is relational. The records of each choice declaration form one relation, and each function's output is another. DBSP represents every relation and every change to one as a *Z-set*, a map from rows to integer weights in which an insertion has weight +1 and a retraction −1, so a change to any output has the same form as the output. Records are never modified and identifiers are never reused, so a row keeps its identity across replicas and versions.
 
-How a relation is laid out in memory is a separate setting, chosen per function, and it changes speed, not results. Rows indexed by key suit lookups and joins. A columnar layout stores each field of many rows contiguously and suits functions that scan every row; the [entity component system](https://en.wikipedia.org/wiki/Entity_component_system) of game engines is this layout, with an entity as a key and each component as a column. Differential dataflow's *arrangements* are indexes shared by every operator that reads them.
+How a relation is laid out in memory is a separate setting, chosen per function, and it changes speed, not results. Rows indexed by key suit lookups and joins. A columnar layout stores each field of many rows contiguously and suits functions that scan every row, which is why analytical databases and game engines both use it. Differential dataflow's *arrangements* are indexes shared by every operator that reads them.
 
 A function runs in one of two modes, which also change speed, not results:
 
 - **Incremental.** The work done is proportional to the change in the inputs. This mode suits outputs of which each record changes a small part, such as a seat map.
-- **Bulk.** A step function computes the whole next state from the previous state and one batch of records, $\mathrm{state}_{t+1} = \mathrm{step}(\mathrm{state}_t, \mathrm{records}_t)$. This mode suits a game's simulation, in which most entities change every tick. The evaluator keeps the states of recent ticks, so that after a correction it can return to the last tick whose records are all admitted and step forward again.
+- **Bulk.** A step function computes the whole next state from the previous state and one batch of records, $\mathrm{state}_{t+1} = \mathrm{step}(\mathrm{state}_t, \mathrm{records}_t)$. This mode suits simulations, in which most entities change at every step. The evaluator keeps the states of recent steps, so that after a correction it can return to the last step whose records are all admitted and step forward again.
 
 SQL fits the read side of this model: a query is a function over relations, and DBSP compiles SQL queries into incremental ones. SQL's writes have no counterpart, because every write is a record supplied at a choice. A correction by an operator is a choice too, whose record supersedes the value it corrects.
 
@@ -146,7 +146,7 @@ Each element of an output is *final* when no record that can still be admitted w
 
 A seat map for one performance shows both. "C14's hold was admitted at position 88" is final once the admission arrives. "Seat C15 is free" and "seat C14 is held" each state that a record does not exist, a hold or a release, so a seal through position 88 makes them final only as of that position. Stream processors apply the second check with *watermarks*, which are seals over time windows. Views use the label to show what is still pending.
 
-A label names the seals the element rests on, because finality is relative to scopes. A transfer can be final relative to the bank's sequencer once admitted, final relative to failures once a quorum stores it, and final relative to another organization once settled. A view can present each tier separately, as banking apps separate pending, posted, and settled payments. An output that may change only until a known time, such as a count that accepts events up to an hour late, carries that time in its label and becomes final when a timeout seals the window, which the [Dataflow model](https://www.vldb.org/pvldb/vol8/p1792-Akidau.pdf) calls *allowed lateness*.
+A label names the seals the element rests on, because finality is relative to scopes. A transfer can be final relative to the bank's sequencer once admitted, final relative to failures once a quorum stores it, and final relative to another organization once settled. A view can present each tier separately. An output that may change only until a known time, such as a count that accepts events up to an hour late, carries that time in its label and becomes final when a timeout seals the window, which the [Dataflow model](https://www.vldb.org/pvldb/vol8/p1792-Akidau.pdf) calls *allowed lateness*.
 
 ## The dispatcher
 
@@ -194,9 +194,9 @@ Examples of placements in use:
 - A document editor merges concurrent text edits without a sequencer, and sequences structural operations, such as moving a section two people are editing, at one server per document.
 - A bank sequences transfers with a quorum of replicas.
 - A multiplayer game sequences contested actions at one server per match or zone. Players far from that server see more provisional values and more corrections.
-- A lockstep game seals one scope per tick on a schedule. The match's host seals tick $t$ when every player's input for it has arrived or a short input delay has passed, and a missing input receives a default, usually that player's previous input.
+- A lockstep simulation seals one scope per step on a schedule, once every participant's input for the step has arrived or a short delay has passed, and a missing input receives a default.
 
-Durability is a setting separate from placement: how many admitted records a scope may lose when its sequencer fails. A sequencer that acknowledges an admission before other replicas store it responds within its own processing time and loses the admissions in flight if it fails. A sequencer that waits until a quorum stores each admission loses none and adds a round trip. A game's tick can accept the first, and a bank's transfer cannot. An admission's finality label states which one it rests on.
+Durability is a setting separate from placement: how many admitted records a scope may lose when its sequencer fails. A sequencer that acknowledges an admission before other replicas store it responds within its own processing time and loses the admissions in flight if it fails. A sequencer that waits until a quorum stores each admission loses none and adds a round trip. A live cursor position can accept the first, and a payment cannot. An admission's finality label states which one it rests on.
 
 Escrow changes the scope a sequencer covers. A box office holding a block of seats is the sequencer for that block until it returns the unsold seats, and the allocation and the return are both records. Moving a scope to a new sequencer is a handoff: the old sequencer seals the scope at its last position, and the new one admits from the next position. A failed sequencer cannot seal, so a quorum seals for it: in [Raft](https://raft.github.io/), a majority that votes in a new numbered term refuses the old leader's entries, and the new leader already holds every committed entry.
 
@@ -220,9 +220,9 @@ Reapplying a record on top of admitted ones keeps its meaning only if its value 
 
 ### Records or outputs
 
-A device can receive a scope's records and compute its views itself, as lockstep games do, or receive outputs computed on a server, as most sync engines do. Receiving records costs bandwidth in proportion to the records rather than to the state they change, and lets the device show provisional values without waiting for a server. Three conditions must hold for a device to receive records:
+A device can receive a scope's records and compute its views itself, as collaborative editors and lockstep simulations do, or receive outputs computed on a server, as most sync engines do. Receiving records costs bandwidth in proportion to the records rather than to the state they change, and lets the device show provisional values without waiting for a server. Three conditions must hold for a device to receive records:
 
-- **Access.** The records must not contain what the device's view hides. A strategy game that sends every unit's orders to every player lets a modified client reveal hidden units.
+- **Access.** The records must not contain what the device's view hides. Sending every bid in a sealed-bid auction to every bidder's device lets a modified client read the other bids.
 - **Version.** The device must run a program version that reads the records.
 - **Cost.** The device must be able to compute the functions within the response deadline.
 
@@ -281,13 +281,13 @@ The rest depends on what the program's owners need and is chosen per scope:
 
 - where the sequencer runs;
 - how many admitted records a failure may lose;
-- how often a scope is sealed on a schedule, as with ticks;
+- whether a scope is sealed on a schedule, and how often;
 - how long records and changed rows are retained before compaction;
 - whether devices receive records or outputs.
 
 One rule connects the two lists: a chosen setting may add coordination but never remove it. A program can sequence a scope whose records would merge without order, wait for a seal that a monotone output does not need, or require a quorum where one server would do, and each costs latency. It cannot leave a scope with order-coupled choices unsequenced or label an output final before the seals its negative edges need, because those settings break the sealing principle. The compiler checks the rule.
 
-Together the chosen settings cover the whole range of response deadlines in one runtime. A match's host can seal a tick scope every 16 milliseconds and keep it only in memory, while a quorum sequences a transfer scope in the same program, and another organization seals the transfer again days later at settlement.
+Together the chosen settings cover response deadlines from one frame to several days in one program: a scope sealed every frame and kept only in memory can sit beside a scope sequenced by a quorum and sealed again days later by another organization.
 
 ## Releases
 
@@ -303,7 +303,7 @@ A release is a record. Its value is the new program version, and a sequencer adm
 
 ![Two paths from the records to state under version 2, which must agree, above a timeline in which a release record separates records made under version 1 from records made under version 2, and an open choice keeps its stable identifier across the release](../../assets/diagrams/migration-square.svg "A migration is correct when migrating the old state and recomputing under the new version agree. Open choices carry over a release by stable identifier.")
 
-[Erlang's hot code loading](https://www.erlang.org/doc/system/code_loading.html) replaces a running module without stopping the system. It keeps at most two versions of a module loaded, and a programmer writes a `code_change` function that converts each process's state by hand. Here state is a function of the records, so the new version recomputes it, the migration square checks any shortcut, and old records are read under their own versions, however many there are.
+[Dynamic software updating](https://doi.org/10.1145/1108970.1108971) replaces code in a running system, and its central difficulty is state transfer: for each change, a programmer writes a function that converts the old version's state into the new version's. Here state is a function of the records, so the new version recomputes it, the migration square checks any shortcut, and old records are read under their own versions, however many there are.
 
 [Temporal's versioning API](https://docs.temporal.io/develop/typescript/versioning) is a small instance of the same design: workflow code branches on a version marker recorded in the workflow's own event history, so a workflow started under old code replays under old code.
 
@@ -319,7 +319,7 @@ Every component has mature partial implementations:
 | Sequencers | Spanner, CockroachDB, FoundationDB, Calvin, [Cloudflare Durable Objects](https://developers.cloudflare.com/durable-objects/), authoritative game servers |
 | Several components in one system | SpacetimeDB, Replicache, Zero, LiveStore, Automerge, Yjs, [Daml](https://arxiv.org/abs/2303.03749) |
 
-Systems that combine several components fix in their design settings that this runtime derives or chooses per scope. SpacetimeDB, for example, executes every transaction of a database in one serial order, so the whole database is one scope with one sequencer. Its log stores each transaction's inputs together with the rows the transaction changed, and devices receive committed outputs, without provisional values. Each of these settings suits many programs, but no program can change them for one scope.
+Systems that combine several components fix in their design settings that this runtime derives or chooses per scope. A database that executes every transaction in one serial order makes the whole database one scope. A sync engine sends devices outputs, and a lockstep engine sends them records. Each setting suits many programs, but none of these systems lets a program change it for one scope.
 
 None of these systems combines three capabilities:
 

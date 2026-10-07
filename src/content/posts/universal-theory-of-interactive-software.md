@@ -232,7 +232,7 @@ Seals appear at every scale under other names:
 | --- | --- | --- |
 | Pressing submit | one person's answers on a form | that person's device |
 | A hold's timeout | one held seat | the booking system |
-| A tick in a lockstep game | every player's input for one tick | the match's host |
+| A step of a lockstep simulation | every participant's input for one step | the simulation's host |
 | A transaction commit | the rows the transaction read and wrote | the database |
 | An entry reaching consensus | one position in a replicated log | a quorum of replicas |
 | A watermark in a stream processor | one input's events before a timestamp | that input's source |
@@ -271,7 +271,7 @@ Monotonicity is also relative to the order chosen for a function's output. "The 
 
 A value is final relative to the scopes whose seals it rests on, and one value can be final relative to one scope and provisional relative to a larger one. A card payment is final once the card network settles it, and a dispute can still reverse it until the dispute window closes. The window's end is a seal of its own, written by a timeout. Any function whose output can change only within a known period, such as a count of events that may arrive late, is sealed the same way at the period's end, so its output is provisional until a known time rather than indefinitely.
 
-Admission has the same structure. An admission held only in a sequencer's memory is lost if the sequencer fails before storing it, so an admission is final only once it is stored where it survives the failures its scope must survive. Finality therefore comes in tiers, such as admitted on a device, stored on a quorum of servers, settled by another organization, and past a dispute window. Each tier is a seal, and a view can present each tier differently, as a banking app separates pending payments from posted ones.
+Admission has the same structure. An admission held only in a sequencer's memory is lost if the sequencer fails before storing it, so an admission is final only once it is stored where it survives the failures its scope must survive. Finality therefore comes in tiers, such as admitted on a device, stored on a quorum of servers, settled by another organization, and past a dispute window. Each tier is a seal, and a view can present each tier differently.
 
 ## Prediction: show provisional values when records cannot arrive in time
 
@@ -294,7 +294,7 @@ Several familiar features are this one mechanism:
 - rollback netcode in fighting games;
 - the pending line in a banking app after a card payment.
 
-In the card payment, the pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment. The end of the dispute window is a later seal, after which the payment cannot be reversed.
+In the card payment, the pending line is a provisional value computed from the authorization, and settlement days later is the seal that posts the payment.
 
 ![A log-log plot of sealing latency against response deadline, with a diagonal separating choices that can wait for the seal from choices that need provisional values](../../assets/diagrams/deadline-distance.svg "Below the diagonal, the response deadline is shorter than the sealing latency, so the view shows provisional values.")
 
@@ -512,7 +512,7 @@ The principles are independent: each can be broken while the other eight hold. T
 | Voice interfaces, accessibility, agent APIs | binding | one choice presented differently per resolver |
 | Durable workflows, reminders | derivation, binding | open choices are functions of the records; timeouts record defaults |
 | Submit buttons, turns, commits | sealing | seals |
-| Pending, posted, and settled states | sealing | seals at several tiers of finality |
+| Pending and confirmed states | sealing | seals at several tiers of finality |
 | Inventory, quotas, rate limits | sealing | escrow: a scope split into shares, each with a sequencer |
 | Offline mode | sealing | admitting invariant-confluent or escrowed records on the device |
 | Optimistic UI, client prediction, rollback | prediction | provisional values |
@@ -613,6 +613,5 @@ Older work reached each principle, usually in one kind of system:
 6. **Sealing methods as mechanism design.** The auction comparison shows that the sealing method changes when agents act. [Frequent batch auctions](https://doi.org/10.1093/qje/qjv027), which seal an exchange's orders in batches instead of one at a time, remove the reward for small speed advantages. A sequencer also determines whose record goes first, and no principle constrains that order when its operator has goals of its own. No catalog maps sealing methods to the behavior each one produces.
 7. **Legibility of functions over a person's records.** Personalization and ranking compute what a person is shown from that person's own records. Provenance can trace a view to the records it was computed from, but no method states which of those functions a view must present, or how a person can supersede the records they read, without the view becoming an audit log.
 8. **A common unit of cost across resolvers.** Guardrails can bound a person's attention and a model's tokens separately. A goal that trades one against the other needs a common unit, and no unit is accepted.
-9. **Synthesizing bindings.** For a program with finitely many states, selecting the deterministic binding that best serves a goal is a [stochastic game](https://doi.org/10.1016/0890-5401(92)90048-K). The bound resolver is one player, opaque resolvers treated as adversaries are the other, and randomized resolvers are chance moves with known probabilities. A goal averaged over long runs is a mean-payoff objective, and guardrails are further conditions on the run. In many such games an optimal strategy depends only on the current state, which corresponds to a resolver that reads only its view when the view contains the state. Which goals and guardrails admit exact and efficient synthesis, and how to model people as neither adversaries nor chance, is open.
 
 [Toward a universal runtime for interactive software](/universal-runtime-for-interactive-software) builds the theory as four runtime components: one for records, one for functions, one for choices and their resolvers, and one for seals. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) designs a language whose structure follows the theory, so that a compiler can check the principles.
