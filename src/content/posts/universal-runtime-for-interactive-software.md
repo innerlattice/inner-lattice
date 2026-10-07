@@ -32,7 +32,9 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | scope | a set of records picked out by a condition, such as every booking for one performance |
 | sequencer | the single resolver that admits records into a scope in one order and writes the scope's seals |
 | seal | a record stating that a scope is complete up to a position |
-| provisional value | a function's output that is not yet final, shown before the seal and replaced after it |
+| polarity | for each input of a function: positive when more records can only add to the output, negative when they can only remove from it, unknown otherwise |
+| stratum | a part of the function graph connected only by positive edges; seals are needed only between strata |
+| provisional value | a function's output that is not yet final relative to the seals it waits for, shown before them and replaced after them |
 | read coupling | a record from one choice can change another choice's view or options |
 | order coupling | records from two choices can each be admitted alone but not together |
 | goal | a function of the records with a direction and guardrails |
@@ -105,9 +107,15 @@ An admission at position $p$ also seals positions before $p$, since nothing can 
 
 Records are never modified, so deleting a person's data on request needs a separate method. Each person's records are encrypted under a key held for that person, and destroying the key makes the records unreadable in every replica and backup. Outputs computed before the key was destroyed, such as aggregate counts, keep their values until recomputed. Whether a given aggregate must be recomputed depends on the applicable law. Copies that left the record store in plaintext, such as exports, are beyond the key's reach. Erasure is the one event that changes a final output.
 
+### Records and stored state
+
+Stored state is a cache of function outputs. A server recovers by loading a checkpoint of state and replaying the records admitted after it, and replicas of an ordered scope stay identical by receiving its records in the sequencer's order and each computing the outputs, rather than by receiving the rows that changed. Deterministic databases such as [Calvin](https://doi.org/10.1145/2213836.2213838) replicate this way, and because the order is fixed before execution, replicas need no further agreement while executing, and records that touch different rows run in parallel. Replication then costs bandwidth in proportion to the records, not to the state they change. A log of changed rows can still be kept as a second cache that shortens recovery, with a retention of its own.
+
+The design has two costs. The record store grows without bound unless records are compacted, which conflicts with replay ([open problem 2](#open-problems)). Every record also carries its snapshot, version, and resolver, which can exceed the size of a small value. Batching reduces the second cost: one device's inputs for one tick, or the records of one request, share a snapshot and a version.
+
 ## The evaluator
 
-The evaluator computes every function output: state, views, indexes, goals, access rules, and the set of open choices. Recomputing every function over all records after each new record would be correct and far too slow, so the evaluator maintains outputs incrementally, processing only the change. [DBSP](https://arxiv.org/abs/2203.16684) converts any query built from its operators into an incremental query, and [differential dataflow](https://www.cidrdb.org/cidr2013/Papers/CIDR13_Paper111.pdf) does the same for iterative computation, including recursion. Other code, such as a game's step function, is incremental only when written as a step from its previous output.
+The evaluator computes every function output: state, views, indexes, goals, access rules, and the set of open choices. Recomputing every function over all records after each new record would be correct and far too slow, so the evaluator maintains outputs incrementally, processing only the change. [DBSP](https://arxiv.org/abs/2203.16684) converts any query built from its operators into an incremental query, and [differential dataflow](https://www.cidrdb.org/cidr2013/Papers/CIDR13_Paper111.pdf) does the same for iterative computation, including recursion.
 
 Four services that products usually run as separate systems are outputs of the evaluator:
 
@@ -116,14 +124,29 @@ Four services that products usually run as separate systems are outputs of the e
 - **Provenance** maps each output to the records it was computed from. With provenance, a view can show the person looking at it which records it was computed from, and a goal's value can be traced to the choices behind it.
 - **Goals** are functions like any other. A dashboard subscribes to them, and a bandit reads them while it runs.
 
+### Relations, layouts, and modes
+
+The evaluator's logical model is relational. The records of each choice declaration form one relation, and each function's output is another. DBSP represents every relation and every change to one as a *Z-set*, a map from rows to integer weights in which an insertion has weight +1 and a retraction −1, so a change to any output has the same form as the output. Records are never modified and identifiers are never reused, so a row keeps its identity across replicas and versions.
+
+How a relation is laid out in memory is a separate setting, chosen per function, and it changes speed, not results. Rows indexed by key suit lookups and joins. A columnar layout stores each field of many rows contiguously and suits functions that scan every row; the [entity component system](https://en.wikipedia.org/wiki/Entity_component_system) of game engines is this layout, with an entity as a key and each component as a column. Differential dataflow's *arrangements* are indexes shared by every operator that reads them.
+
+A function runs in one of two modes, which also change speed, not results:
+
+- **Incremental.** The work done is proportional to the change in the inputs. This mode suits outputs of which each record changes a small part, such as a seat map.
+- **Bulk.** A step function computes the whole next state from the previous state and one batch of records, $\mathrm{state}_{t+1} = \mathrm{step}(\mathrm{state}_t, \mathrm{records}_t)$. This mode suits a game's simulation, in which most entities change every tick. The evaluator keeps the states of recent ticks, so that after a correction it can return to the last tick whose records are all admitted and step forward again.
+
+SQL fits the read side of this model: a query is a function over relations, and DBSP compiles SQL queries into incremental ones. SQL's writes have no counterpart, because every write is a record supplied at a choice. A correction by an operator is a choice too, whose record supersedes the value it corrects.
+
 ### Final and provisional outputs
 
-Each element of an output is *final* when no record that can still be admitted would retract it, and *provisional* otherwise. The evaluator labels an element final only when one of two checks proves it.
+Each element of an output is *final* when no record that can still be admitted would retract it, and *provisional* otherwise. The compiler gives every edge of the function graph a polarity ([the language post](/universal-languages-for-interactive-software) shows how), and the evaluator labels an element from the polarities of the edges it was computed through.
 
-1. **A check on the function's definition.** A function built only from monotone operators (selection, projection, join, union, and recursion without negation) can only gain elements as records are admitted. Every element it outputs from admitted records is final.
-2. **A check on seals.** A function that uses negation, aggregation over a scope, or "the latest value" can lose elements when a record arrives. For each such function the evaluator tracks the scopes it reads, and an element becomes final once the evaluator holds seals covering every position the element depends on, from each part's sequencer when the scope is split, and the records at those positions. Positions are consecutive, so a gap shows a missing record.
+1. **Positive edges.** Selection, projection, join, union, and recursion without negation can only gain elements as records are admitted. An element computed from admitted records only through positive edges is final.
+2. **Negative and unknown edges.** Negation, aggregation over a scope, "the latest value", and code the compiler cannot analyze can lose elements when a record arrives. For each such edge the evaluator tracks the scopes read through it, and an element becomes final once the evaluator holds seals covering every position the element depends on through those edges, from each part's sequencer when the scope is split, and the records at those positions. Positions are consecutive, so a gap shows a missing record.
 
 A seat map for one performance shows both. "C14's hold was admitted at position 88" is final once the admission arrives. "Seat C15 is free" and "seat C14 is held" each state that a record does not exist, a hold or a release, so a seal through position 88 makes them final only as of that position. Stream processors apply the second check with *watermarks*, which are seals over time windows. Views use the label to show what is still pending.
+
+A label names the seals the element rests on, because finality is relative to scopes. A transfer can be final relative to the bank's sequencer once admitted, final relative to failures once a quorum stores it, and final relative to another organization once settled. A view can present each tier separately, as banking apps separate pending, posted, and settled payments. An output that may change only until a known time, such as a count that accepts events up to an hour late, carries that time in its label and becomes final when a timeout seals the window, which the [Dataflow model](https://www.vldb.org/pvldb/vol8/p1792-Akidau.pdf) calls *allowed lateness*.
 
 ## The dispatcher
 
@@ -171,10 +194,15 @@ Examples of placements in use:
 - A document editor merges concurrent text edits without a sequencer, and sequences structural operations, such as moving a section two people are editing, at one server per document.
 - A bank sequences transfers with a quorum of replicas.
 - A multiplayer game sequences contested actions at one server per match or zone. Players far from that server see more provisional values and more corrections.
+- A lockstep game seals one scope per tick on a schedule. The match's host seals tick $t$ when every player's input for it has arrived or a short input delay has passed, and a missing input receives a default, usually that player's previous input.
+
+Durability is a setting separate from placement: how many admitted records a scope may lose when its sequencer fails. A sequencer that acknowledges an admission before other replicas store it responds within its own processing time and loses the admissions in flight if it fails. A sequencer that waits until a quorum stores each admission loses none and adds a round trip. A game's tick can accept the first, and a bank's transfer cannot. An admission's finality label states which one it rests on.
 
 Escrow changes the scope a sequencer covers. A box office holding a block of seats is the sequencer for that block until it returns the unsold seats, and the allocation and the return are both records. Moving a scope to a new sequencer is a handoff: the old sequencer seals the scope at its last position, and the new one admits from the next position. A failed sequencer cannot seal, so a quorum seals for it: in [Raft](https://raft.github.io/), a majority that votes in a new numbered term refuses the old leader's entries, and the new leader already holds every committed entry.
 
 A choice whose invariant spans two scopes, such as a transfer between accounts held on different shards, needs both sequencers. [Two-phase commit](https://en.wikipedia.org/wiki/Two-phase_commit_protocol) admits the record in both scopes or in neither. A [saga](https://doi.org/10.1145/38713.38742) admits it in one scope and, if the second refuses, appends a compensating record to the first. Both cost extra round trips, so scopes are drawn to keep most order coupling inside one scope.
+
+These rules give the transaction guarantees of a database per scope. A choice's records are admitted together or not at all. Within one scope, a choice whose invariant is declared is admitted only if the invariant holds after every record admitted before it, so admissions are strictly serializable. Across scopes, records are ordered causally by their snapshots, and nothing stronger holds unless a choice spans both scopes and pays for two-phase commit or a saga. A choice whose invariant is not declared is treated as order-coupled with every choice whose records its view reads, so a program is serializable by default and weaker only where its declarations show that order is not needed. Serializability over the whole program would need one sequencer for every record, which is the configuration of a single-server database.
 
 ## Replicas on devices
 
@@ -188,7 +216,17 @@ A device runs replicas of the record store, the evaluator, and the dispatcher, p
 
 [Bayou](https://www.cs.princeton.edu/courses/archive/fall15/cos518/papers/bayou.pdf) kept writes tentative until a primary server committed them, and rolled back and reapplied tentative writes to follow the committed order. [Replicache](https://doc.replicache.dev/concepts/how-it-works) reapplies pending local changes on top of the server's admitted state. [GGPO](https://www.ggpo.net/) rolls a fighting game back to the last frame with confirmed inputs and recomputes the frames since. All three implement the third row, at different response deadlines.
 
-Reapplying a record on top of admitted ones keeps its meaning only if its value is read against its own snapshot (grounding principle). An edit that inserts text at offset 12 refers to a position in one view. [Operational transformation](https://doi.org/10.1145/67544.66963) moves the offset past each concurrent edit, and sequence CRDTs avoid the move by giving every character an identifier, so that an edit inserts after a named character.
+Reapplying a record on top of admitted ones keeps its meaning only if its value is read against its own snapshot (grounding principle). An edit that inserts text at offset 12 refers to a position in one view. [Operational transformation](https://doi.org/10.1145/67544.66963) moves the offset past each concurrent edit, and sequence CRDTs avoid the move by giving every character an identifier, so that an edit inserts after a named character. [Eg-walker](https://arxiv.org/abs/2409.14252) combines the two: it stores edits as positions read in their snapshots and builds a CRDT's structure only while merging concurrent edits, so a document's memory stays close to that of its text.
+
+### Records or outputs
+
+A device can receive a scope's records and compute its views itself, as lockstep games do, or receive outputs computed on a server, as most sync engines do. Receiving records costs bandwidth in proportion to the records rather than to the state they change, and lets the device show provisional values without waiting for a server. Three conditions must hold for a device to receive records:
+
+- **Access.** The records must not contain what the device's view hides. A strategy game that sends every unit's orders to every player lets a modified client reveal hidden units.
+- **Version.** The device must run a program version that reads the records.
+- **Cost.** The device must be able to compute the functions within the response deadline.
+
+What the device does with records depends on polarity. A record that reaches the view only through positive edges can be applied in any order as it arrives. A record that crosses a negative or unknown edge needs its position, so the device either waits for the seals or shows provisional values and recomputes after them. One subscription can mix the two forms, carrying records for the parts of a view the device can compute and outputs for the rest.
 
 ## A seat booking through the four components
 
@@ -197,7 +235,7 @@ A person books a theater seat on a phone for performance 311.
 1. **Evaluator.** The phone's evaluator computes the seat map from the records stored on the phone and outputs the open choice `seat.select` with a view of the free seats. A bandit has recommended C14, and the bandit's record contains the probability of that recommendation.
 2. **Dispatcher, on the phone.** The person selects C14. The local dispatcher appends a record, and the local evaluator draws C14 as held but provisional, because the record has not been admitted.
 3. **Sequencer.** The record reaches the server, and the dispatcher there forwards it to the sequencer for performance 311. The sequencer finds no earlier admitted hold on C14 and admits the record at position 88.
-4. **Evaluator, on the server.** The seat map changes. Subscriptions deliver the change to everyone else viewing the performance, and an access rule removes the holder's identity from their views. The admission is final, so the evaluator can open `payment.authorize`, a choice with effects, bound to the card network, with a timeout at 20:10 and the default "unknown".
+4. **Evaluator, on the server.** The seat map changes. Subscriptions deliver the change to everyone else viewing the performance, and an access rule removes the holder's identity from their views. Once a quorum stores the admission, as the scope requires, the admission is final, and the evaluator can open `payment.authorize`, a choice with effects, bound to the card network, with a timeout at 20:10 and the default "unknown".
 5. **Dispatcher, on the server.** The dispatcher presents `payment.authorize` under its identifier, so a retry cannot charge the card twice. If the card network's reply arrives first, the dispatcher records the reply and the sequencer admits the record. If 20:10 passes first, the dispatcher records "unknown", and the evaluator opens `payment.reconcile`, whose value the card network supplies: the outcome under the identifier of `payment.authorize`. The seat-map function computes C14 as free again only after a record states that no payment was authorized.
 6. **Evaluator, for goals.** The fill-rate goal reads the same records. Because the recommendation's probability is recorded, a different recommender's booking rate can later be estimated from this booking. The estimate is approximate, because each recommendation changes which seats later customers see.
 
@@ -230,16 +268,42 @@ A product combines classes in one runtime, because the classes describe choices,
 
 A delegated task, such as a coding agent working through a repository, is not a seventh class. It is a binding: the choice of next step is bound to an AI agent, and choices with large consequences are bound to the delegating person.
 
+## Derived and chosen configuration
+
+Some of a scope's configuration follows from the functions and is computed:
+
+- which choices are order-coupled, and so which scopes need a sequencer;
+- the polarity of each edge, and so which outputs need seals;
+- which choices are read-coupled, and so what each subscription carries;
+- which records an access rule hides from each party.
+
+The rest depends on what the program's owners need and is chosen per scope:
+
+- where the sequencer runs;
+- how many admitted records a failure may lose;
+- how often a scope is sealed on a schedule, as with ticks;
+- how long records and changed rows are retained before compaction;
+- whether devices receive records or outputs.
+
+One rule connects the two lists: a chosen setting may add coordination but never remove it. A program can sequence a scope whose records would merge without order, wait for a seal that a monotone output does not need, or require a quorum where one server would do, and each costs latency. It cannot leave a scope with order-coupled choices unsequenced or label an output final before the seals its negative edges need, because those settings break the sealing principle. The compiler checks the rule.
+
+Together the chosen settings cover the whole range of response deadlines in one runtime. A match's host can seal a tick scope every 16 milliseconds and keep it only in memory, while a quorum sequences a transfer scope in the same program, and another organization seals the transfer again days later at settlement.
+
 ## Releases
 
-A release is a record. Its value is the new program version, and each choice keeps the version it was opened under: choices opened before the release, or on a device not yet updated, keep the old one. Every record carries the version it was made under, so each component handles a release in its own way:
+A release is a record. Its value is the new program version, and a sequencer admits it at a position in each scope it applies to, so every replica switches versions at the same position. Each choice keeps the version it was opened under: choices opened before the release, or on a device not yet updated, keep the old one. Every record carries the version it was made under, so each component handles a release in its own way:
 
+- **A second evaluator** prepares the release before it is admitted. It computes the new version's outputs from the records and catches up to the current position, and its outputs replace the old ones at the release's position, so the release needs no downtime.
 - **The evaluator** runs both versions while records made under the old version still arrive. Clients on the old version keep producing them, so the evaluator reads each one under its own version and converts it through a translation function. [Cambria](https://www.inkandswitch.com/cambria/) translates edits between schema versions with lenses, so peers on different versions can keep editing one document.
 - **The dispatcher** maps each open choice by stable identifier to its counterpart in the new version, where its value counts after translation. A choice with no counterpart receives a recorded fallback, or "unknown" if an external system already received it.
+- **Devices** take a release the same way: a device loads the new version's code, recomputes its views from its local records, and moves its open choices by identifier.
+- **The supported versions are a commitment.** How long records from old clients are accepted, such as records from the previous two versions for 90 days, is a commitment made with the release, and a record from outside that window is refused with a choice that offers the update.
 - **Changing an AI agent's model** is a release. Replaying recent choices with both models before the release shows what the change would have done.
 - **The migration square is tested by replay.** The theory post defines a migration $\mu$ from stored state under version $v$ to stored state under version $v'$ as correct when $\mu(\mathrm{state}_v(R)) = \mathrm{state}_{v'}(\tau(R))$ for every set of records $R$ that runs can produce before the release, where $\tau$ translates old records: migrating the old state gives the same result as translating the records and recomputing under the new version. Before the release record is appended, the evaluator computes both sides over every prefix of the stored records and reports each prefix on which the two sides differ.
 
 ![Two paths from the records to state under version 2, which must agree, above a timeline in which a release record separates records made under version 1 from records made under version 2, and an open choice keeps its stable identifier across the release](../../assets/diagrams/migration-square.svg "A migration is correct when migrating the old state and recomputing under the new version agree. Open choices carry over a release by stable identifier.")
+
+[Erlang's hot code loading](https://www.erlang.org/doc/system/code_loading.html) replaces a running module without stopping the system. It keeps at most two versions of a module loaded, and a programmer writes a `code_change` function that converts each process's state by hand. Here state is a function of the records, so the new version recomputes it, the migration square checks any shortcut, and old records are read under their own versions, however many there are.
 
 [Temporal's versioning API](https://docs.temporal.io/develop/typescript/versioning) is a small instance of the same design: workflow code branches on a version marker recorded in the workflow's own event history, so a workflow started under old code replays under old code.
 
@@ -252,8 +316,10 @@ Every component has mature partial implementations:
 | Record store | Kafka with retention disabled, Datomic, the event histories of durable execution engines |
 | Evaluator | Feldera (DBSP), Materialize (differential dataflow), spreadsheet recalculation engines |
 | Dispatcher | Temporal and Restate; feature-flag services; a [contextual-bandit service](https://arxiv.org/abs/1606.03966) that records each probability at the moment of selection |
-| Sequencers | Spanner, CockroachDB, FoundationDB, [Cloudflare Durable Objects](https://developers.cloudflare.com/durable-objects/), authoritative game servers |
+| Sequencers | Spanner, CockroachDB, FoundationDB, Calvin, [Cloudflare Durable Objects](https://developers.cloudflare.com/durable-objects/), authoritative game servers |
 | Several components in one system | SpacetimeDB, Replicache, Zero, LiveStore, Automerge, Yjs, [Daml](https://arxiv.org/abs/2303.03749) |
+
+Systems that combine several components fix in their design settings that this runtime derives or chooses per scope. SpacetimeDB, for example, executes every transaction of a database in one serial order, so the whole database is one scope with one sequencer. Its log stores each transaction's inputs together with the rows the transaction changed, and devices receive committed outputs, without provisional values. Each of these settings suits many programs, but no program can change them for one scope.
 
 None of these systems combines three capabilities:
 
@@ -272,7 +338,7 @@ These are the parts the theory adds, and they are where much of today's glue cod
 
 ## Open problems
 
-1. **Joint placement.** Sequencer placement, sync partitions, and experiment units all come from the coupling graph, but today they are chosen separately. An optimizer could take response deadlines and coupling weights measured from the records and choose all three together.
+1. **Joint placement.** Sequencer placement, sync partitions, and experiment units all come from the coupling graph, but today they are chosen separately. An optimizer could take response deadlines and coupling weights measured from the records, including the read sets the evaluator already tracks, and choose all three together.
 2. **Compaction against replay.** Checkpoints of state save storage and recovery time, and they cut off replay, counterfactual evaluation, and reading under later versions. No published policy states which records a runtime may compact once erasure, audit, and the program's earlier versions are taken into account.
 3. **Probabilities for AI model resolvers.** A sampled model exposes the probability of each token, but a value such as a refund amount is reached through many possible reasoning texts, and the value's probability is a sum over all of those texts. A runtime can estimate that probability by sampling the model several times, record the probability only for constrained outputs, or treat the model as opaque. Which option keeps off-policy evaluation valid is unsettled.
 4. **Presenting provisional values.** People need to see what is pending, what was corrected, and why, without the interface becoming a ledger. Card statements and collaborative editors present this differently, and no shared vocabulary exists.
