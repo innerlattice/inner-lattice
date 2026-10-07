@@ -23,8 +23,10 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | Term | Meaning |
 | --- | --- |
 | choice | a point where a run needs a value from outside its code; a choice has a stable identifier (its declaration's name and its address in the run), a view, options, a timeout, and a default |
-| resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or an external system |
+| resolver | whatever supplies a choice's value: a function, a randomizer, a person, an AI model, a sensor, or another program |
 | record | an immutable entry containing a value supplied at a choice, with its provenance |
+| snapshot | the records available where a choice's view was computed; snapshots order records causally |
+| view | the information presented to a choice's resolver, computed from the snapshot under the program version; with the options, the choice's boundary |
 | function | a deterministic map from a set of records to a value; state, views, indexes, and the set of open choices are function outputs |
 | binding | configuration stating which resolver supplies the value for which choice; only a value from the bound resolver counts |
 | scope | a set of records picked out by a condition, such as every booking for one performance |
@@ -36,6 +38,7 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | goal | a function of the records with a direction and guardrails |
 | response deadline | the longest time that can pass between supplying a value and showing its consequence before the interaction fails |
 | release | a record that changes the program version |
+| commitment | a record whose value is a law over its resolver's later records |
 
 The nine principles, as stated in [the theory](/universal-theory-of-interactive-software#nine-principles):
 
@@ -79,8 +82,8 @@ Each field exists because some principle reads it.
 | `id` | a unique identifier, such as the pair of the creating replica and a counter | merging, which discards duplicates |
 | `choice` | the stable identifier of the choice that was resolved: its declaration's name and its address in the run | the analytics schema, which is the set of declarations (derivation principle); presentation under the identifier (effects principle); migration, which moves open choices by identifier (versions principle) |
 | `value` | the supplied value, one of the choice's options | every function |
-| `resolver` | the identity and version of whatever supplied the value: a function version, an AI model and its version, a person, or an external system | audit, rebinding, and evaluation (binding and goals principles) |
-| `snapshot` | the records from which the view was computed, identified by a version vector | recomputing the view exactly; causal order |
+| `resolver` | the identity and version of whatever supplied the value: a function version, an AI model and its version, a person, or another program | audit, rebinding, and evaluation (binding and goals principles) |
+| `snapshot` | the records from which the view was computed, identified by a version vector | recomputing the view exactly; causal order; interpreting references in the value (grounding principle) |
 | `version` | the program version whose functions computed the view and options, including the libraries and data files those functions read | reading the record under the functions in force when the record was made (versions principle) |
 | `probability` | the probability with which the resolver selected the value given its view: 1 for a deterministic resolver, the recorded value for a randomized one, and absent for an opaque one | off-policy evaluation (goals principle) |
 | `time` | the wall-clock time where the value was supplied | display and timeouts; not order, because clocks drift by unknown amounts |
@@ -110,7 +113,7 @@ Four services that products usually run as separate systems are outputs of the e
 
 - **Subscriptions** deliver changes along read-coupling edges. A device subscribes to the functions that compute its views and receives each change to their outputs. Game engines call this *interest management*.
 - **Access rules** remove read-coupling edges or narrow what a view shows along them. When an access rule changes, the evaluator retracts the outputs that are no longer visible, as it would retract any other output.
-- **Provenance** maps each output to the records it was computed from. Provenance explains a view to the person looking at the view, and traces a goal's value to the choices behind the value.
+- **Provenance** maps each output to the records it was computed from. With provenance, a view can show the person looking at it which records it was computed from, and a goal's value can be traced to the choices behind it.
 - **Goals** are functions like any other. A dashboard subscribes to them, and a bandit reads them while it runs.
 
 ### Final and provisional outputs
@@ -139,8 +142,12 @@ For each choice the dispatcher also:
 - **checks the value against the binding and the options.** A value counts only if its resolver is bound to the choice and the value is among the options computed from the resolver's snapshot, or if it is the default recorded at the timeout; any other value is recorded as refused. For an order-coupled choice the sequencer also checks the invariant and the binding at admission, because records admitted since the snapshot can make the value violate the invariant or revoke the binding.
 - **checks rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
 - **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher that runs the choice's timer is its sequencer and records whichever reaches it first. An escalation is a choice whose default opens another choice bound to a different resolver.
-- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that accepts an idempotency key returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice, bound to the same resolver, whose value is the outcome under the first choice's identifier. A late reply supplies the reconciliation's value, and a reconciliation that ends in "unknown" escalates to a person.
+- **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that has committed to idempotency keys returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice, bound to the same resolver, whose value is the outcome under the first choice's identifier. A late reply supplies the reconciliation's value, and a reconciliation that ends in "unknown" escalates to a person.
 - **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) covers how a choice declares what any presentation must convey.
+
+### Other programs
+
+When a choice is bound to another program, the dispatcher presents the view to that program and records the value it returns, and the other program's runtime records the same exchange as a choice of its own. The choice's identifier links the two records. The dispatcher depends on the other program's behavior only through that program's commitments, which are records like any other. A card network's commitment to return the first result for a repeated key for 24 hours is what makes a retry of `payment.authorize` within that window safe. The evaluator checks each commitment as a law over the other program's recorded replies: two different replies under one key break it at once, and a missed reply deadline breaks it when the choice's timeout seals the deadline. A broken commitment is a function output like any other, so it can open a choice, such as an escalation to a person.
 
 Open choices survive restarts without further machinery. An insurance claim waiting three weeks for a document is not a suspended process or a sleeping thread. The open choice is an output of a function over the records, and after a restart the evaluator computes the same set of open choices from the same records. [Durable execution](https://docs.temporal.io/workflows) engines such as Temporal and Restate reach the same property by a different route: they record the result of every step and rebuild a workflow's position by replaying its deterministic code against those results.
 
@@ -180,6 +187,8 @@ A device runs replicas of the record store, the evaluator, and the dispatcher, p
 | Order | outputs that depend on the record stay provisional until admission; after a refusal, each local record made from a view that showed the refused record is refused, asked again, or reapplied on top of the admitted ones, as its choice states, or the simulation rolls back and recomputes | optimistic UI with rebase; rollback netcode |
 
 [Bayou](https://www.cs.princeton.edu/courses/archive/fall15/cos518/papers/bayou.pdf) kept writes tentative until a primary server committed them, and rolled back and reapplied tentative writes to follow the committed order. [Replicache](https://doc.replicache.dev/concepts/how-it-works) reapplies pending local changes on top of the server's admitted state. [GGPO](https://www.ggpo.net/) rolls a fighting game back to the last frame with confirmed inputs and recomputes the frames since. All three implement the third row, at different response deadlines.
+
+Reapplying a record on top of admitted ones keeps its meaning only if its value is read against its own snapshot (grounding principle). An edit that inserts text at offset 12 refers to a position in one view. [Operational transformation](https://doi.org/10.1145/67544.66963) moves the offset past each concurrent edit, and sequence CRDTs avoid the move by giving every character an identifier, so that an edit inserts after a named character.
 
 ## A seat booking through the four components
 
@@ -259,7 +268,7 @@ These are the parts the theory adds, and they are where much of today's glue cod
 - **Hard real-time control.** Recording a selection takes time, which a motor controller with microsecond deadlines cannot spare.
 - **Media.** Video and audio frames are sensor readings too dense to store one record per frame. The records contain references and summaries, and the media travels on a separate path.
 - **Expensive simulations.** A physics or weather simulation can cost too much to recompute from the records. Its stored checkpoints then contain state that cannot be cheaply recomputed, and the runtime should label the checkpoints as such.
-- **Parties without mutual trust.** Such parties require Byzantine fault tolerance, and every order-coupled choice among them pays its latency.
+- **Parties without mutual trust.** Such parties can check each other's commitments against signed records, but they require Byzantine fault tolerance, and every order-coupled choice among them pays its latency.
 
 ## Open problems
 
