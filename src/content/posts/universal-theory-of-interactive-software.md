@@ -21,14 +21,14 @@ A running program alternates between computing and waiting for input. Computing 
 
 - A **choice** is a point where a run needs a value from outside its code. The program specifies what the value must satisfy, but not how the value is produced. Every input to a program is the value of some choice, so choices include form fields, button presses, sensor readings, random draws, clock readings, and replies from other systems. Each choice has:
   - a stable identifier: the name of the declaration in the code that opens the choice, and the choice's *address*, its position in the run that opened it;
-  - a *view*: the information shown to whatever supplies the value;
+  - a *view*: the information presented to whatever supplies the value;
   - *options*: the set of values the choice accepts;
   - a *timeout*: how long the choice waits for a value;
   - a *default*: the value used when the timeout passes.
 
   A choice is *open* until it has a value. One declaration can open many choices, such as one question per guest or one per pass through a loop, and each has its own address.
-- A **resolver** supplies a choice's value. A resolver can be a person, an AI model, a random number generator, a deterministic function, a sensor, or another organization's system. A *binding* states which resolver supplies the value for which choice, and only a value from the bound resolver counts.
-- A **record** stores one choice's value with its provenance: the choice, the resolver, the view shown to the resolver, the program version, and the time. Records are never modified.
+- A **resolver** supplies a choice's value. A resolver can be a deterministic function, a random number generator, a sensor, a person, an AI model, or another program, such as another organization's system, with choices and records of its own. A *binding* states which resolver supplies the value for which choice, and only a value from the bound resolver counts.
+- A **record** stores one choice's value with its provenance: the choice, the resolver, the program version, the time, and the *snapshot*, which is the set of records available where the view was computed. The snapshot and the version determine the view, so the view can always be recomputed. Records are never modified.
 - A **function** is a deterministic map from a set of records to a value: the same records always give the same result. Everything other than records is the output of a function, including current state, screens, search indexes, metrics, access rules, and the set of open choices.
 
 *Choice* names the open question and *record* names the answer. This post avoids the word "decision", which is commonly used for both. *Resolver* names a role and implies no deliberation: a thermometer resolves the choice "current temperature", and a random number generator resolves the choice "which variant this visitor sees".
@@ -37,7 +37,22 @@ A running program alternates between computing and waiting for input. Computing 
 
 A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype a name and a sensor can drift. Records are never modified, and each choice has at most one record, so a wrong record is corrected by the record of a later choice, such as an edit, whose record names the record it supersedes.
 
+Snapshots order the records. One record precedes another when it is in the other's snapshot, or precedes a record that is, and two records are concurrent when neither precedes the other. The records therefore form a history ordered by what was available where each value was supplied, not a sequence ordered by one clock.
+
 The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records and run the same program version compute the same state.
+
+### The view
+
+A choice's view and options form its boundary with the resolver. The view is everything presented to the resolver, and the options are every value the resolver can supply in return. Both are outputs of functions, computed from the choice's snapshot under the program version, so a record identifies its view by those two fields and never stores the view itself.
+
+A view is information, not its presentation. The same view can be drawn on a screen, read aloud by a voice interface, or given to an AI agent as a typed schema, and where a part of the view appears on a screen depends on the presentation, not on the view.
+
+Nothing that crosses the boundary elsewhere appears in the records. A deterministic resolver reads only its view and options, and a randomized resolver reads them and a recorded seed. An opaque resolver also reads *outside information*, such as a person's memory and conversations or a model's training data, and an agent can act through channels other than the program's choices. Four limits stated later in this post follow from this one fact:
+
+- an estimate of how an alternative resolver would have performed is unbiased only when no outside information affected both a value and its outcome (goals principle);
+- counterfactual replay is exact only until the first opaque resolver that the change could reach (goals principle);
+- coupling through outside information, such as two people in different variants of an experiment talking to each other, appears in no function (coupling principle);
+- a binding sets an AI agent's authority only when the agent acts through the program's choices (binding principle).
 
 ### How a resolver differs from a function
 
@@ -64,7 +79,7 @@ Opaque resolvers sit outside the *system boundary*, the line between what the pr
 - a test suite replaces every opaque resolver with values written into the test in advance or recorded from earlier runs, so that runs can be reproduced;
 - delegation to an AI agent replaces one opaque resolver with another.
 
-An AI model sampled at temperature zero is deterministic in principle. In practice, batching, hardware differences, and model retirement make such a model's outputs hard to reproduce, so this post classifies AI models as opaque.
+An AI model sampled at temperature zero is deterministic in principle. In practice, batching, hardware differences, and model retirement make such a model's outputs hard to reproduce, so this post classifies AI models as opaque. Another program is opaque unless its code is part of the model, and once its code is included, its choices and records are part of the system.
 
 Some opaque resolvers have goals of their own: people, AI agents, and other organizations. These *agents* adapt to the program, so the program's design changes the values they supply. Bidders on auction sites, for example, bid later when auctions end at a fixed time than when auctions end after a period with no bids. A sensor does not adapt to the program in this way.
 
@@ -86,6 +101,8 @@ where:
 - $\mathrm{opt}_c : \mathcal{R} \to \mathcal{P}(X_c)$ computes, from a set of records, the admissible values, a subset of the choice's value type $X_c$ ($\mathcal{P}(X_c)$ is the set of all subsets of $X_c$);
 - $t_c$ is the timeout;
 - $d_c \in X_c$ is the default, recorded when the timeout passes.
+
+A record $r$ of choice $c$ contains $\mathit{id}_c$, a value $x_r$, the resolver, the version, the time, and the snapshot $S_r$, a set of records that existed where the view was computed. The view the resolver was shown is $\mathrm{view}_c(S_r)$, evaluated under the record's version. Snapshots define a partial order: $r' \prec r$ when $r' \in S_r$ or $r' \prec r''$ for some $r'' \in S_r$.
 
 A binding $\beta$ maps each choice to a resolver. A resolver selects a value in $\mathrm{opt}_c(R)$ given $\mathrm{view}_c(R)$. A deterministic resolver is a function of the view and the options, a randomized resolver is a probability distribution $\pi(x \mid v)$ over the options for each view $v$, and an opaque resolver is one whose distribution is not part of the program. A function is a map $f : \mathcal{R} \to Y$ for some output type $Y$. The view, the options, and the binding are themselves functions, so they change as records arrive.
 
@@ -179,7 +196,7 @@ Determinacy also sets what the records can contain. A randomized resolver can re
 
 ## Sealing: wait for every record that could arrive before concluding that one is absent
 
-Records reach different places at different times, so the records available at one place differ from those available at another. The set of records available to a resolver at a given moment is that resolver's *snapshot*.
+Records reach different places at different times, so the snapshot from which one view is computed can lack records that another place already holds.
 
 "These people have voted" and "this document contains these edits" only grow as records arrive, so an output computed early is later added to but never retracted. Such a function is *monotone*:
 
@@ -326,7 +343,7 @@ Most of what a product does about other people uses one of the two relations:
 | Sharding | order | partition so each part has one sequencer; edges that cross parts need distributed transactions |
 | Experiment units | read | partition so each part receives one variant; edges that cross parts carry treatment between variants |
 
-The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) includes the requirement that one unit's outcome not depend on another unit's treatment. Read coupling that crosses between variants can break the requirement, and so can contact outside the program, which no function shows. Software rarely meets the requirement by default, so it has to be engineered. Three methods are in use:
+The last row is where statistics and systems engineering meet. Causal inference's *stable unit treatment value assumption* (SUTVA) includes the requirement that one unit's outcome not depend on another unit's treatment. Read coupling that crosses between variants can break the requirement, and so can outside information, such as conversation between units, which no function shows. Software rarely meets the requirement by default, so it has to be engineered. Three methods are in use:
 
 - **Partition the graph.** [Graph cluster randomization](https://arxiv.org/abs/1305.6979) assigns variants to clusters of a social graph. The same year, [balanced label propagation](https://doi.org/10.1145/2433396.2433461) partitioned Facebook's social graph across servers, so experiment units and shards can be computed from one graph.
 - **Randomize over time.** When coupling runs through a shared pool, as when every rider in a city draws on the same drivers, the graph has no useful clusters. [Switchback designs](https://arxiv.org/abs/2009.00148) randomize time periods instead.
@@ -363,9 +380,9 @@ where:
 - $g_i$ is the outcome of the $i$-th record, for a goal that averages one outcome per record;
 - $\hat{G}(\pi')$ is the estimated value of that goal had $\pi'$ been bound to those choices.
 
-In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate is unbiased when each $p_i$ is correct, $\pi$ gives a positive probability to every value $\pi'$ might select in the same view, and no record's value changes another record's view or outcome. The second condition is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives without a model of the outcomes they never show. An opaque resolver's probabilities can only be estimated, which assumes that nothing outside the recorded view affected both the value and the outcome. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied a closely related replay method to a log of randomly selected articles, and [a decision service built on the estimator](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
+In words: reweight each recorded outcome by how much more or less often the candidate would have selected the same value. The estimate is unbiased when each $p_i$ is correct, $\pi$ gives a positive probability to every value $\pi'$ might select in the same view, and no record's value changes another record's view or outcome. The second condition is why the records of a deterministic resolver, with probability 1 on one value and 0 on the rest, cannot evaluate alternatives without a model of the outcomes they never show. An opaque resolver's probabilities can only be estimated, which assumes that no outside information affected both the value and the outcome. [Offline evaluation of news recommendation](https://arxiv.org/abs/1003.5956) applied a closely related replay method to a log of randomly selected articles, and [a decision service built on the estimator](https://arxiv.org/abs/1606.03966) records each probability at the moment of selection.
 
-Counterfactual replay evaluates a change to one run instead of a binding's average. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver that the change could reach, through its view or outside the program. A pinned AI model can be asked again, but a person cannot and needs a stand-in, such as a model of the person's behavior.
+Counterfactual replay evaluates a change to one run instead of a binding's average. Hold the functions fixed, change one record, and recompute everything after the changed record. The result is exact until the first later opaque resolver that the change could reach, through its view or through outside information. A pinned AI model can be asked again, but a person cannot and needs a stand-in, such as a model of the person's behavior.
 
 Optimizing a goal without guardrails tends to find the cases where the function differs from what the function was meant to measure, and a more capable resolver finds more of those cases. Experimentation practice limits the problem with guardrail metrics.
 
