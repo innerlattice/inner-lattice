@@ -1,6 +1,6 @@
 ---
 title: "Toward a universal theory of interactive software"
-description: "A theory of interactive software with four primitives (choices, resolvers, records, and functions) and eight principles, each answering a constraint every interactive system faces. Undo, offline mode, optimistic updates, safe retries, A/B tests, sharding, access control, delegation to AI agents, and live migration follow from the principles."
+description: "One model for almost all interactive software: four primitives and eight principles, grounded in constraints that are true of all interactive software, from which features now built as separate services follow."
 date: 2026-10-03T12:00:00-04:00
 tags: ["software-engineering", "architecture", "systems-thinking", "ontology", "agents"]
 ---
