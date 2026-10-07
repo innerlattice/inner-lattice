@@ -37,7 +37,7 @@ A running program alternates between computing and waiting for input. Computing 
 
 A record is a claim made from one perspective: it contains the value one resolver supplied, given the view that resolver was shown. The claim can be wrong, because a person can mistype a name and a sensor can drift. Records are never modified, and each choice has at most one record, so a wrong record is corrected by the record of a later choice, such as an edit, whose record names the record it supersedes.
 
-Snapshots order the records. One record precedes another when it is in the other's snapshot, or precedes a record that is, and two records are concurrent when neither precedes the other. The records therefore form a history ordered by what was available where each value was supplied, not a sequence ordered by one clock.
+Snapshots order the records. One record precedes another when it is in the other's snapshot, or precedes a record that is, and two records are concurrent when neither precedes the other. The records therefore form a history ordered by what was available where each value was supplied, not a sequence ordered by one clock. Because records are only appended, a snapshot is everything up to a position in each place's records, so a record stores those positions instead of a copy. They are usually one or two numbers ([record fields](/universal-runtime-for-interactive-software#record-fields)).
 
 The theory has no primitive for state. State is a function of the records, so state can always be recomputed, and two devices that store the same records and run the same program version compute the same state.
 
