@@ -36,6 +36,11 @@ a new admission, as when polls close or a
 the card network, with a timeout at 20:10 and the
 reply arrives first, the dispatcher records the reply and the
 names the record, the outcome (admitted or refused
+it waits for, shown before them and replaced
+by a randomizer, with its own record and probability.
+of one request, share a snapshot and a
+scan every row, which is why analytical databases and game
+its views itself, as collaborative editors and lockstep
 
 # universal-languages-for-interactive-software.md
 starts a declaration, with its parameters and value
@@ -57,3 +62,5 @@ merge of edits, a level-0 unification for text and a
 the record schema, the ordered scopes and their
 and their sequencers, final and provisional
 on every view, model-checking and solver
+by each negation, such as or a
+and negates, so is negative in holds and positive
