@@ -1,17 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 890 580" class="wide" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 968 626" class="wide" role="img" aria-labelledby="title desc">
   <title id="title">How the terms of the theory relate</title>
-  <desc id="desc">A matrix with ten terms of the theory as rows (from) and columns (to): Choice, Resolver, Record, Function, Binding, Scope, Sequencer, Seal, Goal, and Version. Each filled cell holds a verb that reads from the row term to the column term. Cells on the diagonal relate two instances of one term. Dashed lines separate the four primitives and the terms added by each principle. The terms are ordered so that every relation points from a later term to an earlier one, and the row for choice is empty. A resolver resolves choices. A record answers one choice, names its resolver, and can supersede an earlier record. A function opens and couples choices, can serve as a resolver, reads records, and composes with other functions. A binding maps a choice to the resolver it names. A scope contains records and can split into smaller scopes. A sequencer admits records and orders its scope. A seal closes a scope up to a position, names its sequencer, and extends earlier seals. A goal steers resolvers, scores sets of records, bounds guardrail functions, and evaluates bindings. A version defines choices and functions, marks and translates records, includes bindings, and supersedes the previous version.</desc>
+  <desc id="desc">A matrix with eleven terms of the theory as rows (from) and columns (to): Choice, Resolver, Record, Function, Binding, Scope, Sequencer, Seal, Goal, Version, and Commitment. Each filled cell holds a verb that reads from the row term to the column term. Cells on the diagonal relate two instances of one term. Dashed lines separate the four primitives, the terms added by each principle, and the term added by composition. The terms are ordered so that every relation points from a later term to an earlier one, and the row for choice is empty. A resolver resolves choices. A record fills one choice, names its resolver, and can supersede an earlier record. A function opens and couples choices, can serve as a resolver, reads records, and composes with other functions. A binding maps a choice to the resolver it names. A scope contains records and can split into smaller scopes. A sequencer admits records and orders its scope. A seal closes a scope up to a position, names its sequencer, and extends earlier seals. A goal steers resolvers, scores sets of records, bounds guardrail functions, and evaluates bindings. A version defines choices and functions, marks and translates records, includes bindings, and supersedes the previous version. A commitment names its resolver, constrains that resolver's later records, and can supersede an earlier commitment.</desc>
 
-  <text class="axis" x="490" y="16" text-anchor="middle">To</text>
-  <text class="axis" transform="translate(18 342) rotate(-90)" text-anchor="middle">From</text>
-  <line class="grid dashed" x1="410" y1="106" x2="410" y2="572"/>
-  <line class="grid dashed" x1="94" y1="294" x2="880" y2="294"/>
-  <line class="grid dashed" x1="488" y1="106" x2="488" y2="572"/>
-  <line class="grid dashed" x1="94" y1="340" x2="880" y2="340"/>
-  <line class="grid dashed" x1="722" y1="106" x2="722" y2="572"/>
-  <line class="grid dashed" x1="94" y1="478" x2="880" y2="478"/>
-  <line class="grid dashed" x1="800" y1="106" x2="800" y2="572"/>
-  <line class="grid dashed" x1="94" y1="524" x2="880" y2="524"/>
+  <text class="axis" x="529" y="16" text-anchor="middle">To</text>
+  <text class="axis" transform="translate(18 365) rotate(-90)" text-anchor="middle">From</text>
+  <line class="grid dashed" x1="410" y1="106" x2="410" y2="618"/>
+  <line class="grid dashed" x1="94" y1="294" x2="958" y2="294"/>
+  <line class="grid dashed" x1="488" y1="106" x2="488" y2="618"/>
+  <line class="grid dashed" x1="94" y1="340" x2="958" y2="340"/>
+  <line class="grid dashed" x1="722" y1="106" x2="722" y2="618"/>
+  <line class="grid dashed" x1="94" y1="478" x2="958" y2="478"/>
+  <line class="grid dashed" x1="800" y1="106" x2="800" y2="618"/>
+  <line class="grid dashed" x1="94" y1="524" x2="958" y2="524"/>
+  <line class="grid dashed" x1="878" y1="106" x2="878" y2="618"/>
+  <line class="grid dashed" x1="94" y1="570" x2="958" y2="570"/>
   <g class="label strong">
     <text transform="translate(133 102) rotate(-60)">Choice</text>
     <text transform="translate(211 102) rotate(-60)">Resolver</text>
@@ -23,6 +25,7 @@
     <text transform="translate(679 102) rotate(-60)">Seal</text>
     <text transform="translate(757 102) rotate(-60)">Goal</text>
     <text transform="translate(835 102) rotate(-60)">Version</text>
+    <text transform="translate(913 102) rotate(-60)">Commitment</text>
     <text x="90" y="138" text-anchor="end">Choice</text>
     <text x="90" y="184" text-anchor="end">Resolver</text>
     <text x="90" y="230" text-anchor="end">Record</text>
@@ -33,12 +36,13 @@
     <text x="90" y="460" text-anchor="end">Seal</text>
     <text x="90" y="506" text-anchor="end">Goal</text>
     <text x="90" y="552" text-anchor="end">Version</text>
+    <text x="90" y="598" text-anchor="end">Commitment</text>
   </g>
   <g class="slate">
     <rect class="box" x="100" y="158" width="74" height="42" rx="4"/>
     <text class="ink" x="137" y="183" text-anchor="middle" style="font-style: italic; font-size: 12px">resolves</text>
     <rect class="box" x="100" y="204" width="74" height="42" rx="4"/>
-    <text class="ink" x="137" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">answers</text>
+    <text class="ink" x="137" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">fills</text>
     <rect class="box" x="178" y="204" width="74" height="42" rx="4"/>
     <text class="ink" x="215" y="229" text-anchor="middle" style="font-style: italic; font-size: 12px">names</text>
     <rect class="box" x="100" y="250" width="74" height="42" rx="4"/>
@@ -80,6 +84,10 @@
     <text class="ink" x="371" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">defines</text>
     <rect class="box" x="412" y="526" width="74" height="42" rx="4"/>
     <text class="ink" x="449" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">includes</text>
+    <rect class="box" x="178" y="572" width="74" height="42" rx="4"/>
+    <text class="ink" x="215" y="597" text-anchor="middle" style="font-style: italic; font-size: 12px">names</text>
+    <rect class="box" x="256" y="572" width="74" height="42" rx="4"/>
+    <text class="ink" x="293" y="597" text-anchor="middle" style="font-style: italic; font-size: 12px">constrains</text>
   </g>
   <g class="foam">
     <rect class="box" x="256" y="204" width="74" height="42" rx="4"/>
@@ -94,5 +102,7 @@
     <text class="ink" x="683" y="459" text-anchor="middle" style="font-style: italic; font-size: 12px">extends</text>
     <rect class="box" x="802" y="526" width="74" height="42" rx="4"/>
     <text class="ink" x="839" y="551" text-anchor="middle" style="font-style: italic; font-size: 12px">supersedes</text>
+    <rect class="box" x="880" y="572" width="74" height="42" rx="4"/>
+    <text class="ink" x="917" y="597" text-anchor="middle" style="font-style: italic; font-size: 12px">supersedes</text>
   </g>
 </svg>

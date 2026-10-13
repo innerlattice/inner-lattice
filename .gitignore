@@ -24,3 +24,13 @@ data/tmp/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python tools
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Parse caches
+.cache/
+.coverage
+.coverage.json
