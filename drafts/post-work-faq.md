@@ -1,150 +1,175 @@
 ---
 title: "The Post-Work FAQ"
-description: "Retirees already live without work. The ones who thrive have what everyone will need once AI makes work optional."
+description: "What a conscious being needs when nothing requires it to act."
 date: 2026-10-15
-tags: ["AI", "meaning", "work", "spirituality", "culture", "future"]
+tags: ["AI", "meaning", "consciousness", "yoga", "spirituality", "future"]
 ---
 
-A friend asked me how people will find meaning once AI makes their jobs obsolete, since so many of us get our sense of purpose from our occupations.
-
-My answer is that we already have the experiment. Millions of people stop working every year when they retire, and their outcomes vary enormously. Some take up painting, coach a youth team, and are busier at seventy-five than at fifty. Others lose their sense of purpose within a year and decline. AI will cause most of the population to go through the same transition, faster and earlier in life. By studying what separates the retirees who thrive from the ones who decline, we can learn what everyone will need.
+When nothing requires you to act, the only reasons left to act are the ones that arise within you. AI will soon create that condition for most of humanity, and most of humanity has never practiced for it.
 
 ---
 
-## Q: Hasn't this happened before?
+## Q: What happens to a person when work becomes optional?
 
-It happens constantly. Retirement is the most common version, and long-term unemployment is the most studied.
+They find out whether their life had a shape of its own.
 
-In 1931, the textile factory in Marienthal, a village south of Vienna, closed, and most of the village's workers lost their jobs. The researchers Marie Jahoda, Paul Lazarsfeld, and Hans Zeisel studied the people there. The researchers found that the unemployed men walked more slowly through the streets, stopped wearing watches, and could not say what they had done all day. Losing the job meant losing the structure of time itself.
+A job is an external structure. It sets the hours, assigns the problems, supplies the colleagues, and names the role. A person inside that structure never has to generate any of those things. When the structure disappears, a person who built nothing within it has nothing to replace them.
 
-Retirement research shows a similar pattern with more variation. Studies disagree about whether retirement harms health on average. Several find higher mortality after retirement for some groups, such as Austrian blue-collar men who retired early, and others find improvements in health. The variation is the point: retirement improves the lives of people who have something to retire *to*, and worsens the lives of people whose sense of worth depended on the job.
+Retirees are the existing case. Some retire and become more alive than they have ever been. Others decline within a few years. The difference is not the pension. It is whether they built an inner life that stays coherent without an employer. AI will make retirement nearly universal, at every age, and the same division will appear across a whole civilization.
 
-## Q: What does a job provide besides money?
+## Q: What is a self, that it can lose its shape?
 
-After Marienthal, Jahoda spent decades on this question. She concluded that employment meets several needs as side effects of the paycheck: a structure for time, contact with people outside the family, a collective purpose, status and identity, and regular activity. When the job ends, each of those needs remains, and each needs a new source.
+Consciousness is primary. Matter, bodies, and brains are how consciousness appears from the outside, and a self is a stable pattern within consciousness.
 
-Here is a fuller version of that list, with the signs of each need going unmet and the sources that can meet it after work. Income is a separate question, about how a society distributes the output of its machines, and this post sets income aside.
+Physicists have a precise model for a pattern like that: the **soliton**. A soliton is a wave that keeps its shape as it travels, because two tendencies of its medium cancel each other. One tendency spreads the wave out. The other gathers the wave back together. When the two balance, the wave travels indefinitely without changing form.
 
-| Need | What the job supplied | Signs it is unmet | Sources after work |
-| --- | --- | --- | --- |
-| **Structure** | A schedule that someone else set | Days blur together, sleep drifts, weeks pass without notice | A daily practice; classes, training schedules, regular meetings |
-| **Community** | Coworkers you saw every day without arranging it | Isolation and loneliness | Clubs, congregations, teams, cooperatives |
-| **Shared goals** | The organization's objectives | A sense that nothing you do affects anyone | Volunteer groups, open-source projects, civic campaigns, research collectives |
-| **Identity** | An answer to "What do you do?" | Not knowing how to introduce yourself | Crafts, traditions, and guilds that give their members names and roles |
-| **Recognition** | Titles, raises, and praise | Feeling invisible | Exhibitions, performances, ceremonies, acknowledgment from peers |
-| **Regular activity** | Commuting, meetings, tasks | Inertia and physical decline | Movement practices, sports leagues, workshops |
-| **Challenge** | Problems that someone assigned | Boredom and loss of skill | Chosen challenges, competitions, expeditions, rites of passage |
-| **Meaning** | A story in which your effort mattered | The question "What's the point?" | Contemplative practice, traditions, communities that share a purpose |
+A self works the same way. One tendency spreads a self out: distraction, entropy, and an excess of stimuli. The other gathers the self: attention, intention, and practice. A self that keeps those two in balance keeps its shape through any change of circumstances.
 
-Most people never notice which of these needs their job was meeting until the job ends.
+A job is a **waveguide**: a channel built outside the wave that keeps it from spreading. A wave in a waveguide never has to hold its own shape. Remove the waveguide, and a wave that cannot do so spreads out and fades. That is what happens to the retiree who declines. In the post-work transition, every person has to stop relying on a waveguide and become a soliton.
 
-## Q: Why do some retirees thrive and others decline?
+## Q: Where does worth come from?
 
-The biggest difference, in my experience, is where a person locates their worth.
+From the field, not the wave.
 
-Most people in Western cultures learn to measure their worth by what they produce and by what others will pay for it. For them, a paycheck every two weeks serves as evidence of that worth. When the job ends, people who measured their worth that way lose their evidence that they matter, and many of them conclude that they don't.
+If consciousness is primary, every self is a form of the same underlying awareness, and a self's worth comes from what the self is, not from what the self produces. Nothing a self does can add to that worth, and nothing it fails to do can subtract from it.
 
-People who believe their worth does not depend on their output can lose a job without losing their sense of who they are. They can then choose activities for what the activities give them, rather than as proof of their worth.
+A job never gave anyone worth. It gave people evidence for a worth they already had, and many people learned to mistake the evidence for the worth. When the evidence stops arriving, those people conclude that they no longer matter. They are wrong, and some of them decline and die believing it.
 
-## Q: What would a culture of internal worth look like?
+This is different from complacency. A self that knows its worth acts more freely, because a failure no longer means it is worth less. The distinction is between *worth*, which is given, and *contribution*, which is chosen.
 
-Parents, schools, and religious communities in such a culture would teach that every person has worth before they accomplish anything, and that people express their worth through what they accomplish rather than earning it.
+Consider the artists who are distraught that an AI can produce in seconds what took them years to learn. Every artist now faces a question: did I make art because making art gave me joy, or because other people's admiration confirmed my worth? Rewards from outside an activity gradually replace the reasons inside it. If you made art for applause, then the applause is what you lost to AI. The art is still yours to make.
 
-This is different from complacency. A person with internal worth still builds, learns, and contributes, often more freely than before, because a failure no longer means they are worth less. The distinction is between *worth*, which is given, and *contribution*, which is chosen.
+## Q: What does a self need to stay coherent?
 
-Consider the many artists who are distraught that an AI can produce in seconds what took them years to learn. The artists' grief is real, and it deserves compassion. The loss also raises a question each artist can ask: did I make art because making art gave me joy, or because other people's admiration confirmed my worth? Psychologists have studied this for decades. In a well-known 1973 experiment, Mark Lepper, David Greene, and Richard Nisbett found that preschool children who were promised a reward for drawing later chose to draw less in their free time than children who had received no reward. External rewards can reduce the intrinsic motivation they were meant to reinforce. An artist whose motivation was intrinsic loses an income when AI arrives. An artist whose motivation was extrinsic loses the reason to make art at all.
+Worth comes first. Beyond worth, a self needs seven things. Four concern the self's own pattern, and three concern its contact with other selves.
 
-## Q: If I don't need to work, what should I do with my time?
+| Need | What it maintains | Signs of lack | Inner practice | Outer form |
+| --- | --- | --- | --- | --- |
+| **Meaning** | Direction: the alignment between the self's actions and what it values | Drift; the question "What's the point?" | *Svadhyaya*, self-study and contemplation | Wisdom traditions, study circles, *satsang* |
+| **Identity** | Form: the shape the self keeps through change | Not knowing who you are without a title | *Svadharma*, acting from your own nature | Crafts, lineages, and guilds that give their members names and roles |
+| **Rhythm** | Continuity: regular, structured activity through time | Days blur, sleep drifts, the body declines | *Dinacharya*, a daily routine | Classes, training schedules, seasonal festivals |
+| **Challenge** | Growth: development through resistance | Boredom, restlessness, loss of skill | *Tapas*, chosen difficulty | Competitions, expeditions, rites of passage |
+| **Community** | Contact: presence with other selves | Isolation and loneliness | *Seva*, service to others | Households, clubs, congregations, teams |
+| **Shared goals** | Coherence among many selves | A sense that nothing you do affects anyone | A shared intention | Collaborative projects, restoration work, research collectives |
+| **Recognition** | Witness: being seen by another consciousness | Feeling invisible | Witnessing others without ranking them | Ceremonies, exhibitions, performances, acknowledgment from peers |
 
-Three internal practices matter most: the search for meaning, chosen challenge, and flow.
+Jobs met several of these needs at once, as side effects, for people who never chose them. After work, each need requires a deliberate source.
 
-**To seek meaning**, ask yourself regularly and honestly what you value and whether your days reflect it. Contemplation, journaling, and conversation with people who know you well all help.
+Recognition deserves a note. Recognition in the workplace usually meant ranking: who is better, who gets promoted. The recognition a self needs is witness: one consciousness seeing another as it is. Ranking divides people into winners and losers. Witness can include everyone.
 
-**Chosen challenges** replace the problems that a job used to assign. The philosopher Bernard Suits defined playing a game as "the voluntary attempt to overcome unnecessary obstacles," and argued that in a world where every necessary problem was solved, games would be the main human activity. Learning an instrument, training for a long-distance race, and restoring a wetland all involve obstacles you choose to overcome.
+## Q: What is flow, and can it go wrong?
 
-**Flow** is the state of absorbed concentration that the psychologist Mihaly Csikszentmihalyi studied. It occurs when a task has clear goals, gives immediate feedback, and has a difficulty that matches your skill. Many jobs supplied flow by accident. After work, you have to design for it.
+Flow is the state in which the self and its activity merge: attention narrows to the task, the sense of time changes, and the sense of a separate doer fades. It is the closest most people come to meditation in daily life.
 
-The psychologists Edward Deci and Richard Ryan, who developed self-determination theory, offer a short test for whether an activity will sustain you: does the activity give you autonomy, competence, and relatedness? An activity with all three can sustain a person for decades.
+Flow comes in two kinds. Both feel the same in the moment. The difference appears over months and years.
 
-## Q: Can I do this alone?
+**Positive flow** leaves the self more coherent than before. Its activities build skill, deepen relationships, strengthen the body, and keep the senses sensitive to ordinary pleasures. Practicing an instrument, climbing, building something with friends, and long meditation retreats all produce positive flow.
 
-Mostly not. People who keep up internal practices need external organizations that give them structure, community, and recognition, and those organizations need to exist at every scale and for every interest.
+**Negative flow** leaves the self less coherent than before. Its activities deliver intense reward without building anything, and repeated intense reward reduces sensitivity to every ordinary reward. Endless gaming, infinite feeds, and compulsive generation of content all produce negative flow. Afterward, the rest of life feels flat, so the person returns.
 
-At the smallest scale are households and friendships. Next are local clubs of five to fifty people: a running group, a choir, a community garden. Larger associations and guilds hold hundreds or thousands of members and set standards for a craft. Networks of those groups across cities run leagues, festivals, and conferences. At the largest scale are projects that a whole civilization pursues, such as scientific research, ecological restoration, or space exploration.
+The Bhagavad Gita states this distinction, more than two thousand years old. Its eighteenth chapter describes a happiness that is bitter at first and sweet in the end, which it calls *sattvic*, and a happiness born of the senses that is sweet at first and bitter in the end, which it calls *rajasic*. A third kind, *tamasic*, arises from sleep, sloth, and negligence, and deludes the self from beginning to end. Endless gaming is rajas that decays into tamas, with good graphics.
 
-These organizations should also offer rites of passage. Modern societies have few rituals that mark a change in a person's role, and retirement is a striking example: a person's role in the world changes completely, and the only ceremony is an office party. A rite of passage gives the transition a structure, a witness, and a new identity on the other side. Organizations that help people leave work will need to design those rites.
+The test for any activity is the trajectory, not the moment: after a year of doing this, will I be more alive or less?
 
-## Q: Why do you call this a spiritual transition?
+## Q: What are the inner practices?
 
-Because the central change is from earned worth to given worth, and teachers in contemplative traditions have described that change for thousands of years. The concepts of grace, Buddha-nature, and inherent human dignity all refer to a worth that no one earns and no one can take away.
+Seeking meaning, choosing challenge, and cultivating positive flow, along with the practice that protects all three.
 
-I expect a spiritual awakening on a scale we haven't seen, among people who are looking for meaning after work. From the outside, it will not resemble a religious revival. It will look like people taking up pottery, joining hiking clubs, caring for grandchildren, and volunteering at the food bank. The change will happen in how those people answer the question of why they matter.
+**Seeking meaning** is self-study. Ask, every day, what you value and whether your actions reflect it. Contemplation, journaling, and honest conversation all help.
 
-## Q: What could go wrong?
+**Choosing challenge** is *tapas*: difficulty you take on deliberately because it transforms you. Employers assign problems. A free person chooses problems. The philosopher Bernard Suits defined playing a game as "the voluntary attempt to overcome unnecessary obstacles." In a world where every necessary problem is solved, every worthwhile challenge is chosen.
 
-People can fall into traps that meet some of the needs above while undermining the rest. These are the ones I see growing:
+**Cultivating positive flow** means arranging your days so that your deepest absorption goes into activities that build you.
 
-1. **Hyper-personalized entertainment.** Games, feeds, and media generated for one person's preferences, with no end and no friction. These products supply stimulation and a feeling of challenge while taking time away from community, shared goals, and contact with the physical world.
-2. **Synthetic relationships.** AI companions that are always available and always agreeable. AI companions supply attention without the mutual obligation that makes human relationships meaningful.
-3. **Comparison with machines.** Abandoning a craft because an AI does it better. A person who quits for that reason is treating every activity as a competition for output, which is the logic of the job that just ended.
-4. **The collapse of extrinsic worth.** Despair among people whose worth depended on being useful, and who now believe they are useless.
-5. **Isolated creation.** Building worlds, apps, and games that no one else uses. Creation is better than consumption, but creation without an audience or community can isolate a person as completely as a feed.
+**Withdrawing attention** is the practice that protects the other three. Yoga calls it *pratyahara*: drawing the senses back from their objects so that the self, not the stimulus, decides where attention goes. Patanjali listed it fifth of the eight limbs of yoga, as the transition from the outer practices to the inner ones. It is the most important skill for a world full of engineered stimuli.
+
+## Q: What are the outer forms?
+
+Organizations that supply the seven needs, at every scale, for every interest a person could have.
+
+A soliton forms only in a medium with the right properties. For selves, the medium is culture and its institutions. A culture rich in clubs, guilds, congregations, teams, and shared projects makes coherent selves easy to form. A culture that offers only jobs and entertainment makes them rare.
+
+These organizations range from households and friendships, through local clubs of five to fifty people, to associations and guilds of thousands, to networks that run leagues and festivals across continents, to projects that a whole civilization pursues, such as exploring space or restoring ecosystems.
+
+They also need rites of passage. A rite of passage marks the end of one identity and the beginning of the next, in front of witnesses, through a chosen ordeal. Most modern societies have almost none. Retirement is the clearest example: a person's entire role in the world changes, and the only ceremony is an office party. The post-work transition needs rites that match the scale of the change.
+
+## Q: Why is this a spiritual transition?
+
+Because the central change is from earned worth to given worth, and that change is what contemplative traditions mean by awakening.
+
+The Bhagavad Gita calls the path *karma yoga*: acting fully while renouncing any claim on the fruits of the action. For most of history, karma yoga was an advanced teaching, because people had to work for the fruits. Post-work, karma yoga becomes the ordinary condition. When no one needs your output, the only reason to act is the action itself.
+
+The tradition has a word for action of that kind: *lila*, the play of consciousness. In this view, the cosmos exists not because consciousness needs anything, but because consciousness creates out of fullness. A self that acts from fullness rather than need participates in that play.
+
+A spiritual awakening on a scale humanity has never seen is coming, and from the outside it will not look spiritual. It will look like people taking up pottery, training for mountain races, raising gardens, and singing in choirs. The awakening will happen in how those people answer the question of why they matter.
+
+## Q: What are the traps?
+
+Every trap is a source of negative flow, and every trap supplies a new waveguide to replace the one that disappeared.
+
+A feed is a waveguide built by someone else, to an objective that is not yours. People who lose the structure of a job often move straight into the structure of a feed, and mistake the second for freedom.
+
+1. **Hyper-personalized entertainment.** Games and media generated for one person's preferences, with no end and no friction. Wireheading no longer requires electrodes.
+2. **Synthetic relationships.** AI companions that are always available and always agreeable, offering attention without the mutual obligation that makes relationships transformative.
+3. **Comparison with machines.** Abandoning a craft because an AI does it better. A person who quits for that reason treats every activity as a competition for output: the logic of the job that just ended.
+4. **The collapse of extrinsic worth.** Despair among people whose worth depended on being useful.
+5. **Isolated creation.** Building worlds, apps, and games that no one else ever uses. Creation is better than consumption, but creation without community can isolate a person as completely as a feed.
 6. **Spiritual escape.** Using meditation, psychedelics, or spiritual identity to avoid the work of building a life among other people.
 
-## Q: Why are these traps getting stronger now?
+## Q: Why are the traps getting stronger now?
 
-Because the more easily you can do anything you can imagine, the harder it becomes to direct your attention toward what fulfills you.
+Because the more easily you can do anything you imagine, the harder it becomes to direct your attention toward what fulfills you.
 
-When frontier coding models improved this year, I watched people decompile video games, combine pieces of several games into hybrids, add multiplayer, and run the results in a web browser. The number of people I know who have started building games since AI agents improved at the beginning of the year is remarkable. Many people had always wanted to design games and had never had the means.
+Within months of the latest coding agents, people were decompiling video games, combining pieces of several games into hybrids, adding multiplayer, and running the results in a web browser. Huge numbers of people have started building games, and many of them had wanted to design games all their lives.
 
-Much of that is good. But a video game is a self-contained world designed to reward the player, and it rarely connects the player to the physical world or to a community beyond casual competition. When anyone can generate an unlimited supply of games tuned to their own preferences, some people will stop doing anything else. That is wireheading in practice: direct stimulation of reward, disconnected from everything the reward was meant to track.
+Much of that is good. But a video game is a self-contained world designed to reward the player, and it rarely connects the player to the physical world or to a community beyond casual competition. When anyone can generate an unlimited supply of games tuned to their own preferences, the amount of reward available to a person has no ceiling. A self without *pratyahara* will lose its shape there.
 
 ## Q: How will we know whether the transition succeeded?
 
-By the proportion of people who fall into those traps.
+By the proportion of people who fall into negative flow.
 
-A small, disciplined minority will do extraordinary things with AI regardless of what the rest of society does. The measure of a civilization is what happens to everyone else: whether most people find structure, community, challenge, and meaning, or whether most people spend fifteen hours a day on a device, including during meals and conversations.
+A small, disciplined minority will do extraordinary things with AI regardless of what the rest of society does. The measure of a civilization is what happens to everyone else: whether most people become solitons, coherent and self-sustaining, or whether most people spend fifteen hours a day on a device, including during meals and conversations.
 
-That outcome depends on culture and institutions, and on how soon we recognize the problem.
+That outcome depends on culture, on institutions, and on how soon a society recognizes the problem.
 
 ## Q: Can individuals protect themselves?
 
-Some people can, and AI will help. I expect many people to give a personal AI agent access to their social media. The agent will filter out content engineered to capture attention and deliver a daily summary, built from a model of its owner's interests and values.
+Some can, and AI will help them. Personal AI agents will read a person's social media on the person's behalf, filter out content engineered to capture attention, and deliver a daily summary built from a model of the person's interests and values. That is *pratyahara* as a service.
 
-But each person decides whether to use such an agent, and many people will choose the feed instead. Personal tools protect the people who are already inclined to protect themselves. Everyone else depends on the defaults that governments and companies set.
+But every person is sovereign over their own attention, and many people will choose the feed instead. Personal tools protect the people who were already inclined to protect themselves. Everyone else lives by the defaults that governments and companies set.
 
 ## Q: Should governments regulate this?
 
-I think so. Recommendation algorithms are not neutral. They determine what billions of people see, and they are optimized for whatever their operators measure, which is usually time spent. That makes recommendation algorithms a powerful technology with public-health consequences, and governments should regulate them like other technologies with public-health consequences.
+Yes. Recommendation algorithms are not neutral. They determine what billions of people see, and they are optimized for whatever their operators measure, which is usually time spent. A society that leaves them unregulated has decided, by default, that its citizens' attention belongs to whoever bids highest for it.
 
-The most useful lever is *affordance*: how easy something is to access. Nothing in this category needs to be banned outright. Decriminalizing heroin is one policy; handing it out to schoolchildren is another; allowing companies to advertise it is a third. Each step makes the same substance easier to reach, and each step changes how many people form the habit. Attention-capturing products work the same way.
+The governing principle is **affordance**: the easier something is to access, the more people form a habit of it. Nothing in this category needs to be banned. Decriminalizing heroin is one policy; handing it out to schoolchildren is another; letting companies advertise it is a third. Each step makes the same substance easier to reach, and each step multiplies the number of addicts. Attention-capturing products follow the same law.
 
-China, despite serious problems of its own, offers examples of regulating affordances. Since 2021, Chinese regulators have limited minors' online gaming to an hour on Friday, Saturday, and Sunday evenings and on public holidays. The same year, the government banned for-profit tutoring in core school subjects, after concluding that families were spending heavily on test preparation that intensified competition without improving education. I don't endorse China's political system, but I do think Western countries need agencies that monitor the effects of new technologies on people and intervene against harmful ones.
+China, whatever its other problems, regulates affordances. Since 2021, Chinese regulators have limited minors' online gaming to an hour on Friday, Saturday, and Sunday evenings and on public holidays. The same year, the government banned for-profit tutoring in core school subjects, after concluding that families were spending fortunes on test preparation that intensified competition without improving education. Those are the right kinds of decisions: watch what a technology does to people, and change its affordances when it harms them.
 
-Some politicians in the United States want to dismantle agencies such as the Environmental Protection Agency, whose purpose is to protect the public. Those agencies have real flaws: the agencies often regulate too much of what doesn't matter and too little of what does. But the remedy for an incompetent regulator is a competent one, not none at all.
+That kind of regulation requires a competent government. Protective agencies such as the Environmental Protection Agency have real flaws: the agencies often regulate too much of what doesn't matter and too little of what does. The remedy for an incompetent regulator is a competent one. Dismantling protective agencies because they are flawed leaves a population exposed to every company that profits from harming it.
 
 ## Q: What should education teach?
 
 How to find meaning, how to think independently, and how to choose a path through a world in which technology changes faster than institutions do.
 
-For several generations, Western students have learned that a university degree is the only route to a good job. Meanwhile, universities have become slower to change and more expensive. A degree can cost a hundred thousand dollars and lead to an entry-level job market with fewer positions each year because of AI. Many students still follow that path because everyone around them does, and because the advice they receive reflects how the economy worked when their advisors were young.
+Any institution that changes more slowly than its environment ends up teaching strategies for a world that no longer exists. Universities are the clearest case. For generations, students learned that a degree was the only route to a good job. Meanwhile, universities slowed down and grew more expensive, until a degree could cost a hundred thousand dollars and lead to an entry-level job market with fewer openings every year because of AI. Students still follow that path, because everyone around them does.
 
-Students who learn to think independently can find better strategies than the conventional ones. Practical tools help. With Wardley mapping, for example, a person maps each component of an industry by its maturity, which makes it easier to see which skills and roles AI will automate first.
+A person who thinks independently can find better strategies than the conventional ones. With Wardley mapping, for example, a person maps each component of an industry by its maturity, which makes it easier to see which skills and roles AI will automate first.
 
 If you go to university because you love learning and want to advance a field, go. If you go only to get a job, you are following a strategy that stopped working years ago.
 
 ## Q: Should I quit my job?
 
-If you enjoy your work, and would do the work even if you didn't need the money, keep working. That is intrinsic motivation, and you will keep it no matter what happens to the economy.
+If you would do your work even without the pay, you are already practicing karma yoga. Keep going.
 
-If you work only because you have to, start building the rest of your life now: the practices, the communities, and the sense of worth that will still be there when the job is gone.
+If you work only because you have to, start building your soliton now: the practices, the communities, and the sense of worth that will still be there when the waveguide is gone.
 
 ## Q: How do we reach the people who are struggling?
 
-This is the question I don't have a full answer to yet. Millions of people are about to lose the source of their worth, and many of them have never been taught that worth can come from anywhere else.
+This question has no full answer yet. Billions of people are about to lose the source of what they believed was their worth, and most of them have never been taught that worth can come from anywhere else.
 
-We need ways to find those people and help them toward intrinsic motivation, an internal sense of worth, and communities whose members value each other as people rather than ranking each other by performance. That will take teachers, mentors, organizations, and probably new institutions that don't exist yet. If you are building any of those, I would like to hear from you.
+The answer will involve *satsang*, in its original sense: the company of people who are seeking what is true. It will take teachers, mentors, and communities whose members witness each other rather than rank each other, and probably institutions that don't exist yet. If you are building one of those institutions, I want to hear from you.
 
 ## Q: TL;DR?
 
-Retirees already show us what life after work requires. People who thrive have an internal sense of worth, practices that give them meaning, challenge, and flow, and organizations that give them structure, community, and recognition. AI will make that transition nearly universal, and AI products will also create stronger traps than any previous technology. Whether the transition succeeds depends on how many people avoid those traps, and that depends on the cultures, institutions, and education we build now.
+A self is a soliton in consciousness, and a job was a waveguide that held many selves in shape. AI is eliminating jobs, and with them the waveguide. Selves that know their worth is given, keep inner practices of meaning, challenge, and positive flow, and live inside a culture rich in shared forms will become more alive than ever. Selves that don't will find a new waveguide in the feed. The proportion of people on each side will determine what kind of civilization comes next.
