@@ -27,7 +27,7 @@ A job is a waveguide for a self. It sets the hours, assigns the problems, suppli
 
 Retirees are the existing case. Some retire and become more alive than they have ever been. Others decline within a few years. The difference is not the pension. It is whether they became solitons while the waveguide was still there.
 
-AI will make that transition nearly universal, at every age. The rest of this post describes what a self needs to make that transition.
+AI will make that transition nearly universal, at every age. Most people have relied on the waveguide for their motivation and their validation: they act because someone pays them, and they feel worthy because someone approves of the result. Becoming a soliton means replacing extrinsic motivation with intrinsic motivation, and external validation with internal validation. The rest of this post describes what that replacement requires.
 
 ## 2. The ground: worth
 
@@ -43,9 +43,44 @@ Every artist who is distraught that an AI can produce in seconds what took years
 
 Worth is not one of a self's needs. Every need presupposes it, and no activity can supply it.
 
-## 3. The needs
+## 3. The path inward
 
-### 3.1 What coherence consists of
+Intrinsic motivation and internal validation cannot be acquired from outside. A self that has relied on a waveguide has to turn inward to develop them, and millions of people will begin a path of self-development that most of them never chose.
+
+### 3.1 Four domains of development
+
+Ken Wilber's Integral Theory names four domains in which a person develops: waking up, cleaning up, growing up, and showing up. The four domains can be arranged on two axes. One axis separates the **interior** of a self, its experience, from its **exterior**, its behavior in the world. The other separates **increasing**, which develops a new capacity, from **integrating**, which brings what is already there into wholeness.
+
+|  | Interior | Exterior |
+| --- | --- | --- |
+| **Increasing** | **Waking up**: awareness | **Growing up**: competence |
+| **Integrating** | **Cleaning up**: shadow | **Showing up**: commitment |
+
+**Waking up** increases awareness. The practices of waking up are meditation, contemplation, self-inquiry, and *pratyahara*. Spiritual awakening belongs to this domain, and so does the discovery that worth is given: a self that looks closely enough at its own awareness finds that nothing it produces made that awareness, and nothing it fails to produce can diminish it.
+
+**Cleaning up** integrates the shadow: the parts of the self that it has disowned. The practices of cleaning up include parts work such as Internal Family Systems, memory reconsolidation, *metta*, and forgiveness. Extrinsic worth is usually a strategy that a child adopted when approval seemed to depend on performance. In waking up, a self sees that the strategy is unnecessary. In cleaning up, the self dismantles the strategy, one part and one memory at a time.
+
+**Growing up** increases competence: agency, skill, and responsibility for the effects of one's actions. The practices of growing up are deliberate training, new routines and structures, and asking for feedback that reveals one's limits. The needs for rhythm and challenge in section 4 are met mostly in this domain.
+
+**Showing up** integrates the self into action with others through commitment. The practice of showing up is *karma yoga*, which the Bhagavad Gita describes as acting fully while renouncing any claim on the fruits of the action. For most of history, karma yoga was an advanced teaching, because people had to work for the fruits. Post-work, karma yoga becomes the ordinary condition: when no one needs your output, the only reason to act is the action itself. If you would do your current work even without the pay, you are already practicing karma yoga, and nothing about AI requires you to stop.
+
+The tradition has a word for action of that kind: *lila*, the play of consciousness. In this view, the cosmos exists not because consciousness needs anything, but because consciousness creates out of fullness. A self that shows up from fullness rather than need participates in that play.
+
+### 3.2 Two half-developed populations
+
+Most people have developed one half of the grid.
+
+Spiritual communities tend to develop the interior half. Their members meditate and do therapy, and many of them neglect competence and commitment. People who succeeded in market economies tend to develop the exterior half, often because survival required it. They built competence and kept their commitments, and they rarely had a reason to look inward.
+
+Neither half produces a coherent self alone. Interior development without exterior development is spiritual escape: a rich inner life that never enters the world. Exterior development without interior development is a self that functions only inside a waveguide. When the job ends, its competence has no direction and its worth has no source. The post-work transition harms the second population most, and it requires that population to do what it has avoided longest.
+
+### 3.3 An invisible revolution
+
+The turn inward is a spiritual path, and spiritual awakening is one domain of that path. A spiritual awakening on a scale humanity has never seen is coming, and from the outside it will not look spiritual. It will look like people taking up pottery, training for mountain races, raising gardens, singing in choirs, going to therapy, and forgiving their parents. The awakening will happen in how those people answer the question of why they matter.
+
+## 4. The needs
+
+### 4.1 What coherence consists of
 
 A coherent self needs seven things. Four concern the self's own pattern, and three concern its contact with other selves.
 
@@ -63,7 +98,7 @@ Jobs met several of these needs at once, as side effects, for people who never c
 
 Recognition needs a precise definition. Recognition in the workplace usually meant ranking: who is better, who gets promoted. The recognition a self needs is **witness**: one consciousness seeing another as it is. Ranking divides people into winners and losers. Witness can include everyone.
 
-### 3.2 Where each need is met
+### 4.2 Where each need is met
 
 Each need can be met at three scales: within the **self**, through practice; within a **group**, through shared forms; and across a **civilization**, through its culture and institutions. A self is most coherent when every need has a source at all three.
 
@@ -77,13 +112,15 @@ Each need can be met at three scales: within the **self**, through practice; wit
 | **Shared goals** | A shared intention | Collaborative projects, research collectives | Projects such as exploring space or restoring ecosystems |
 | **Recognition** | Witnessing others without ranking them | Exhibitions, performances, acknowledgment from peers | Public ceremonies and honors |
 
+The needs and the four domains are independent: a person can work on any need in any domain. Community, for example, requires waking up to the presence of other people, cleaning up old resentments toward them, growing up into the skills of hosting and organizing, and showing up for them when it costs something.
+
 Two of these deserve more detail.
 
 **Chosen challenge.** Employers assign problems. A free person chooses problems. The philosopher Bernard Suits defined playing a game as "the voluntary attempt to overcome unnecessary obstacles." In a world where every necessary problem is solved, every worthwhile challenge is chosen, and *tapas* stops being an ascetic specialty and becomes the ordinary way to grow.
 
 **Rites of passage.** A rite of passage marks the end of one identity and the beginning of the next, in front of witnesses, through a chosen ordeal. Most modern societies have almost none. Retirement is the clearest example: a person's entire role in the world changes, and the only ceremony is an office party. The post-work transition needs rites that match the scale of the change.
 
-## 4. The direction of an activity: flow
+## 5. The direction of an activity: flow
 
 Every activity either gathers a self or spreads it. Flow is where the difference is hardest to see.
 
@@ -97,7 +134,7 @@ The eighteenth chapter of the Bhagavad Gita states this distinction. In the Gita
 
 The test for any activity is the trajectory, not the moment: after a year of doing this, will I be more alive or less?
 
-## 5. Gathering and spreading at three scales
+## 6. Gathering and spreading at three scales
 
 The forces that act on a self operate at the same three scales as its needs. At each scale, some forces gather and some spread.
 
@@ -109,7 +146,7 @@ The forces that act on a self operate at the same three scales as its needs. At 
 
 Every spreading force also supplies a new waveguide to replace the one that disappeared. A feed is a waveguide built by someone else, to an objective that is not yours. People who lose the structure of a job often move straight into the structure of a feed, and mistake the second for freedom.
 
-### 5.1 The self
+### 6.1 The self
 
 The spreading forces are getting stronger, for a first-principles reason: the more easily you can do anything you imagine, the harder it becomes to direct your attention toward what fulfills you.
 
@@ -120,13 +157,13 @@ Four spreading forces act on the self directly:
 1. **Hyper-personalized entertainment**: games and media generated for one person's preferences, with no end and no friction.
 2. **Comparison with machines**: abandoning a craft because an AI does it better. A person who quits for that reason treats every activity as a competition for output, which is the logic of the job that just ended.
 3. **The collapse of extrinsic worth**: despair among people whose worth depended on being useful.
-4. **Spiritual escape**: using meditation, psychedelics, or spiritual identity to avoid the work of building a life among other people.
+4. **Spiritual escape**: interior development without exterior development, using meditation, psychedelics, or spiritual identity to avoid the work of building a life among other people.
 
 The gathering force at this scale is *pratyahara*: drawing the senses back from their objects so that the self, not the stimulus, decides where attention goes. Patanjali listed it fifth of the eight limbs of yoga, as the transition from the outer practices to the inner ones. It protects every practice in the table above, and it is the most important skill for a world full of engineered stimuli.
 
 AI can help. Personal AI agents will read a person's social media on the person's behalf, filter out content engineered to capture attention, and deliver a daily summary built from a model of the person's interests and values. That is *pratyahara* as a service. But every person is sovereign over their own attention, and many people will choose the feed instead. Personal tools protect the people who were already inclined to protect themselves. Everyone else lives by the defaults that their communities, companies, and governments set.
 
-### 5.2 The group
+### 6.2 The group
 
 A soliton forms only in a medium with the right properties, and for selves, groups are the nearest part of that medium. Groups gather selves by supplying the forms in the second column of the needs table, and they need to exist at every size and for every interest a person could have: from households and friendships, through local clubs of five to fifty people, to associations and guilds of thousands, to networks that run leagues and festivals across continents.
 
@@ -138,7 +175,7 @@ Three spreading forces act at this scale:
 
 The gathering forces are witness and *satsang*, in its original sense: the company of people who are seeking what is true. A group gathers its members when they witness each other rather than rank each other.
 
-### 5.3 The civilization
+### 6.3 The civilization
 
 A civilization's governments, companies, and schools set the defaults for everyone who does not choose defaults of their own. Three gathering forces act at this scale, and each has a spreading counterpart.
 
@@ -155,16 +192,6 @@ That kind of regulation requires a competent government. Protective agencies suc
 **Education for independent thought versus institutional lag.** Any institution that changes more slowly than its environment ends up teaching strategies for a world that no longer exists. Universities are the clearest case. For generations, students learned that a degree was the only route to a good job. Meanwhile, universities slowed down and grew more expensive, until a degree could cost a hundred thousand dollars and lead to an entry-level job market with fewer openings every year because of AI. Students still follow that path, because everyone around them does.
 
 Education should teach how to find meaning, how to think independently, and how to choose a path through a world in which technology changes faster than institutions do. A person who thinks independently can find better strategies than the conventional ones. With Wardley mapping, for example, a person maps each component of an industry by its maturity, which makes it easier to see which skills and roles AI will automate first. If you go to university because you love learning and want to advance a field, go. If you go only to get a job, you are following a strategy that stopped working years ago.
-
-## 6. The transition as awakening
-
-The central change of the post-work transition is from earned worth to given worth, and that change is what contemplative traditions mean by awakening.
-
-The Bhagavad Gita calls the path *karma yoga*: acting fully while renouncing any claim on the fruits of the action. For most of history, karma yoga was an advanced teaching, because people had to work for the fruits. Post-work, karma yoga becomes the ordinary condition. When no one needs your output, the only reason to act is the action itself. If you would do your current work even without the pay, you are already practicing karma yoga, and nothing about AI requires you to stop.
-
-The tradition has a word for action of that kind: *lila*, the play of consciousness. In this view, the cosmos exists not because consciousness needs anything, but because consciousness creates out of fullness. A self that acts from fullness rather than need participates in that play.
-
-A spiritual awakening on a scale humanity has never seen is coming, and from the outside it will not look spiritual. It will look like people taking up pottery, training for mountain races, raising gardens, and singing in choirs. The awakening will happen in how those people answer the question of why they matter.
 
 ## 7. The measure
 
