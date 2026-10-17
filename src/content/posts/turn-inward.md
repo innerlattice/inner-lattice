@@ -231,7 +231,7 @@ Every trap also supplies a new external structure to replace the job. A feed is 
 1. **Hyper-personalized entertainment**: games and media generated for one person's preferences, with no end and no friction.
 2. **Comparison with machines**: abandoning a craft because an AI does it better. A person who quits for that reason treats every activity as a competition for output, which is the logic of the job that just ended.
 3. **The collapse of extrinsic worth**: despair among people whose worth depended on being useful.
-4. **Spiritual bypassing**: the psychologist John Welwood's term for using spiritual ideas and practices to avoid unresolved emotional wounds and unfinished developmental tasks.[[15]](#ref-15) Neglecting the body and its world, and withdrawing from other people, are both kinds of spiritual bypassing.
+4. **Spiritual bypassing**: the psychologist John Welwood's term for using spiritual ideas to avoid what is difficult, including responsibility for one's own behavior.[[15]](#ref-15) "It's all love" may be true at the deepest level, but people live in a contingent world where actions have consequences, and a person who wants to be among other people has to treat those people well. Neglecting the body and its world, and withdrawing from other people, are both kinds of spiritual bypassing.
 
 ### 6.2 The group
 
