@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 372" role="img" aria-labelledby="title desc">
+  <title id="title">Four domains of development</title>
+  <desc id="desc">A two-by-two grid. Columns separate the interior of a self, its experience, from its exterior, its behavior in the world. Rows separate increasing, which develops a new capacity, from integrating, which brings what is already there into wholeness. Waking up is interior and increasing: it develops awareness, through meditation, contemplation, self-inquiry, and withdrawing the senses. Growing up is exterior and increasing: it develops competence, through training, routine, responsibility, and feedback. Cleaning up is interior and integrating: it integrates the shadow, through parts work, shadow work, memory reconsolidation, metta, and forgiveness. Showing up is exterior and integrating: it develops commitment, through acting with others without a claim on the fruits of the action.</desc>
+
+  <g class="axis">
+    <text x="136" y="22">Interior</text>
+    <text x="410" y="22">Exterior</text>
+  </g>
+  <g class="note">
+    <text x="204" y="22">experience</text>
+    <text x="478" y="22">behavior in the world</text>
+  </g>
+
+  <text class="axis" x="20" y="96">Increasing</text>
+  <text class="note" x="20" y="114">a new</text>
+  <text class="note" x="20" y="130">capacity</text>
+
+  <text class="axis" x="20" y="262">Integrating</text>
+  <text class="note" x="20" y="280">what is</text>
+  <text class="note" x="20" y="296">already there</text>
+
+  <g class="iris">
+    <rect class="box" x="128" y="38" width="266" height="152" rx="6"/>
+    <rect class="box" x="128" y="204" width="266" height="152" rx="6"/>
+    <text class="head" x="146" y="70">Waking up</text>
+    <text class="head" x="146" y="236">Cleaning up</text>
+  </g>
+  <g class="gold">
+    <rect class="box" x="402" y="38" width="266" height="152" rx="6"/>
+    <rect class="box" x="402" y="204" width="266" height="152" rx="6"/>
+    <text class="head" x="420" y="70">Growing up</text>
+    <text class="head" x="420" y="236">Showing up</text>
+  </g>
+
+  <g class="label strong">
+    <text x="146" y="94">awareness</text>
+    <text x="420" y="94">competence</text>
+    <text x="146" y="260">the shadow</text>
+    <text x="420" y="260">commitment</text>
+  </g>
+  <g class="note">
+    <text x="146" y="126">meditation, contemplation,</text>
+    <text x="146" y="144">self-inquiry, withdrawing</text>
+    <text x="146" y="162">the senses</text>
+    <text x="420" y="126">training, routine,</text>
+    <text x="420" y="144">responsibility, feedback</text>
+    <text x="146" y="292">parts work, shadow work,</text>
+    <text x="146" y="310">memory reconsolidation,</text>
+    <text x="146" y="328">metta, forgiveness</text>
+    <text x="420" y="292">acting with others,</text>
+    <text x="420" y="310">without a claim on</text>
+    <text x="420" y="328">the fruits</text>
+  </g>
+</svg>
