@@ -4,10 +4,11 @@ include = ["src/content/posts/universal-*.md"]
 [lexicon]
 agent = ["AI agent", "agent", "model", "person", "player", "user", "staff", "operator", "developer", "author", "team", "customer", "bank", "merchant", "issuer", "reader"]
 physical = ["server", "device", "phone", "host", "machine", "client", "computer", "disk", "network", "data center"]
+mechanism = ["sequencer", "evaluator", "dispatcher", "function", "runtime", "compiler", "program", "system", "protocol"]
 abstract = [
-  "sequencer", "evaluator", "dispatcher", "scope", "seal", "choice", "record", "function", "theorem", "runtime",
-  "compiler", "language", "program", "system", "protocol", "query", "value", "state", "step", "release",
+  "scope", "seal", "choice", "record", "theorem", "language", "query", "value", "state", "step", "release",
   "version", "relation", "table", "transaction", "output", "input", "test", "label", "declaration", "type",
+  "market",
 ]
 text = ["rule", "message", "request", "prompt"]
 mixed = ["resolver", "participant", "party", "place", "replica", "node", "process", "service"]
