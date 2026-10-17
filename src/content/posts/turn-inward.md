@@ -61,7 +61,7 @@ Growing up also has stages. The developmental psychologist Robert Kegan describe
 
 With a job, a person can live with a socialized mind, because the employer supplies the goals, the standards, and the verdict on performance. After work, no one supplies them, and the transition requires a self-authoring mind. A person growing up after work has to set goals they care about, find people whose standards exceed their own, ask for honest feedback, and take responsibility for results that no one else will check. Growing up also includes the capacities that make a person valuable to a group: teaching, organizing, hosting, communicating, and resolving conflict.
 
-**Showing up** integrates a person into action with others through commitment. The practice of showing up is *karma yoga*, which in the Bhagavad Gita means acting fully while renouncing any claim on the fruits of the action.[[9]](#ref-9) For most of history, karma yoga was an advanced teaching, because people had to work for the fruits. Post-work, karma yoga becomes the ordinary condition: when no one needs your output, the only reason to act is the action itself.
+**Showing up** integrates a person into action with others through commitment. The practice of showing up is *karma yoga*, which the Bhagavad Gita describes as acting fully while renouncing any claim on the fruits of the action.[[9]](#ref-9) For most of history, karma yoga was an advanced teaching, because people had to work for the fruits. Post-work, karma yoga becomes the ordinary condition: when no one needs your output, the only reason to act is the action itself.
 
 The tradition has a word for action of that kind: *lila*, the play of consciousness. In this view, the cosmos exists not because consciousness needs anything, but because consciousness creates out of fullness. A person who acts from fullness rather than need participates in that play.
 
@@ -184,7 +184,7 @@ Flow comes in two kinds, and both feel the same in the moment. The difference ap
 
 **Negative flow** leaves a person less capable than before. Its activities produce intense reward without building anything, and repeated intense reward reduces sensitivity to every ordinary reward. Afterward, the rest of life feels flat, so the person returns.
 
-The eighteenth chapter of the Bhagavad Gita contains this distinction. In the Gita, a happiness that is bitter at first and sweet in the end is *sattvic*, and a happiness born of the senses that is sweet at first and bitter in the end is *rajasic*. A third kind, *tamasic*, arises from sleep, sloth, and negligence, and is a delusion from beginning to end.[[9]](#ref-9) Endless gaming is rajas that decays into tamas, with good graphics.
+The eighteenth chapter of the Bhagavad Gita states this distinction. In the Gita, a happiness that is bitter at first and sweet in the end is *sattvic*, and a happiness born of the senses that is sweet at first and bitter in the end is *rajasic*. A third kind, *tamasic*, arises from sleep, sloth, and negligence, and is a delusion from beginning to end.[[9]](#ref-9) Endless gaming is rajas that decays into tamas, with good graphics.
 
 The test for any activity is the trajectory, not the moment: after a year of doing this, will I be more alive or less?
 
@@ -276,7 +276,7 @@ A civilization's governments, companies, and schools set the defaults for everyo
 
 **Civic projects.** Citizen science, ecological restoration, the preservation of crafts and languages, and the exploration of space are all open to millions of volunteers. When a civilization's largest projects are open to the public, citizens have shared goals on the largest scale.
 
-**Regulation of affordances.** Recommendation algorithms are not neutral. They determine what billions of people see, and they are optimized for whatever their operators measure, which is usually time spent. Leaving them unregulated amounts to a decision that citizens' attention belongs to whoever bids highest for it.
+**Regulation of affordances.** Recommendation algorithms are not neutral. They determine what billions of people see, and they are optimized for whatever their operators measure, which is usually time spent. A society that leaves them unregulated has decided, by default, that its citizens' attention belongs to whoever bids highest for it.
 
 The governing principle is **affordance**. The psychologist James Gibson coined the term for the actions that an environment makes possible: sitting is an affordance of a chair, and climbing is an affordance of a staircase. Designers later adopted the term for how easy an environment makes each action.[[17]](#ref-17) A phone on the nightstand makes checking the phone the easiest action on waking. A guitar on a stand is easy to pick up and play, and a guitar in a closet is not. People mostly do what their environment makes easy, so the easier something is to access, the more people form a habit of it. Nothing in this category needs to be banned. Decriminalizing heroin is one policy; handing it out to schoolchildren is another; letting companies advertise it is a third. Each step makes the same substance easier to reach, and each step multiplies the number of addicts. Attention-capturing products follow the same law.
 
