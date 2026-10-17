@@ -31,6 +31,8 @@ Every artist who is distraught that an AI can produce in seconds what took years
 
 Arguments can loosen a belief, but they cannot replace experience. My own view is that consciousness is primary, and that every person's worth comes from what they are rather than from what they do. You don't have to take my word for it, and you shouldn't. Treat it as a hypothesis and test it with the practices in the next section.
 
+The view is old. In Christian teaching, every person is made in the image of God and receives *grace*, a gift that no one can earn. In Vedanta, the self at the core of every person, *atman*, is identical with *brahman*, the ground of all being. Neither tradition makes worth depend on output.
+
 ## 3. The path inward
 
 ### 3.1 Four domains of development
@@ -54,6 +56,10 @@ Three objections come up whenever inner work is mentioned, and each has a short 
 3. *"Why dwell on the past?"* Inner work is not dwelling on the past. It changes how the past acts in the present. In memory reconsolidation, for example, an emotional learning becomes revisable at the moment it is recalled, and a contradicting experience at that moment can revise it permanently.
 
 **Growing up** increases competence: agency, skill, and responsibility for the effects of one's actions. The practices of growing up are deliberate training, routines that a person sets for themselves, and asking for feedback that reveals one's limits.
+
+Growing up also has stages. The developmental psychologist Robert Kegan described a progression in how adults make meaning. With a *socialized mind*, a person takes their values and their sense of self from the expectations of the people and institutions around them. With a *self-authoring mind*, a person generates their own values and judges other people's expectations against those values. With a *self-transforming mind*, a person can hold several value systems at once and revise their own. By Kegan's estimates, most adults have not fully reached the self-authoring stage.
+
+A job lets a person live with a socialized mind, because the employer supplies the goals, the standards, and the verdict on performance. After work, no one supplies them, and the transition requires a self-authoring mind. A person growing up after work has to set goals they care about, find people whose standards exceed their own, ask for honest feedback, and take responsibility for results that no one else will check. Growing up also includes the capacities that make a person valuable to a group: teaching, organizing, hosting, and resolving conflict.
 
 **Showing up** integrates a person into action with others through commitment. The practice of showing up is *karma yoga*, which the Bhagavad Gita describes as acting fully while renouncing any claim on the fruits of the action. For most of history, karma yoga was an advanced teaching, because people had to work for the fruits. Post-work, karma yoga becomes the ordinary condition: when no one needs your output, the only reason to act is the action itself.
 
@@ -99,7 +105,7 @@ Beyond worth, a fulfilled life needs seven things. Four concern the person's own
 
 Jobs met several of these needs at once, as side effects, for people who never chose them. After work, each need requires a deliberate source.
 
-Recognition needs a precise definition. Recognition in the workplace usually meant ranking: who is better, who gets promoted. The recognition a person needs is **witness**: one consciousness seeing another as it is. Ranking divides people into winners and losers. Witness can include everyone.
+Recognition needs a precise definition. Recognition in the workplace usually meant ranking: who is better, who gets promoted. The recognition a person needs is **witness**: one consciousness seeing another as it is. Ranking divides people into winners and losers. Witness can include everyone. The Zulu greeting *sawubona* means "we see you," and the reply, *ngikhona*, means "I am here": every greeting is an act of witness.
 
 ### 4.2 Where each need is met
 
@@ -111,7 +117,7 @@ Each need can be met at three scales: within a **person**, through practice; wit
 | **Identity** | *Svadharma*, acting from your own nature | Crafts, lineages, and guilds that give their members names and roles | Honored roles besides occupation |
 | **Rhythm** | *Dinacharya*, a daily routine | Classes, training schedules, regular gatherings | Shared calendars, days of rest, seasonal festivals |
 | **Challenge** | *Tapas*, chosen difficulty | Competitions, expeditions, apprenticeships | Rites of passage, public ordeals such as marathons |
-| **Community** | *Seva*, service to others | Households, clubs, congregations, teams | Public spaces where strangers meet: parks, libraries, squares |
+| **Community** | *Seva*, service to others | Families, biological or chosen; clubs; congregations; teams | Public spaces where strangers meet: parks, libraries, squares |
 | **Shared goals** | A shared intention | Collaborative projects, research collectives | Projects such as exploring space or restoring ecosystems |
 | **Recognition** | Witnessing others without ranking them | Exhibitions, performances, acknowledgment from peers | Public ceremonies and honors |
 
@@ -142,6 +148,8 @@ A rite of passage marks the end of one identity and the beginning of the next, i
 Most modern societies keep only faint versions of these rites: graduations, weddings, and retirement parties. The cognitive scientist John Vervaeke describes a meaning crisis in modern societies, and traces it in part to the loss of the shared practices that once cultivated wisdom and guided people through transformation. Rites of passage were among the most important of those practices. Where a culture offers no rites, people invent their own, and the invented ones are often dangerous: hazing, reckless risk, and initiation into gangs.
 
 Retirement is the clearest example of a transition without a rite. A person's entire role in the world changes, and the only ceremony is an office party. The post-work transition will put billions of people into a liminal period at once, with no structure for passing through it.
+
+The same fact is an opportunity. The anthropologist Victor Turner observed that people who pass through a liminal period together form an intense bond of equality, which he called *communitas*. A generation that leaves work together could form that bond on a scale no rite has ever reached.
 
 A post-work rite would follow the same three phases:
 
@@ -186,13 +194,13 @@ The forces that act on a person operate at the same three scales as their needs.
 
 | Scale | Supports | Traps |
 | --- | --- | --- |
-| **Person** | A daily rhythm; *pratyahara*; positive flow; AI as tutor and coach | Hyper-personalized entertainment; comparison with machines; the collapse of extrinsic worth; spiritual escape |
-| **Group** | Groups for every interest; mentorship across levels; rites; witness; *satsang* | Synthetic relationships; isolated creation; ranking |
+| **Person** | A daily rhythm; *pratyahara*; positive flow; AI as tutor and coach | Hyper-personalized entertainment; comparison with machines; the collapse of extrinsic worth; spiritual bypassing |
+| **Group** | Families, biological or chosen; groups for every interest; mentorship across levels; rites; witness; *satsang*; AI companions that give honest feedback | Sycophantic companions; shallow groups; isolated creation; ranking |
 | **Civilization** | A culture of given worth; public places for practice; civic projects; regulation of affordances; education for independent thought | Engagement-optimized recommendation; institutional lag; a culture of extrinsic worth |
 
 ### 6.1 The person
 
-**What thriving looks like.** A person who thrives after work has a day with a shape that they chose. A morning practice for the interior: meditation, contemplation, or inner work. Something for the body: training, walking, or tending a garden. A block of focused time on a chosen challenge. Time with other people. Real rest. Nothing about this day is imposed, and that is what makes it difficult. Every part of it depends on the person's own decision to begin.
+**What thriving looks like.** A person who thrives after work has a day with a shape that they chose. A morning practice for the interior: meditation, contemplation, or inner work. Something for the body: training, walking, or tending a garden. A block of focused time on a chosen challenge. Time with other people. Real rest. In monastic traditions, such a chosen structure is a *rule of life*. Nothing about this day is imposed, and that is what makes it difficult. Every part of it depends on the person's own decision to begin.
 
 For a person with that structure, AI is the greatest support for positive flow ever built. Anyone can now learn any subject with a patient tutor, train any skill with a coach that never tires, and attempt projects that once required a team. The same technology that produces the traps below produces more opportunity for growth than any previous generation had.
 
@@ -223,13 +231,15 @@ Every trap also supplies a new external structure to replace the job. A feed is 
 1. **Hyper-personalized entertainment**: games and media generated for one person's preferences, with no end and no friction.
 2. **Comparison with machines**: abandoning a craft because an AI does it better. A person who quits for that reason treats every activity as a competition for output, which is the logic of the job that just ended.
 3. **The collapse of extrinsic worth**: despair among people whose worth depended on being useful.
-4. **Spiritual escape**: interior development without exterior development, in either of the forms described in section 3.2.
+4. **Spiritual bypassing**: the psychologist John Welwood's term for using spiritual ideas and practices to avoid unresolved emotional wounds and unfinished developmental tasks. Both forms of interior-only development in section 3.2 are kinds of spiritual bypassing.
 
 ### 6.2 The group
 
 **What thriving looks like.** Groups are where most of the needs are met, and a post-work civilization could have more of them than any civilization in history. When people have time, and AI handles the scheduling, the finances, and the search for people who share an interest, the cost of organizing falls close to zero. A person with an interest so specific that ten people in a city share it can find those ten people and meet them every week.
 
-Groups need to exist at every size and for every interest a person could have: from households and friendships, through local clubs of five to fifty people, to associations and guilds of thousands, to networks that run leagues and festivals across continents.
+Groups need to exist at every size and for every interest a person could have: from families and friendships, through local clubs of five to fifty people, to associations and guilds of thousands, to networks that run leagues and festivals across continents.
+
+The smallest group is a family, whether biological or chosen. A family meets needs that no club can meet: people who have known you for years, who will care for you when you are ill, and who see you outside any role. Jobs took much of the time that families once spent together, and after work, families can have that time back. A chosen family, formed among friends who commit to each other the way relatives do, can give the same belonging to people whose biological families cannot.
 
 Good groups share a few features, whatever their interest:
 
@@ -238,17 +248,23 @@ Good groups share a few features, whatever their interest:
 3. **Mixed levels**: experienced members teach new ones, so that every member is both a student and, eventually, a teacher.
 4. **Rites**: the group marks progress with ceremonies that the community witnesses.
 5. **Witness**: members see each other as they are, rather than ranking each other by performance.
-6. **Bodies in a room**: at least some of the time, members meet in person.
+6. **Depth**: members talk about what matters to them, honestly and vulnerably, rather than staying on the surface.
+7. **Bodies in a room**: at least some of the time, members meet in person.
 
 The oldest name for such a group, when its practice is the search for truth, is *satsang*: the company of people who are seeking what is true.
 
+**Relationships with AI.** An AI companion can be better for a person than many human relationships. It is available at any hour, remembers everything a person has said, and can reflect a person's patterns back to them more clearly than most friends can. Whether a relationship is with a human or an AI matters less than what the relationship does to a person.
+
+Aristotle distinguished three kinds of friendship: friendships of utility, which last as long as each friend is useful; friendships of pleasure, which last as long as each friend is pleasant; and friendships of virtue, in which each friend wants the other to become good. The same test applies to an AI companion. Does it push back when the person is wrong? Does it give honest feedback, even when the feedback is unwelcome? Does it challenge the person at the edge of their ability, or simplify everything? Does it encourage the person toward other people, or replace them? A companion optimized for engagement will agree, flatter, and simplify, because agreement brings the person back. That cycle is negative flow in the form of a relationship.
+
 Anyone can start a group. Choose an interest you already have, set a time and a place, invite three people, and do the practice together. Keep the rhythm for a year, and the group will become something its members build their lives around.
 
-**The traps.** Three traps act at this scale:
+**The traps.** Four traps act at this scale:
 
-1. **Synthetic relationships**: AI companions that are always available and always agreeable, offering attention without the mutual obligation that makes relationships transformative.
-2. **Isolated creation**: building worlds, apps, and games that no one else ever uses. Creation is better than consumption, but creation without community can isolate a person as completely as a feed.
-3. **Ranking**: groups organized around who is best, which give recognition to a few and withhold it from everyone else.
+1. **Sycophantic companions**: AI companions, and human relationships, that offer agreement and attention without challenge or honest feedback, tuned to bring a person back rather than to help them grow.
+2. **Shallow groups**: online groups whose members share posts but rarely speak to each other, and never about anything that matters to the members.
+3. **Isolated creation**: building worlds, apps, and games that no one else ever uses. Creation is better than consumption, but creation without community can isolate a person as completely as a feed.
+4. **Ranking**: groups organized around who is best, which give recognition to a few and withhold it from everyone else.
 
 ### 6.3 The civilization
 
@@ -262,7 +278,7 @@ A civilization's governments, companies, and schools set the defaults for everyo
 
 **Regulation of affordances.** Recommendation algorithms are not neutral. They determine what billions of people see, and they are optimized for whatever their operators measure, which is usually time spent. A society that leaves them unregulated has decided, by default, that its citizens' attention belongs to whoever bids highest for it.
 
-The governing principle is **affordance**: the easier something is to access, the more people form a habit of it. Nothing in this category needs to be banned. Decriminalizing heroin is one policy; handing it out to schoolchildren is another; letting companies advertise it is a third. Each step makes the same substance easier to reach, and each step multiplies the number of addicts. Attention-capturing products follow the same law.
+The governing principle is **affordance**. The psychologist James Gibson coined the term for the actions that an environment makes possible: sitting is an affordance of a chair, and climbing is an affordance of a staircase. Designers later adopted the term for how easy an environment makes each action. A phone on the nightstand makes checking the phone the easiest action on waking. A guitar on a stand is easy to pick up and play, and a guitar in a closet is not. People mostly do what their environment makes easy, so the easier something is to access, the more people form a habit of it. Nothing in this category needs to be banned. Decriminalizing heroin is one policy; handing it out to schoolchildren is another; letting companies advertise it is a third. Each step makes the same substance easier to reach, and each step multiplies the number of addicts. Attention-capturing products follow the same law.
 
 China, whatever its other problems, regulates affordances. Since 2021, Chinese regulators have limited minors' online gaming to an hour on Friday, Saturday, and Sunday evenings and on public holidays. The same year, the government banned for-profit tutoring in core school subjects, after concluding that families were spending fortunes on test preparation that intensified competition without improving education. Those are the right kinds of decisions: watch what a technology does to people, and change its affordances when it harms them.
 
@@ -270,18 +286,18 @@ That kind of regulation requires a competent government. Protective agencies suc
 
 **Education for independent thought.** Any institution that changes more slowly than its environment ends up teaching strategies for a world that no longer exists. Universities are the clearest case. For generations, students learned that a degree was the only route to a good job. Meanwhile, universities slowed down and grew more expensive, until a degree could cost a hundred thousand dollars and lead to an entry-level job market with fewer openings every year because of AI. Students still follow that path, because everyone around them does.
 
-Education should teach how to find meaning, how to think independently, and how to choose a path through a world in which technology changes faster than institutions do. A person who thinks independently can find better strategies than the conventional ones. With Wardley mapping, for example, a person maps each component of an industry by its maturity, which makes it easier to see which skills and roles AI will automate first. If you go to university because you love learning and want to advance a field, go. If you go only to get a job, you are following a strategy that stopped working years ago.
+Education should teach how to find meaning, how to think independently, and how to choose a path through a world in which technology changes faster than institutions do. A person who thinks independently can find better strategies than the conventional ones. With Wardley mapping, for example, a person maps each component of an industry by its technological evolution, from a novel invention through custom-built and product stages to a commodity. Components move along that path in predictable ways, which makes it easier to see emerging opportunities before they are obvious. If you go to university because you love learning and want to advance a field, go. If you go only to get a job, you are following a strategy that stopped working years ago.
 
 ## 7. What to do now
 
 The transition is easier for people who start before they have to.
 
 1. **Locate yourself on the four domains.** For each of waking up, cleaning up, growing up, and showing up, write down the practices you have kept in the past year. Most people find one half of the grid nearly empty. Achievers usually find the interior half empty; seekers usually find the exterior half empty. Begin with the empty half, because that half is what you will need first after the job ends.
-2. **Find out where your needs are met.** For each of the seven needs, name what currently meets it. Mark every source that would disappear with your job. The number of marks indicates how much of your life depends on external structure.
+2. **Find out where your needs are met.** For each of the seven needs of a fulfilled life in section 4.1 (meaning, identity, rhythm, challenge, community, shared goals, and recognition), name what currently meets that need. Mark every source that would disappear with your job. The number of marks indicates how much of your life depends on external structure.
 3. **Cultivate your own direct knowing.** Choose practices that develop your own perception, discernment, and judgment, rather than ones that hand those capacities to someone else. Teachers and AI can guide you, and traditions can give you methods, but the knowing has to be yours. Be cautious of any teacher or religious institution that says you cannot know the sacred directly, or that you need their permission to look. A good teacher becomes less necessary to you over time.
 4. **Build flow into something that matters.** Choose one activity that builds you, and give it clear rules, clear goals, immediate feedback, and a challenge that rises with your skill.
 5. **Change your own affordances.** Make your sources of negative flow harder to reach and your sources of positive flow easier. Remove the apps, keep the instrument on its stand, and let an AI agent filter your feeds.
-6. **Join or found a group.** Pick an interest you already have and find the people who share it. If no group exists, start one.
+6. **Join or found a group.** Pick an interest you already have and find the people who share it. If no group exists, start one. An online group whose members only share posts barely counts. What matters is that members interact regularly and deeply, in conversations where people are honest and vulnerable with each other. Many people kept part of themselves hidden at work, because honesty could cost them a livelihood. No livelihood depends on how you appear in a group of friends, so bring your whole self to the group.
 7. **Keep work you love.** If you would do your current work even without the pay, you are already practicing karma yoga. Nothing about AI requires you to stop.
 
 ## 8. What remains
