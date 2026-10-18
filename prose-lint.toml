@@ -20,3 +20,10 @@ allow = ["field contribute"]  # a field of study contributes through its researc
 [rules.ambiguous-pronouns]
 severity = "warning"
 ratio = 0.95
+
+[rules.serial-comma]
+severity = "warning"
+allow = [
+  "Games, Life and Utopia",          # a book title
+  "the group, relationships and groups",  # an elliptical clause the parser reads as a list
+]
