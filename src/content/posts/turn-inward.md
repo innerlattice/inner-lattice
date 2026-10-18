@@ -93,15 +93,15 @@ The turn inward is a spiritual path, and spiritual awakening is one domain of th
 
 Beyond worth, a fulfilled life needs seven things. Four concern the person's own life, and three concern their contact with other people.
 
-| Need | What a person gains | Signs of lack |
+| Need | What it is | What its lack feels like |
 | --- | --- | --- |
-| **Meaning** | Direction: the alignment between one's actions and one's values | Drift; the question "What's the point?" |
-| **Identity** | Form: a sense of who one is that persists through change | Not knowing who you are without a title |
-| **Rhythm** | Continuity: regular, structured activity through time | Days become indistinguishable, sleep becomes irregular, the body declines |
-| **Challenge** | Growth: development through resistance | Boredom, restlessness, loss of skill |
-| **Community** | Contact: presence with other people | Isolation and loneliness |
-| **Shared goals** | Common direction among many people | A sense that nothing you do affects anyone |
-| **Recognition** | Witness: being seen by another consciousness | Feeling invisible |
+| **Meaning** | Actions aligned with one's values | Drift, and the question "What's the point?" |
+| **Identity** | A sense of who one is that persists through change | Not knowing who you are without a title |
+| **Rhythm** | Regular, structured activity through the day, the week, and the year | Days that blur together |
+| **Challenge** | Difficulty at the edge of one's ability | Boredom and restlessness |
+| **Community** | Regular presence with other people | Loneliness |
+| **Shared goals** | Goals pursued together with other people | Having no one to work alongside |
+| **Recognition** | Being seen by another consciousness as one is | Feeling invisible |
 
 Jobs met several of these needs at once, as side effects, for people who never chose them. After work, each need requires a deliberate source.
 
@@ -111,15 +111,15 @@ Recognition needs a precise definition. Recognition in the workplace usually mea
 
 Each need can be met at three scales: within a **person**, through practice; within a **group**, through shared forms; and across a **civilization**, through its culture and institutions. A life is most stable when every need has a source at all three.
 
-| Need | Person: practice | Group: form | Civilization: institution |
+| Need | Person: practice | Group: shared activity | Civilization: institution |
 | --- | --- | --- | --- |
 | **Meaning** | *Svadhyaya*, self-study and contemplation | Study circles, *satsang* | Living wisdom traditions |
-| **Identity** | *Svadharma*, acting from your own nature | Crafts, lineages, and guilds that give their members names and roles | Honored roles besides occupation |
-| **Rhythm** | *Dinacharya*, a daily routine | Classes, training schedules, regular gatherings | Shared calendars, days of rest, seasonal festivals |
-| **Challenge** | *Tapas*, chosen difficulty | Competitions, expeditions, apprenticeships | Rites of passage, public ordeals such as marathons |
-| **Community** | *Seva*, service to others | Families, biological or chosen; clubs; congregations; teams | Public spaces where strangers meet: parks, libraries, squares |
-| **Shared goals** | A shared intention | Collaborative projects, research collectives | Projects such as exploring space or restoring ecosystems |
-| **Recognition** | Witnessing others without ranking them | Exhibitions, performances, acknowledgment from peers | Public ceremonies and honors |
+| **Identity** | *Svadharma*, discerning and following your own path | Initiation into a craft, lineage, or guild that gives members names and roles | Honored roles besides occupation, such as elder or steward |
+| **Rhythm** | *Dinacharya*, a daily routine | Weekly meetings, classes, and training sessions | Shared calendars, days of rest, seasonal festivals |
+| **Challenge** | *Tapas*, chosen difficulty | Competitions, expeditions, apprenticeships | Rites of passage and public ordeals, such as marathons |
+| **Community** | *Seva*, service to others | Family meals, club meetings, congregational gatherings | Public spaces where strangers meet: parks, libraries, squares |
+| **Shared goals** | *Karma yoga*, action without claim on its fruits | Collaborative projects, such as a community garden | Civic projects, such as exploring space or restoring ecosystems |
+| **Recognition** | *Sakshi bhava*, witnessing yourself and others without judgment | Exhibitions, performances, ceremonies that mark progress | Public ceremonies and honors |
 
 The needs and the four domains are independent: a person can work on any need in any domain. Community, for example, requires waking up to the presence of other people, cleaning up old resentments toward them, growing up into the skills of hosting and organizing, and showing up for them when it costs something.
 
@@ -139,7 +139,7 @@ A good chosen challenge has five properties:
 
 Challenges come in every domain. Some are of the body: an ultramarathon, a climb, a long fast. Some are of craft: an instrument, a piece of furniture, a meal cooked for fifty people. Some are of the mind: a proof, a language, a field learned from first principles. Some are contemplative: a ten-day silent retreat, a month without screens. Some are social: founding a group, teaching a class, hosting a festival.
 
-AI makes most of these more accessible. It can act as a tutor for any subject, a coach for any skill, and a planning partner for any project. But AI can also complete the challenge for you, and then the challenge is pointless. Using an AI to finish a chosen challenge is like driving a car up the course of a mountain race. You arrive, and nothing in you has changed.
+Teachers, coaches, and tools can make a challenge more accessible. But anything that completes the challenge for you makes it pointless, like driving a car up the course of a mountain race. You arrive, and nothing in you has changed.
 
 ### 4.4 Rites of passage
 
@@ -190,21 +190,19 @@ The test for any activity is the trajectory, not the moment: after a year of doi
 
 ## 6. Thriving at three scales
 
-The forces that act on a person operate at the same three scales as their needs. At each scale, some forces support a person's development, and others hinder it through negative flow. The supports are as real as the traps, and they are growing too.
+The supports and traps of a post-work life exist at the same three scales as the needs. At the scale of the person, the supports and traps are habits and capacities; at the scale of the group, relationships and groups; at the scale of the civilization, cultures, policies, and institutions. The supports are as real as the traps, and they are growing too.
 
 | Scale | Supports | Traps |
 | --- | --- | --- |
-| **Person** | A daily rhythm; *pratyahara*; positive flow; AI as tutor and coach | Hyper-personalized entertainment; comparison with machines; the collapse of extrinsic worth; spiritual bypassing |
-| **Group** | Families, biological or chosen; groups for every interest; mentorship across levels; rites; witness; *satsang*; AI companions that give honest feedback | Sycophantic companions; shallow groups; isolated creation; ranking |
-| **Civilization** | A culture of given worth; public places for practice; civic projects; regulation of affordances; education for independent thought | Engagement-optimized recommendation; institutional lag; a culture of extrinsic worth |
+| **Person** | A daily rhythm; *pratyahara*; activities that produce positive flow | Endless hyper-personalized entertainment; comparison with machines; worth that depends on usefulness; isolated creation; spiritual bypassing |
+| **Group** | Families, biological or chosen; groups that meet regularly and deeply; *satsang*; mentorships; companions, human or AI, that give honest feedback | Sycophantic companions; shallow groups; groups organized around ranking |
+| **Civilization** | A culture of given worth; regulation of affordances; education for independent thought; public places for practice; civic projects | A culture of extrinsic worth; unregulated recommendation algorithms; institutions that lag behind technology |
 
 ### 6.1 The person
 
 **What thriving looks like.** A person who thrives after work has a day with a shape that they chose. A morning practice for the interior: meditation, contemplation, or inner work. Something for the body: training, walking, or tending a garden. A block of focused time on a chosen challenge. Time with other people. Real rest. In monastic traditions, such a chosen structure is a *rule of life*. Nothing about this day is imposed, and that is what makes it difficult. Every part of it depends on the person's own decision to begin.
 
-For a person with that structure, AI is the greatest support for positive flow ever built. Anyone can now learn any subject with a patient tutor, train any skill with a coach that never tires, and attempt projects that once required a team. The same technology that produces the traps below produces more opportunity for growth than any previous generation had.
-
-**Pratyahara.** The skill that determines whether AI helps or harms a person is *pratyahara*, the fifth of Patanjali's eight limbs of yoga. It is the withdrawal of the senses from their objects. In the Bhagavad Gita, a person who has mastered it is like a tortoise drawing its limbs into its shell.[[9]](#ref-9) In Patanjali's sequence, it is the transition from the outer practices, which concern conduct, posture, and breath, to the inner practices, which concern concentration and meditation.[[5]](#ref-5)
+**Pratyahara.** The capacity that most protects a person from the traps below is *pratyahara*, the fifth of Patanjali's eight limbs of yoga. It is the withdrawal of the senses from their objects. In the Bhagavad Gita, a person who has mastered it is like a tortoise drawing its limbs into its shell.[[9]](#ref-9) In Patanjali's sequence, it is the transition from the outer practices, which concern conduct, posture, and breath, to the inner practices, which concern concentration and meditation.[[5]](#ref-5)
 
 *Pratyahara* is not the rejection of sensation. It is the capacity to choose which sensations to follow. A person with that capacity enjoys a meal more than a person without it, because they are present for the meal rather than half-watching a screen.
 
@@ -226,16 +224,17 @@ AI can extend *pratyahara*. Personal AI agents will read a person's social media
 
 Within months of the latest coding agents, people were decompiling video games, combining pieces of several games into hybrids, adding multiplayer, and running the results in a web browser. Huge numbers of people have started building games, and many of them had wanted to design games all their lives. Much of that is good. But a video game is a self-contained world designed to supply the four properties of flow, and it rarely connects the player to the physical world or to a community beyond casual competition. When anyone can generate an unlimited supply of games tuned to their own preferences, the amount of reward available to a person has no ceiling. Wireheading no longer requires electrodes.
 
-Every trap is also a new external structure that can replace the job. A feed is a structure built by someone else, toward an objective that is not yours. People who lose the structure of a job often move straight into the structure of a feed, and mistake the second for freedom. Four traps act on a person directly:
+Every trap is also a new external structure that can replace the job. A feed is a structure built by someone else, toward an objective that is not yours. People who lose the structure of a job often move straight into the structure of a feed, and mistake the second for freedom. Five traps act on a person directly:
 
 1. **Hyper-personalized entertainment**: games and media generated for one person's preferences, with no end and no friction.
 2. **Comparison with machines**: abandoning a craft because an AI does it better. A person who quits for that reason treats every activity as a competition for output, which is the logic of the job that just ended.
-3. **The collapse of extrinsic worth**: despair among people whose worth depended on being useful.
-4. **Spiritual bypassing**: the psychologist John Welwood's term for using spiritual ideas to avoid what is difficult, including responsibility for one's own behavior.[[15]](#ref-15) "It's all love" may be true at the deepest level, but people live in a contingent world where actions have consequences, and a person who wants to be among other people has to treat those people well. Neglecting the body and its world, and withdrawing from other people, are both kinds of spiritual bypassing.
+3. **Worth that depends on usefulness**: a belief that turns into despair when the usefulness ends.
+4. **Isolated creation**: building worlds, apps, and games that no one else ever uses. Creation is better than consumption, but creation without community can isolate a person as completely as a feed.
+5. **Spiritual bypassing**: the psychologist John Welwood's term for using spiritual ideas to avoid what is difficult, including responsibility for one's own behavior.[[15]](#ref-15) "It's all love" may be true at the deepest level, but people live in a contingent world where actions have consequences, and a person who wants to be among other people has to treat those people well. Neglecting the body and its world, and withdrawing from other people, are both kinds of spiritual bypassing.
 
 ### 6.2 The group
 
-**What thriving looks like.** Groups are where most of the needs are met, and a post-work civilization could have more of them than any civilization in history. When people have time, and AI handles the scheduling, the finances, and the search for people who share an interest, the cost of organizing falls close to zero. A person with an interest so specific that ten people in a city share it can find those ten people and meet them every week.
+**What thriving looks like.** Groups are where most of the needs are met, and a post-work civilization could have more of them than any civilization in history. When people have time and can search online for everyone who shares an interest, the cost of organizing falls close to zero. A person with an interest so specific that ten people in a city share it can find those ten people and meet them every week.
 
 Groups need to exist at every size and for every interest a person could have: from families and friendships, through local clubs of five to fifty people, to associations and guilds of thousands, to networks that run leagues and festivals across continents.
 
@@ -259,12 +258,11 @@ Aristotle distinguished three kinds of friendship: friendships of utility, which
 
 Anyone can start a group. Choose an interest you already have, set a time and a place, invite three people, and do the practice together. Keep the rhythm for a year, and the group will become something its members build their lives around.
 
-**The traps.** Four traps act at this scale:
+**The traps.** Three traps act at this scale:
 
 1. **Sycophantic companions**: AI companions and people who offer agreement and attention without challenge or honest feedback, and who aim to keep a person returning rather than to help them grow.
 2. **Shallow groups**: online groups whose members share posts but rarely speak to each other, and never about anything that matters to the members.
-3. **Isolated creation**: building worlds, apps, and games that no one else ever uses. Creation is better than consumption, but creation without community can isolate a person as completely as a feed.
-4. **Ranking**: groups organized around who is best, which give recognition to a few and withhold it from everyone else.
+3. **Ranking**: groups organized around who is best, which give recognition to a few and withhold it from everyone else.
 
 ### 6.3 The civilization
 
@@ -294,15 +292,15 @@ The transition is easier for people who start before they have to.
 
 1. **Locate yourself on the four domains.** For each of waking up, cleaning up, growing up, and showing up, write down the practices you have kept in the past year. Most people find one half of the grid nearly empty. Achievers usually find the interior half empty; seekers usually find the exterior half empty. Begin with the empty half, because that half is what you will need first after the job ends.
 2. **Find out where your needs are met.** For each of the seven needs of a fulfilled life in section 4.1 (meaning, identity, rhythm, challenge, community, shared goals, and recognition), name what currently meets that need. Mark every source that would disappear with your job. The number of marks indicates how much of your life depends on external structure.
-3. **Cultivate your own direct knowing.** Choose practices that develop your own perception, discernment, and judgment, rather than ones in which you hand those capacities to someone else. Teachers and AI can guide you, and traditions are a source of methods, but the knowing has to be yours. Be cautious of any teacher or religious institution that says you cannot know the sacred directly, or that you need their permission to look. A good teacher becomes less necessary to you over time.
+3. **Cultivate your own direct knowing.** Choose practices that develop your own perception, discernment, and judgment, rather than ones in which you hand those capacities to someone else. Teachers can guide you, and traditions are a source of methods, but the knowing has to be yours. Be cautious of any teacher or religious institution that says you cannot know the sacred directly, or that you need their permission to look. A good teacher becomes less necessary to you over time.
 4. **Build flow into something that matters.** Choose one activity that builds you, and give it clear rules, clear goals, immediate feedback, and a challenge that rises with your skill.
 5. **Change your own affordances.** Make your sources of negative flow harder to reach and your sources of positive flow easier. Remove the apps, keep the instrument on its stand, and let an AI agent filter your feeds.
 6. **Join or found a group.** Pick an interest you already have and find the people who share it. If no group exists, start one. An online group whose members only share posts barely counts. What matters is that members interact regularly and deeply, in conversations where people are honest and vulnerable with each other. Many people kept part of themselves hidden at work, because honesty could cost them a livelihood. No livelihood depends on how you appear in a group of friends, so bring your whole self to the group.
-7. **Keep work you love.** If you would do your current work even without the pay, you are already practicing karma yoga. Nothing about AI requires you to stop.
+7. **Keep work you love.** If you would do your current work even without the pay, you are already practicing karma yoga. Keep doing that work.
 
 ## 8. What remains
 
-A small, disciplined minority will do extraordinary things with AI regardless of what the rest of society does. The measure of a civilization is what happens to everyone else: whether most people make the turn inward, or whether most people fall into negative flow and spend fifteen hours a day on a device, including during meals and conversations. That proportion depends on all three scales, and on how soon the people in a society recognize the problem. If you are building the groups and institutions that will help people through this transition, I want to hear from you.
+A small, disciplined minority will do extraordinary things regardless of what the rest of society does. The measure of a civilization is what happens to everyone else: whether most people make the turn inward, or whether most people fall into negative flow and spend fifteen hours a day on a device, including during meals and conversations. That proportion depends on all three scales, and on how soon the people in a society recognize the problem. If you are building the groups and institutions that will help people through this transition, I want to hear from you.
 
 For all of history, most people spent most of their days on what survival required. The question of what to do with a life, when nothing is required, belonged to monks, aristocrats, and the very old. It is about to belong to everyone.
 
