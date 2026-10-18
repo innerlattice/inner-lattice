@@ -250,7 +250,7 @@ The booking appends these records:
 | r4 | `payment.authorize` | approved | card network | absent |
 | r5 | admission to performance 311 | r4 admitted at position 91 | sequencer for performance 311 | 1 |
 
-Each record also carries its `id`, `snapshot`, `version` and `time`. The seat map, the hold's expiry, the open choice that sends the confirmation email, the fill-rate dashboard, and the recommender's evaluation are all function outputs over these five records. No step copies state into a second system.
+Each record also carries its `id`, `snapshot`, `version`, and `time`. The seat map, the hold's expiry, the open choice that sends the confirmation email, the fill-rate dashboard, and the recommender's evaluation are all function outputs over these five records. No step copies state into a second system.
 
 ## Runtime configuration for each class of choice
 
