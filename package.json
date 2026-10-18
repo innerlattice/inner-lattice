@@ -12,7 +12,7 @@
     "build": "astro build",
     "test": "npm run build && node --test test/metadata.test.mjs",
     "preview": "astro preview",
-    "check:commas": "node scripts/check-oxford-commas.mjs",
+    "check:commas": "uv run --project tools/prose-lint prose-lint --rule serial-comma src/content/posts/*.md",
     "lint:prose": "uv run --project tools/prose-lint prose-lint"
   },
   "dependencies": {
