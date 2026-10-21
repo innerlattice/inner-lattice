@@ -50,7 +50,7 @@ function formatDate(date: Date): string {
     <ul class="post-list">
       {taggedPosts.map((post) => (
         <li class="post-item">
-          <a href={`/${post.slug}`} class="post-title">{post.data.title}</a>
+          <a href={`/${post.id}`} class="post-title">{post.data.title}</a>
           <span class="post-meta">
             <time datetime={post.data.date.toISOString()}>
               {formatDate(post.data.date)}
