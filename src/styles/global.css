@@ -175,6 +175,28 @@ footer {
   font-size: 0.875rem;
 }
 
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.site-footer .support {
+  max-width: 34em;
+  text-wrap: pretty;
+}
+
+.site-footer a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.site-footer a:hover {
+  color: var(--color-link-hover);
+  text-decoration-line: none;
+}
+
 /* Post List */
 .post-list {
   list-style: none;
