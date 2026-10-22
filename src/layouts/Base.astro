@@ -17,7 +17,8 @@ const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
 const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const socialImage = new URL('/social/inner-lattice.jpg', pageUrl);
 const socialImageX = new URL('/social/inner-lattice-x.jpg', pageUrl);
-const socialImageAlt = 'A light, open glass lattice catching pearlescent pink, lavender and cyan light on an off-white background.';
+const supportUrl = 'https://ko-fi.com/innerlattice?utm_source=innerlattice&utm_medium=footer';
+const socialImageAlt ='A light, open glass lattice catching pearlescent pink, lavender and cyan light on an off-white background.';
 ---
 
 <!DOCTYPE html>
@@ -57,9 +58,12 @@ const socialImageAlt = 'A light, open glass lattice catching pearlescent pink, l
       </main>
       <footer class="site-footer">
         <p class="support">
-          got something out of these posts? you can
-          <a href="https://ko-fi.com/innerlattice?utm_source=innerlattice&utm_medium=footer">fund the next one on ko-fi</a>.
-          leave a question with your donation and i&rsquo;ll answer it!
+          {type === 'article' ? (
+            <>did you get value from this essay? please <a href={supportUrl}>help fund the next one</a>.</>
+          ) : (
+            <>if you enjoy these essays, please <a href={supportUrl}>help fund more</a>.</>
+          )}
+          a message with your donation might inspire a new essay too!
         </p>
         <p>&copy; {new Date().getFullYear()}</p>
       </footer>
