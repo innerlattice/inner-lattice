@@ -100,6 +100,7 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 40px;
+  --spacing-xxxl: 64px;
   --page-gutter: var(--spacing-lg);
 }
 
@@ -178,7 +179,7 @@ footer {
 .site-footer {
   display: flex;
   flex-direction: column;
-  gap: calc(4 * var(--spacing-md));
+  gap: var(--spacing-xxxl);
 }
 
 .site-footer .support {
