@@ -13,7 +13,7 @@
     "test": "npm run build && node --test test/metadata.test.mjs",
     "preview": "astro preview",
     "check:commas": "npm run lint:prose -- --rule serial-comma src/content/posts/*.md",
-    "lint:prose": "uvx --from git+https://github.com/ayahohner/prose-lint@v0.1.0 prose-lint"
+    "lint:prose": "uvx --from git+https://github.com/ayahohner/prose-lint@v0.2.0 prose-lint"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.2",
