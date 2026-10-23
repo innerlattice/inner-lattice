@@ -2,20 +2,19 @@
 include = ["src/content/posts/universal-*.md"]
 
 [lexicon]
-agent = ["AI agent", "agent", "model", "person", "player", "user", "staff", "operator", "developer", "author", "team", "customer", "bank", "merchant", "issuer", "reader"]
+agent = ["AI agent", "agent", "model", "person", "player", "user", "staff", "operator", "developer", "author", "team", "customer", "bank", "merchant", "issuer", "reader", "consciousness"]
 physical = ["server", "device", "phone", "host", "machine", "client", "computer", "disk", "network", "data center"]
-mechanism = ["sequencer", "evaluator", "dispatcher", "function", "runtime", "compiler", "program", "system", "protocol"]
+mechanism = ["sequencer", "evaluator", "dispatcher", "function", "runtime", "compiler", "program", "system", "protocol", "solver"]
 abstract = [
   "scope", "seal", "choice", "record", "theorem", "language", "query", "value", "state", "step", "release",
   "version", "relation", "table", "transaction", "output", "input", "test", "label", "declaration", "type",
-  "market",
 ]
 text = ["rule", "message", "request", "prompt"]
 mixed = ["resolver", "participant", "party", "place", "replica", "node", "process", "service"]
 
 [rules.literal-verbs]
 severity = "warning"
-allow = ["field contribute"]  # a field of study contributes through its researchers
+allow = ["field contribute", "solver decide"]  # a field contributes through its researchers; a solver decides a problem (computability)
 
 [rules.ambiguous-pronouns]
 severity = "warning"
