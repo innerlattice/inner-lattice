@@ -1,4 +1,4 @@
-# Configuration for prose-lint (https://github.com/ayahohner/prose-lint). Run with `npm run lint:prose`.
+# Configuration for cleancopy (https://github.com/ayahohner/cleancopy). Run with `npm run lint:prose`.
 include = ["src/content/posts/universal-*.md"]
 
 [lexicon]
