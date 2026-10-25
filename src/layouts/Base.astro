@@ -5,12 +5,14 @@ interface Props {
   title: string;
   description?: string;
   type?: 'website' | 'article';
+  publishedTime?: Date;
 }
 
 const {
   title,
   description = 'Explorations in consciousness and cosmology',
   type = 'website',
+  publishedTime,
 } = Astro.props;
 const siteTitle = 'inner lattice';
 const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
@@ -18,6 +20,22 @@ const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const socialImage = new URL('/social/inner-lattice.jpg', pageUrl);
 const socialImageX = new URL('/social/inner-lattice-x.jpg', pageUrl);
 const supportUrl = 'https://ko-fi.com/innerlattice?utm_source=innerlattice&utm_medium=footer';
+const structuredData = type === 'article' ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  url: pageUrl.href,
+  mainEntityOfPage: pageUrl.href,
+  image: socialImage.href,
+  datePublished: publishedTime?.toISOString(),
+  publisher: { '@type': 'Organization', name: siteTitle, url: new URL('/', pageUrl).href },
+} : {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteTitle,
+  url: new URL('/', pageUrl).href,
+};
 const socialImageAlt ='A light, open glass lattice catching pearlescent pink, lavender and cyan light on an off-white background.';
 ---
 
@@ -40,6 +58,7 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={socialImageAlt} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
@@ -49,6 +68,7 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
     <link rel="preload" href="/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{fullTitle}</title>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData).replaceAll("<", "\\u003c")} />
   </head>
   <body>
     <div class="container">

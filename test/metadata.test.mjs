@@ -119,6 +119,7 @@ test('every article declares its trailing-slash URL as canonical and appears in 
 
     assert.ok(html.includes(`<link rel="canonical" href="${url}">`), `${slug} should declare ${url} as canonical`);
     assert.equal(getMetaContent(html, 'property', 'og:url'), url);
+    assert.ok(getMetaContent(html, 'property', 'article:published_time'));
     assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug} should be in the sitemap`);
   }
 });
