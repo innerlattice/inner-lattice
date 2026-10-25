@@ -16,7 +16,8 @@ const {
 } = Astro.props;
 const siteTitle = 'inner lattice';
 const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
-const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+// Pages build to /slug/index.html but are canonical without the trailing slash.
+const pageUrl = new URL(Astro.url.pathname.replace(/(.)\/$/, '$1'), Astro.site ?? Astro.url);
 const socialImage = new URL('/social/inner-lattice.jpg', pageUrl);
 const socialImageX = new URL('/social/inner-lattice-x.jpg', pageUrl);
 const supportUrl = 'https://ko-fi.com/innerlattice?utm_source=innerlattice&utm_medium=footer';

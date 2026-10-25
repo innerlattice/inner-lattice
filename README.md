@@ -49,3 +49,5 @@ npm run preview  # Preview production build
 ## Deployment
 
 Configured for Coolify auto-deploy on git push to main.
+
+URLs have no trailing slash. Pages still build to `slug/index.html`, and each page names its slashless URL as canonical.

@@ -8,8 +8,7 @@ import remarkListBlockMath from './src/plugins/remarkListBlockMath.mjs';
 export default defineConfig({
   site: 'https://innerlattice.com',
   output: 'static',
-  // Posts build to /slug/index.html, so the slash form is the canonical URL.
-  trailingSlash: 'always',
+  trailingSlash: 'never',
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {

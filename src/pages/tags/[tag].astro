@@ -50,14 +50,14 @@ function formatDate(date: Date): string {
     <ul class="post-list">
       {taggedPosts.map((post) => (
         <li class="post-item">
-          <a href={`/${post.id}/`} class="post-title">{post.data.title}</a>
+          <a href={`/${post.id}`} class="post-title">{post.data.title}</a>
           <span class="post-meta">
             <time datetime={post.data.date.toISOString()}>
               {formatDate(post.data.date)}
             </time>
             <span class="tags">
               {post.data.tags.map((postTag) => (
-                <a class="tag" href={`/tags/${getTagSlug(postTag)}/`}>{postTag}</a>
+                <a class="tag" href={`/tags/${getTagSlug(postTag)}`}>{postTag}</a>
               ))}
             </span>
           </span>

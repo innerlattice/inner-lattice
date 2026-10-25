@@ -16,7 +16,7 @@ A product with accounts, live collaboration, and an AI assistant typically runs 
 
 Each system keeps its own copy of what happened, and glue code keeps the copies consistent. Many familiar bugs are disagreements between copies: a cache that differs from the database, an experiment analysis missing assignments that a feature flag made, or a workflow that resumes under code that changed while the workflow waited.
 
-[Toward a universal theory of interactive software](/universal-theory-of-interactive-software/) describes interactive software with four primitives (choices, resolvers, records, and functions) and nine principles. This post derives a runtime from that theory. Each component implements one part of the theory, the principles set what each component must guarantee, and the systems listed above turn out to be partial implementations or configurations of four components.
+[Toward a universal theory of interactive software](/universal-theory-of-interactive-software) describes interactive software with four primitives (choices, resolvers, records, and functions) and nine principles. This post derives a runtime from that theory. Each component implements one part of the theory, the principles set what each component must guarantee, and the systems listed above turn out to be partial implementations or configurations of four components.
 
 ## Terms and principles from the theory
 
@@ -43,7 +43,7 @@ Each system keeps its own copy of what happened, and glue code keeps the copies 
 | release | a record that changes the program version |
 | commitment | a record whose value is a law over its resolver's later records |
 
-The nine principles, as stated in [the theory](/universal-theory-of-interactive-software/#nine-principles):
+The nine principles, as stated in [the theory](/universal-theory-of-interactive-software#nine-principles):
 
 | Principle | What it requires |
 | --- | --- |
@@ -140,7 +140,7 @@ SQL fits the read side of this model: a query is a function over relations, and 
 
 ### Final and provisional outputs
 
-Each element of an output is *final* when no record that can still be admitted would retract it, and *provisional* otherwise. Every edge of the function graph has a polarity, as [the theory](/universal-theory-of-interactive-software/#polarity-and-strata) defines it, and polarity can be computed from a function's definition ([the language post](/universal-languages-for-interactive-software/) shows how). The evaluator labels an element from the polarities of the edges the element was computed through.
+Each element of an output is *final* when no record that can still be admitted would retract it, and *provisional* otherwise. Every edge of the function graph has a polarity, as [the theory](/universal-theory-of-interactive-software#polarity-and-strata) defines it, and polarity can be computed from a function's definition ([the language post](/universal-languages-for-interactive-software) shows how). The evaluator labels an element from the polarities of the edges the element was computed through.
 
 1. **Positive edges.** Selection, projection, join, union, and recursion without negation can only gain elements as records are admitted. An element computed from admitted records only through positive edges is final.
 2. **Negative and unknown edges.** Negation, aggregation over a scope, "the latest value", and code whose polarity is unknown can lose elements when a record arrives. For each such edge the evaluator tracks the scopes read through it, and an element becomes final once the evaluator holds seals covering every position the element depends on through those edges, from each part's sequencer when the scope is split, and the records at those positions. Positions are consecutive, so a gap shows a missing record.
@@ -167,7 +167,7 @@ For each choice the dispatcher also:
 - **checks rules on bindings** when a binding is deployed. A rule such as "AI agents do not resolve refunds over 200" is a function over the binding table, and a table that violates it is refused before it takes effect.
 - **runs the timeout.** The dispatcher keeps a timer for each open choice. If the timeout passes with no value recorded, the dispatcher appends a record whose value is the choice's default and whose `resolver` field names the timeout. The resolver's value and the default cannot both count, so the dispatcher that runs the choice's timer is its sequencer and records whichever reaches it first. An escalation is a choice whose default opens another choice bound to a different resolver.
 - **presents each choice under its identifier.** A retry after a dropped connection presents the same choice again, and an external system that has committed to idempotency keys returns its first result instead of acting twice. A choice with effects opens only from final outputs, and when its reply can be lost, its default is "unknown", which opens a reconciliation choice, bound to the same resolver, whose value is the outcome under the first choice's identifier. A late reply supplies the reconciliation's value, and a reconciliation that ends in "unknown" escalates to a person.
-- **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software/) covers how a choice declares what any presentation must convey.
+- **selects the channel.** The same choice can go to a screen, a voice interface, a notification, or an AI agent as a typed schema. [Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) covers how a choice declares what any presentation must convey.
 
 ### Other programs
 
@@ -286,7 +286,7 @@ The rest depends on what the program's owners need and is chosen per scope:
 - how long records and changed rows are retained before compaction;
 - whether devices receive records or outputs.
 
-One rule connects the two lists: a chosen setting may add coordination but never remove it. A program can sequence a scope whose records would merge without order, wait for a seal that a monotone output does not need, or require a quorum where one server would do, and each costs latency. A program cannot leave a scope with order-coupled choices unsequenced or label an output final before the seals its negative edges need, because those settings break the sealing principle. A compiler can check the rule from the program's source, as [the language post](/universal-languages-for-interactive-software/) shows.
+One rule connects the two lists: a chosen setting may add coordination but never remove it. A program can sequence a scope whose records would merge without order, wait for a seal that a monotone output does not need, or require a quorum where one server would do, and each costs latency. A program cannot leave a scope with order-coupled choices unsequenced or label an output final before the seals its negative edges need, because those settings break the sealing principle. A compiler can check the rule from the program's source, as [the language post](/universal-languages-for-interactive-software) shows.
 
 Together the chosen settings cover response deadlines from one frame to several days in one program: a scope sealed every frame and kept only in memory can sit beside a scope sequenced by a quorum and sealed again days later by another organization.
 
@@ -344,4 +344,4 @@ These are the parts the theory adds, and they are where much of today's glue cod
 3. **Probabilities for AI model resolvers.** A sampled model exposes the probability of each token, but a value such as a refund amount is reached through many possible reasoning texts, and the value's probability is a sum over all of those texts. A runtime can estimate that probability by sampling the model several times, record the probability only for constrained outputs, or treat the model as opaque. Which option keeps off-policy evaluation valid is unsettled.
 4. **Presenting provisional values.** People need to see what is pending, what was corrected, and why, without the interface becoming a ledger. Card statements and collaborative editors present this differently, and no shared vocabulary exists.
 
-[Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software/) describes the source code a programmer writes for this runtime. Each part of a program is written in the least powerful language that can express it, so the runtime's configuration, including scopes, sequencers, and the record schema, can be computed from the program.
+[Toward a universal set of languages for interactive software](/universal-languages-for-interactive-software) describes the source code a programmer writes for this runtime. Each part of a program is written in the least powerful language that can express it, so the runtime's configuration, including scopes, sequencers, and the record schema, can be computed from the program.

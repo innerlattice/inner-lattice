@@ -56,7 +56,7 @@ test('an article front matter description wins over its first paragraph', async 
   assert.equal(getMetaContent(html, 'property', 'og:type'), 'article');
   assert.equal(
     getMetaContent(html, 'property', 'og:url'),
-    new URL('/consideration-space/', siteUrl).href
+    new URL('/consideration-space', siteUrl).href
   );
 });
 
@@ -105,7 +105,7 @@ test('home, tag and article pages expose crawlable social images and large cards
   }
 });
 
-test('every article declares its trailing-slash URL as canonical and appears in the sitemap', async () => {
+test('every article declares its slashless URL as canonical and appears in the sitemap', async () => {
   const posts = await readdir(new URL('../src/content/posts/', import.meta.url));
   const sitemap = await readFile(new URL('../dist/sitemap-0.xml', import.meta.url), 'utf8');
   const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8');
@@ -115,7 +115,7 @@ test('every article declares its trailing-slash URL as canonical and appears in 
   for (const post of posts.filter((file) => file.endsWith('.md'))) {
     const slug = post.replace(/\.md$/, '');
     const html = await readPage(slug);
-    const url = new URL(`/${slug}/`, siteUrl).href;
+    const url = new URL(`/${slug}`, siteUrl).href;
 
     assert.ok(html.includes(`<link rel="canonical" href="${url}">`), `${slug} should declare ${url} as canonical`);
     assert.equal(getMetaContent(html, 'property', 'og:url'), url);
@@ -124,13 +124,13 @@ test('every article declares its trailing-slash URL as canonical and appears in 
   }
 });
 
-test('internal links point at canonical trailing-slash URLs', async () => {
+test('internal links point at canonical slashless URLs', async () => {
   for (const path of ['', 'tags/ontology', 'universal-runtime-for-interactive-software']) {
     const html = await readPage(path);
     const links = [...html.matchAll(/<a\b[^>]*\bhref="(\/[^"#]*)/g)].map((match) => match[1]);
 
     for (const link of links) {
-      assert.ok(link.endsWith('/'), `${path || 'home'} links to ${link} without a trailing slash`);
+      assert.ok(link === '/' || !link.endsWith('/'), `${path || 'home'} links to ${link} with a trailing slash`);
     }
   }
 });
