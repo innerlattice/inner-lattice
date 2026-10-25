@@ -7,7 +7,9 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().trim().min(1).optional(),
-    date: z.date().optional().default(() => new Date()),
+    // Full timestamps are enforced by src/lib/postDates.mjs.
+    date: z.date(),
+    updated: z.date().optional(),
     tags: z.array(z.string()).optional().default(['note']),
   }),
 });

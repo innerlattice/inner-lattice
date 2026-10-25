@@ -1,6 +1,6 @@
 ---
 title: "The Art of Carving Reality: Principles of Applied Ontological Engineering"
-date: 2026-01-27
+date: 2026-01-27T12:00:00-05:00
 tags: ["ontology", "systems-thinking", "philosophy", "organizations", "agents"]
 ---
 

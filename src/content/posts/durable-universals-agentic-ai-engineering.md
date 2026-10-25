@@ -1,6 +1,6 @@
 ---
 title: "Old Foundations, New Agents: The Durable Universals of Agentic AI Engineering"
-date: 2026-07-20
+date: 2026-07-20T01:33:32-04:00
 tags: ["agents", "software-engineering", "systems-thinking", "architecture", "security"]
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Welcome to the Inner Lattice"
-date: 2026-01-16
+date: 2026-01-16T20:10:28-05:00
 tags: ["meta", "consciousness", "philosophy"]
 ---
 

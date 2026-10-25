@@ -1,8 +1,12 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 import astroConfig from '../astro.config.mjs';
 import { getArticleDescription } from '../src/lib/descriptions.mjs';
+import { readPostDates } from '../src/lib/postDates.mjs';
 
 const siteUrl = new URL(astroConfig.site);
 const siteDescription = 'Explorations in consciousness and cosmology';
@@ -105,7 +109,7 @@ test('home, tag and article pages expose crawlable social images and large cards
   }
 });
 
-test('every article declares its slashless URL as canonical and appears in the sitemap', async () => {
+test('every article declares its slashless URL as canonical and appears in the sitemap with its date', async () => {
   const posts = await readdir(new URL('../src/content/posts/', import.meta.url));
   const sitemap = await readFile(new URL('../dist/sitemap-0.xml', import.meta.url), 'utf8');
   const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8');
@@ -120,7 +124,7 @@ test('every article declares its slashless URL as canonical and appears in the s
     assert.ok(html.includes(`<link rel="canonical" href="${url}">`), `${slug} should declare ${url} as canonical`);
     assert.equal(getMetaContent(html, 'property', 'og:url'), url);
     assert.ok(getMetaContent(html, 'property', 'article:published_time'));
-    assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug} should be in the sitemap`);
+    assert.match(sitemap, new RegExp(`<loc>${url}</loc><lastmod>[^<]+</lastmod>`), `${slug} should be in the sitemap with a lastmod`);
   }
 });
 
@@ -133,4 +137,36 @@ test('internal links point at canonical slashless URLs', async () => {
       assert.ok(link === '/' || !link.endsWith('/'), `${path || 'home'} links to ${link} with a trailing slash`);
     }
   }
+});
+
+async function postsDirWith(frontmatter) {
+  const dir = await mkdtemp(join(tmpdir(), 'posts-'));
+  await writeFile(join(dir, 'post.md'), `---\ntitle: "Post"\n${frontmatter}\n---\n\nBody.\n`);
+  return pathToFileURL(`${dir}/`);
+}
+
+test('post dates must be full timestamps, and updated cannot precede date', async () => {
+  await assert.rejects(async () => readPostDates(await postsDirWith('')), /`date` is required/);
+  await assert.rejects(async () => readPostDates(await postsDirWith('date: 2026-01-16')), /full timestamp/);
+  await assert.rejects(
+    async () => readPostDates(await postsDirWith('date: 2026-01-16T12:00:00-05:00\nupdated: 2026-01-15T12:00:00-05:00')),
+    /earlier than/
+  );
+
+  const dates = readPostDates(await postsDirWith('date: 2026-01-16T12:00:00-05:00\nupdated: "2026-02-01T09:00:00-05:00"'));
+  assert.equal(dates.get('post').published.toISOString(), '2026-01-16T17:00:00.000Z');
+  assert.equal(dates.get('post').updated.toISOString(), '2026-02-01T14:00:00.000Z');
+});
+
+test('the updated time feeds page metadata but is never displayed', async (t) => {
+  const dates = readPostDates(new URL('../src/content/posts/', import.meta.url));
+  const revised = [...dates].find(([, value]) => value.updated);
+  if (!revised) return t.skip('no post sets `updated` yet');
+
+  const [slug, { updated }] = revised;
+
+  const html = await readPage(slug);
+  assert.equal(getMetaContent(html, 'property', 'article:modified_time'), updated.toISOString());
+  assert.ok(html.includes(`"dateModified":"${updated.toISOString()}"`));
+  assert.equal(html.match(/<time\b/g).length, 1, 'Only the publish date is shown');
 });

@@ -1,6 +1,6 @@
 ---
 title: "Organizational Planes: The Structure of the Autonomous Organization"
-date: 2026-06-17
+date: 2026-06-17T06:21:07-04:00
 tags: ["organizations", "systems-thinking", "ontology", "knowledge-base"]
 ---
 

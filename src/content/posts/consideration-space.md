@@ -1,7 +1,7 @@
 ---
 title: "Consideration Space and the Experience of Feeling Stuck"
 description: "How the possibilities you can take seriously shape feeling stuck—and how experience, relationships, and reflection can expand that consideration space."
-date: 2026-07-29
+date: 2026-07-29T12:00:00-04:00
 tags: ["personal-growth", "agency", "systems-thinking", "sensemaking"]
 ---
 

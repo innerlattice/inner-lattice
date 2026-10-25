@@ -1,6 +1,6 @@
 ---
 title: "COBO: The Four Planes of Organization"
-date: 2026-06-17
+date: 2026-06-17T06:21:07-04:00
 tags: ["organizations", "ontology", "systems-thinking", "agents", "knowledge-base"]
 ---
 

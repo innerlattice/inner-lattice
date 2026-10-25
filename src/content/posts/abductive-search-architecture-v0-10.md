@@ -1,6 +1,6 @@
 ---
 title: "Abductive Search Architecture v0.10"
-date: 2026-07-29
+date: 2026-07-29T15:15:19-04:00
 tags: ["abduction", "reasoning", "architecture", "systems-thinking", "agents"]
 ---
 

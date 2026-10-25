@@ -12,10 +12,11 @@ Personal site for publishing markdown content about consciousness and cosmology.
 
 ```yaml
 ---
-title: "Your Post Title"       # required
-description: "Embed summary"   # optional; defaults to the first body paragraph
-date: 2026-01-16               # optional, defaults to current date
-tags: ["consciousness"]        # optional, defaults to ["note"]
+title: "Your Post Title"                # required
+description: "Embed summary"            # optional; defaults to the first body paragraph
+date: 2026-01-16T20:10:00-05:00         # required; full timestamp with offset, shown as a date only
+updated: 2026-02-01T09:00:00-05:00      # optional; set after a real revision, never shown
+tags: ["consciousness"]                 # optional, defaults to ["note"]
 ---
 ```
 
@@ -24,6 +25,7 @@ tags: ["consciousness"]        # optional, defaults to ["note"]
 ```markdown
 ---
 title: "On the Nature of Awareness"
+date: 2026-01-18T14:30:00-05:00
 tags: ["consciousness", "phenomenology"]
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "FinOps and Productivity Metrics in the AI Agent Coding Era: The \"Unregretted Work\" Framework"
-date: 2026-06-17
+date: 2026-06-17T06:21:07-04:00
 tags: ["agents", "finops", "operations", "systems-thinking", "ontology", "metrics"]
 ---
 

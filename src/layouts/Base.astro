@@ -6,6 +6,7 @@ interface Props {
   description?: string;
   type?: 'website' | 'article';
   publishedTime?: Date;
+  modifiedTime?: Date;
 }
 
 const {
@@ -13,6 +14,7 @@ const {
   description = 'Explorations in consciousness and cosmology',
   type = 'website',
   publishedTime,
+  modifiedTime,
 } = Astro.props;
 const siteTitle = 'inner lattice';
 const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
@@ -30,6 +32,7 @@ const structuredData = type === 'article' ? {
   mainEntityOfPage: pageUrl.href,
   image: socialImage.href,
   datePublished: publishedTime?.toISOString(),
+  dateModified: (modifiedTime ?? publishedTime)?.toISOString(),
   publisher: { '@type': 'Organization', name: siteTitle, url: new URL('/', pageUrl).href },
 } : {
   '@context': 'https://schema.org',
@@ -60,6 +63,7 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={socialImageAlt} />
     {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />

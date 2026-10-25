@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { formatDate } from '../lib/dates';
 import { getTagSlug } from '../lib/tags';
 
 const posts = await getCollection('posts');
@@ -9,14 +10,6 @@ const sortedPosts = posts.sort((a, b) => {
   const dateB = b.data.date instanceof Date ? b.data.date : new Date(b.data.date);
   return dateB.getTime() - dateA.getTime();
 });
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 ---
 
 <Base title="inner lattice">

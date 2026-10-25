@@ -1,6 +1,6 @@
 ---
 title: "On Consciousness as Primary"
-date: 2026-01-17
+date: 2026-01-17T12:00:00-05:00
 tags: ["consciousness", "philosophy", "agents"]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "The Turn Inward"
 description: "When AI makes work optional, motivation and worth have to come from within, and the search for them is a spiritual path."
-date: 2026-10-17
+date: 2026-10-17T01:51:40-04:00
 tags: ["AI", "meaning", "consciousness", "yoga", "spirituality", "future"]
 ---
 
