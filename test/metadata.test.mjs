@@ -104,3 +104,32 @@ test('home, tag and article pages expose crawlable social images and large cards
     }
   }
 });
+
+test('every article declares its trailing-slash URL as canonical and appears in the sitemap', async () => {
+  const posts = await readdir(new URL('../src/content/posts/', import.meta.url));
+  const sitemap = await readFile(new URL('../dist/sitemap-0.xml', import.meta.url), 'utf8');
+  const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8');
+
+  assert.match(robots, new RegExp(`Sitemap: ${new URL('/sitemap-index.xml', siteUrl).href}`));
+
+  for (const post of posts.filter((file) => file.endsWith('.md'))) {
+    const slug = post.replace(/\.md$/, '');
+    const html = await readPage(slug);
+    const url = new URL(`/${slug}/`, siteUrl).href;
+
+    assert.ok(html.includes(`<link rel="canonical" href="${url}">`), `${slug} should declare ${url} as canonical`);
+    assert.equal(getMetaContent(html, 'property', 'og:url'), url);
+    assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${slug} should be in the sitemap`);
+  }
+});
+
+test('internal links point at canonical trailing-slash URLs', async () => {
+  for (const path of ['', 'tags/ontology', 'universal-runtime-for-interactive-software']) {
+    const html = await readPage(path);
+    const links = [...html.matchAll(/<a\b[^>]*\bhref="(\/[^"#]*)/g)].map((match) => match[1]);
+
+    for (const link of links) {
+      assert.ok(link.endsWith('/'), `${path || 'home'} links to ${link} without a trailing slash`);
+    }
+  }
+});

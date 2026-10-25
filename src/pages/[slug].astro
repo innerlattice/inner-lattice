@@ -35,7 +35,7 @@ function formatDate(date: Date): string {
         </time>
         <span class="tags">
           {post.data.tags.map((tag) => (
-            <a class="tag" href={`/tags/${getTagSlug(tag)}`}>{tag}</a>
+            <a class="tag" href={`/tags/${getTagSlug(tag)}/`}>{tag}</a>
           ))}
         </span>
       </div>
