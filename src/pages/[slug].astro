@@ -27,10 +27,10 @@ const description = getArticleDescription(post.data.description, post.body);
       <div class="post-meta">
         <time datetime={post.data.date.toISOString()}>
           {formatDate(post.data.date, 'long')}
-        </time>
+        </time>{" "}
         <span class="tags">
           {post.data.tags.map((tag) => (
-            <a class="tag" href={`/tags/${getTagSlug(tag)}`}>{tag}</a>
+            <><a class="tag" href={`/tags/${getTagSlug(tag)}`}>{tag}</a>{" "}</>
           ))}
         </span>
       </div>
