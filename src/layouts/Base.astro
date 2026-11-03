@@ -11,13 +11,14 @@ interface Props {
 
 const {
   title,
-  description = 'Explorations in consciousness and cosmology',
+  description = 'Long-form, first-principles essays on consciousness, AI agents, ontology, and the structure of organizations and software.',
   type = 'website',
   publishedTime,
   modifiedTime,
 } = Astro.props;
 const siteTitle = 'inner lattice';
-const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+const siteTagline = 'essays on consciousness, AI, and systems';
+const fullTitle = title === siteTitle ? `${siteTitle} | ${siteTagline}` : `${title} | ${siteTitle}`;
 // Pages build to /slug/index.html but are canonical without the trailing slash.
 const pageUrl = new URL(Astro.url.pathname.replace(/(.)\/$/, '$1'), Astro.site ?? Astro.url);
 const socialImage = new URL('/social/inner-lattice.jpg', pageUrl);

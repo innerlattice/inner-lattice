@@ -9,7 +9,8 @@ import { getArticleDescription } from '../src/lib/descriptions.mjs';
 import { readPostDates } from '../src/lib/postDates.mjs';
 
 const siteUrl = new URL(astroConfig.site);
-const siteDescription = 'Explorations in consciousness and cosmology';
+const siteDescription =
+  'Long-form, first-principles essays on consciousness, AI agents, ontology, and the structure of organizations and software.';
 const explicitDescription =
   'How the possibilities you can take seriously shape feeling stuck—and how experience, relationships, and reflection can expand that consideration space.';
 const fallbackDescription =
@@ -50,6 +51,7 @@ test('non-article pages retain the site description and website Open Graph type'
   assert.equal(getMetaContent(html, 'name', 'description'), siteDescription);
   assert.equal(getMetaContent(html, 'property', 'og:description'), siteDescription);
   assert.equal(getMetaContent(html, 'property', 'og:type'), 'website');
+  assert.match(html, /<title>inner lattice \| essays on consciousness, AI, and systems<\/title>/);
 });
 
 test('an article front matter description wins over its first paragraph', async () => {
@@ -169,4 +171,21 @@ test('the updated time feeds page metadata but is never displayed', async (t) =>
   assert.equal(getMetaContent(html, 'property', 'article:modified_time'), updated.toISOString());
   assert.ok(html.includes(`"dateModified":"${updated.toISOString()}"`));
   assert.equal(html.match(/<time\b/g).length, 1, 'Only the publish date is shown');
+});
+
+test('tag pages describe their own essays', async () => {
+  const html = await readPage('tags/future');
+  const description = getMetaContent(html, 'name', 'description');
+
+  assert.match(description, /^\d+ essays? tagged “future” on inner lattice: /);
+  assert.equal(getMetaContent(html, 'property', 'og:description'), description);
+});
+
+test('listing text keeps words apart when markup is stripped', async () => {
+  for (const path of ['', 'tags/ontology', 'turn-inward']) {
+    const html = await readPage(path);
+    assert.doesNotMatch(html, /<\/a><a class="tag"/, `${path || 'home'} runs tag links together`);
+    assert.doesNotMatch(html, /<\/time><span class="tags">/, `${path || 'home'} runs the date into the tags`);
+    assert.doesNotMatch(html, /class="post-title">[^<]*<\/a><span/, `${path || 'home'} runs the title into the date`);
+  }
 });
