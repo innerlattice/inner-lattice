@@ -33,7 +33,7 @@ const showContents = wordCount >= 2000 && headings.filter((heading) => heading.d
     <header class="post-header">
       {seriesContext && (
         <p class="post-series">
-          <a href={`/series/${seriesContext.series.id}`}>{seriesContext.series.title}</a>
+          <a href={`/series/${seriesContext.series.id}`}>{seriesContext.series.title}</a>{" "}
           <span aria-hidden="true">·</span> part {seriesContext.part.number}
         </p>
       )}
