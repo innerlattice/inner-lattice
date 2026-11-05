@@ -20,6 +20,18 @@ tags: ["consciousness"]                 # optional, defaults to ["note"]
 ---
 ```
 
+### Series
+
+A series lives in `src/content/series/<slug>.yaml` and lists its parts in reading order. A part is either `post: <slug>` or `planned: <working title>`. Planned parts appear as forthcoming on each post in the series and on `/series/<slug>`. To publish one, write the post and replace its `planned:` line with `post: <slug>` in the same position; the earlier parts gain a "next" link on the next build.
+
+```yaml
+title: universal interactive software
+description: One or two sentences for the series page.
+parts:
+  - post: universal-theory-of-interactive-software
+  - planned: Interface theory
+```
+
 ### Example Post
 
 ```markdown
@@ -54,4 +66,4 @@ Configured for Coolify auto-deploy on git push to main.
 
 URLs have no trailing slash. Pages still build to `slug/index.html`, and each page names its slashless URL as canonical.
 
-The RSS feed is at `/rss.xml`. Every page links to it from `<head>` for feed readers and from the footer for people. Items carry each post's description, so they follow the same fallback as the meta description.
+The RSS feed is at `/rss.xml`. Every page links to it from `<head>` for feed readers and from the footer for people. Each item carries the post's description and its full text. Feed readers cannot show Mermaid or inline SVG diagrams, so the feed replaces each one with a link to its section of the essay, and math keeps only its MathML (see `src/lib/feedContent.mjs`).

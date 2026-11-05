@@ -208,3 +208,46 @@ test('every page advertises the RSS feed, which lists every essay at its canonic
     assert.ok(feed.includes(`<link>${url}</link>`), `${url} should be in the feed`);
   }
 });
+
+test('feed items carry the full essay, with diagrams and section icons turned into plain links', async () => {
+  const feed = await readFile(new URL('../dist/rss.xml', import.meta.url), 'utf8');
+  const items = feed.match(/<item>[\s\S]*?<\/item>/g);
+
+  for (const item of items) assert.match(item, /<content:encoded>/);
+  assert.doesNotMatch(feed, /&lt;svg|<svg/, 'readers drop inline SVG, so the feed links to it instead');
+  assert.doesNotMatch(feed, /Copy link to/);
+  assert.doesNotMatch(feed, /(&lt;|<)[a-z][^>]*\b(class|style)=/);
+  assert.match(feed, /View it in the essay\./);
+});
+
+test('long essays get a table of contents and every section heading links to itself', async () => {
+  const long = await readPage('universal-theory-of-interactive-software');
+  const short = await readPage('welcome');
+
+  assert.match(long, /<nav class="toc"/);
+  assert.doesNotMatch(short, /<nav class="toc"/);
+
+  for (const [, id] of long.matchAll(/<h[23] id="([^"]+)"/g)) {
+    assert.ok(long.includes(`<a class="heading-link" href="#${id}"`), `heading ${id} should link to itself`);
+    assert.ok(
+      [2, 3].some((depth) => long.includes(`<li class="toc-item toc-depth-${depth}"><a href="#${id}">`)),
+      `heading ${id} should be in the table of contents`
+    );
+  }
+});
+
+test('a series post names its part and links its neighbours; planned parts show as forthcoming', async () => {
+  const html = await readPage('universal-languages-for-interactive-software');
+  const series = await readPage('series/universal-interactive-software');
+
+  assert.match(html, /<p class="post-series">/);
+  assert.match(html, /aria-current="page"[^>]*>Toward a universal set of languages/);
+  assert.match(html, /class="series-next" href="\/universal-runtime-for-interactive-software"/);
+  assert.match(series, /forthcoming/);
+});
+
+test('the not-found page uses the site layout', async () => {
+  const html = await readFile(new URL('../dist/404.html', import.meta.url), 'utf8');
+  assert.match(html, /<title>not found \| inner lattice<\/title>/);
+  assert.match(html, /href="\/"/);
+});
