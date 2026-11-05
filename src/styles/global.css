@@ -934,6 +934,21 @@ time {
   color: var(--color-link-hover);
 }
 
+/* Not found */
+.not-found h1 {
+  margin-bottom: var(--spacing-md);
+  font-size: var(--title-size);
+  font-weight: var(--heading-weight);
+  line-height: round(up, 1.25em, var(--grid));
+  letter-spacing: -0.015em;
+}
+
+.not-found p:not(.tag-label) {
+  max-width: 32em;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-muted);
+}
+
 /* Series. A label above the title, and the full list of parts after the essay. */
 .post-series {
   margin-bottom: var(--spacing-xs);
