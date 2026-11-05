@@ -934,6 +934,207 @@ time {
   color: var(--color-link-hover);
 }
 
+/* Section links. The icon follows the heading's last word. */
+html {
+  scroll-padding-top: var(--spacing-xl);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.post-content .heading-tail {
+  white-space: nowrap;
+}
+
+.post-content .heading-link {
+  display: inline-block;
+  margin-left: 0.3em;
+  color: var(--color-text-muted);
+  vertical-align: baseline;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.post-content .heading-link svg {
+  display: block;
+  width: 0.7em;
+  height: 0.7em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.post-content :is(h2, h3, h4):hover .heading-link,
+.post-content .heading-link:focus-visible,
+.post-content .heading-link[data-copied] {
+  opacity: 1;
+}
+
+.post-content .heading-link:hover {
+  color: var(--color-link-hover);
+}
+
+.post-content .heading-link:focus-visible {
+  outline: 2px solid var(--color-border);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Touch screens have no hover, so the icon stays faintly visible. */
+@media (hover: none) {
+  .post-content .heading-link {
+    opacity: 0.35;
+  }
+}
+
+.heading-link-toast {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  z-index: 10;
+  padding-block: var(--spacing-xs);
+  padding-inline: var(--spacing-md);
+  font-size: 0.8rem;
+  color: var(--color-bg);
+  background-color: var(--color-text);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, var(--spacing-sm));
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.heading-link-toast[data-visible] {
+  opacity: 0.92;
+  transform: translate(-50%, 0);
+}
+
+/* Table of contents. Below the sidebar breakpoint it is an inset box that
+   scrolls on its own; above it, a quiet list in the left margin. */
+.toc {
+  --toc-width: 12rem;
+  margin-bottom: var(--spacing-xl);
+  padding-top: var(--spacing-sm);
+  padding-inline: var(--spacing-md);
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.toc-label {
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.toc-list {
+  position: relative;
+  max-height: 13rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: var(--spacing-sm);
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--spacing-lg)), transparent);
+}
+
+.toc-item a {
+  position: relative;
+  display: block;
+  padding-block: 3px;
+  padding-left: 1.1em;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  text-transform: lowercase;
+  transition: color var(--duration-fast) ease;
+}
+
+.toc-depth-3 a {
+  padding-left: 2.1em;
+  font-size: 0.95em;
+}
+
+.toc-item a:hover {
+  color: var(--color-link-hover);
+}
+
+.toc-item a[aria-current] {
+  color: var(--color-text);
+}
+
+.toc-item a::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--color-accent);
+  opacity: 0;
+  transform: translateX(-0.3em);
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.toc-depth-3 a::before {
+  left: 1em;
+}
+
+.toc-item a[aria-current]::before {
+  opacity: 1;
+  transform: none;
+}
+
+@media (min-width: 1360px) {
+  .toc {
+    position: fixed;
+    top: 50%;
+    left: calc((100vw - var(--max-width)) / 2 - var(--toc-width));
+    width: var(--toc-width);
+    margin: 0;
+    padding: 0;
+    background: none;
+    opacity: 0.4;
+    transform: translateY(-50%);
+    transition: opacity var(--duration-slow) ease;
+  }
+
+  .toc:hover,
+  .toc:focus-within {
+    opacity: 1;
+  }
+
+  .toc-list {
+    max-height: 70vh;
+    padding-block: var(--spacing-lg);
+    scrollbar-width: none;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--spacing-xl),
+      #000 calc(100% - var(--spacing-xl)),
+      transparent
+    );
+  }
+
+  .toc-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toc-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   html {

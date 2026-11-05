@@ -1,0 +1,85 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const entries = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{entries.length > 0 && (
+  <nav class="toc" aria-labelledby="toc-label">
+    <p class="toc-label" id="toc-label">contents</p>
+    <ol class="toc-list">
+      {entries.map((heading) => (
+        <li class={`toc-item toc-depth-${heading.depth}`}>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<script>
+  const toc = document.querySelector<HTMLElement>('.toc');
+  const list = toc?.querySelector<HTMLElement>('.toc-list');
+
+  if (toc && list) {
+    const links = Array.from(toc.querySelectorAll<HTMLAnchorElement>('a'));
+    const sections = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+    let active = -2;
+    let pending = false;
+
+    // The current section is the last heading above a line a quarter of the way
+    // down the viewport. At the very bottom of the page, the last heading wins.
+    const currentIndex = () => {
+      const line = window.innerHeight * 0.25;
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      let index = -1;
+
+      sections.forEach((section, i) => {
+        if (!section) return;
+        const top = section.getBoundingClientRect().top;
+        if (top <= line || (atBottom && top < window.innerHeight)) index = i;
+      });
+
+      return index;
+    };
+
+    // Scroll only the list, never the page, so the inset contents box at the top
+    // of the article does not pull the reader back up.
+    const centre = (link: HTMLElement | undefined, smooth: boolean) => {
+      if (list.scrollHeight <= list.clientHeight) return;
+      const top = link ? link.offsetTop - list.clientHeight / 2 + link.offsetHeight / 2 : 0;
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      list.scrollTo({ top, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+    };
+
+    const update = () => {
+      pending = false;
+      const index = currentIndex();
+      if (index === active) return;
+
+      const first = active === -2;
+      active = index;
+      links.forEach((link, i) => {
+        if (i === index) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      centre(links[index]?.parentElement ?? undefined, !first);
+    };
+
+    const schedule = () => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+  }
+</script>

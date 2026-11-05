@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import TableOfContents from '../components/TableOfContents.astro';
 import Base from '../layouts/Base.astro';
 import { formatDate } from '../lib/dates';
 import { getArticleDescription } from '../lib/descriptions.mjs';
@@ -14,8 +15,12 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const description = getArticleDescription(post.data.description, post.body);
+// Long essays get a table of contents: enough words to lose your place in,
+// and enough sections to make a map worth reading.
+const wordCount = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
+const showContents = wordCount >= 2000 && headings.filter((heading) => heading.depth === 2).length >= 4;
 ---
 
 <Base title={post.data.title} description={description} type="article" publishedTime={post.data.date}
@@ -35,6 +40,7 @@ const description = getArticleDescription(post.data.description, post.body);
         </span>
       </div>
     </header>
+    {showContents && <TableOfContents headings={headings} />}
     <div class="post-content">
       <Content />
     </div>

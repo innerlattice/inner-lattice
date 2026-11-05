@@ -1,7 +1,9 @@
+import { rehypeHeadingIds } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import rehypeHeadingLinks from './src/plugins/rehypeHeadingLinks.mjs';
 import remarkInlineSvg from './src/plugins/remarkInlineSvg.mjs';
 import remarkListBlockMath from './src/plugins/remarkListBlockMath.mjs';
 import { readPostDates } from './src/lib/postDates.mjs';
@@ -29,6 +31,7 @@ export default defineConfig({
       defaultColor: false,
     },
     remarkPlugins: [[remarkMath, { singleDollarTextMath: true }], remarkListBlockMath, remarkInlineSvg],
-    rehypePlugins: [rehypeKatex],
+    // Heading ids must exist before the heading links can point at them.
+    rehypePlugins: [rehypeKatex, rehypeHeadingIds, rehypeHeadingLinks],
   },
 });

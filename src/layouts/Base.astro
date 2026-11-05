@@ -312,6 +312,46 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
         matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawMermaidDiagrams);
       };
 
+      // A section link copies the canonical URL of its section, so a link copied
+      // from a local preview still points at the published essay.
+      const copySectionLinks = () => {
+        let toast: HTMLElement | undefined;
+        let hideToast: number | undefined;
+
+        const announce = (message: string) => {
+          if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'heading-link-toast';
+            toast.setAttribute('role', 'status');
+            document.body.append(toast);
+          }
+          toast.textContent = message;
+          toast.setAttribute('data-visible', '');
+          window.clearTimeout(hideToast);
+          hideToast = window.setTimeout(() => toast?.removeAttribute('data-visible'), 1600);
+        };
+
+        document.addEventListener('click', async (event) => {
+          const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('.heading-link');
+          if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+          event.preventDefault();
+          const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href;
+          const url = new URL(link.hash, canonical ?? window.location.href).href;
+          history.replaceState(null, '', link.hash);
+
+          try {
+            await navigator.clipboard.writeText(url);
+            link.setAttribute('data-copied', '');
+            window.setTimeout(() => link.removeAttribute('data-copied'), 1600);
+            announce('link copied');
+          } catch {
+            announce('could not copy the link');
+          }
+        });
+      };
+
+      copySectionLinks();
       prepareResponsiveTables();
 
       if (document.readyState === 'loading') {
