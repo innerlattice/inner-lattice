@@ -1,5 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="14" fill="none" stroke="#5a6b7c" stroke-width="1.5"/>
-  <circle cx="16" cy="16" r="6" fill="none" stroke="#5a6b7c" stroke-width="1.5"/>
-  <circle cx="16" cy="16" r="2" fill="#5a6b7c"/>
+  <style>
+    .mark { stroke: #5a6b7c; } .dot { fill: #5a6b7c; }
+    @media (prefers-color-scheme: dark) { .mark { stroke: #a9b8c7; } .dot { fill: #a9b8c7; } }
+  </style>
+  <circle class="mark" cx="16" cy="16" r="14" fill="none" stroke-width="1.5"/>
+  <circle class="mark" cx="16" cy="16" r="6" fill="none" stroke-width="1.5"/>
+  <circle class="dot" cx="16" cy="16" r="2"/>
 </svg>

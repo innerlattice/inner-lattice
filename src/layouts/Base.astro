@@ -48,6 +48,9 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16181b" />
     <meta name="description" content={description} />
     <link rel="canonical" href={pageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -239,6 +242,58 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
         });
       };
 
+      const token = (name: string) =>
+        getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+      // Mermaid takes literal colours, so they are read from the design tokens
+      // each time the diagrams are drawn.
+      const mermaidTheme = () => ({
+        background: token('--color-surface-raised'),
+        mainBkg: token('--mermaid-node'),
+        secondBkg: token('--color-surface'),
+        primaryColor: token('--mermaid-node'),
+        primaryTextColor: token('--color-text'),
+        primaryBorderColor: token('--mermaid-node-border'),
+        secondaryColor: token('--mermaid-cluster'),
+        secondaryTextColor: token('--color-text'),
+        secondaryBorderColor: token('--mermaid-cluster-border'),
+        tertiaryColor: token('--mermaid-tertiary'),
+        tertiaryTextColor: token('--color-text'),
+        tertiaryBorderColor: token('--mermaid-cluster-border'),
+        lineColor: token('--color-accent'),
+        textColor: token('--color-text'),
+        noteBkgColor: token('--mermaid-note'),
+        noteTextColor: token('--color-text'),
+        noteBorderColor: token('--mermaid-note-border'),
+        actorBkg: token('--mermaid-node'),
+        actorTextColor: token('--color-text'),
+        actorBorder: token('--mermaid-node-border'),
+        signalColor: token('--color-link'),
+        signalTextColor: token('--color-text'),
+      });
+
+      const drawMermaidDiagrams = async () => {
+        const diagrams = document.querySelectorAll<HTMLElement>('.mermaid[data-source]');
+        if (diagrams.length === 0) return;
+
+        for (const diagram of diagrams) {
+          diagram.removeAttribute('data-processed');
+          diagram.textContent = diagram.dataset.source ?? '';
+          diagram.parentElement?.querySelector('.mermaid-download')?.remove();
+        }
+
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: 'loose',
+          htmlLabels: false,
+          theme: 'base',
+          themeVariables: mermaidTheme(),
+        });
+
+        await mermaid.run({ nodes: diagrams });
+        addDiagramDownloadButtons();
+      };
+
       const renderMermaidDiagrams = async () => {
         for (const pre of document.querySelectorAll('pre[data-language="mermaid"]')) {
           const text = pre.textContent?.trim() ?? '';
@@ -248,44 +303,13 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
           container.className = 'mermaid-container';
           const wrapper = document.createElement('div');
           wrapper.className = 'mermaid';
-          wrapper.textContent = text;
+          wrapper.dataset.source = text;
           container.append(wrapper);
           pre.replaceWith(container);
         }
 
-        mermaid.initialize({
-          startOnLoad: false,
-          securityLevel: 'loose',
-          htmlLabels: false,
-          theme: 'base',
-          themeVariables: {
-            background: '#edf2f4',
-            mainBkg: '#fafafa',
-            secondBkg: '#f1f4f6',
-            primaryColor: '#fafafa',
-            primaryTextColor: '#2d2d2d',
-            primaryBorderColor: '#aeb8c0',
-            secondaryColor: '#edf2f4',
-            secondaryTextColor: '#2d2d2d',
-            secondaryBorderColor: '#c8d1d8',
-            tertiaryColor: '#e8ecef',
-            tertiaryTextColor: '#2d2d2d',
-            tertiaryBorderColor: '#c8d1d8',
-            lineColor: '#5a6b7c',
-            textColor: '#2d2d2d',
-            noteBkgColor: '#f7f8f4',
-            noteTextColor: '#2d2d2d',
-            noteBorderColor: '#d8d4bd',
-            actorBkg: '#fafafa',
-            actorTextColor: '#2d2d2d',
-            actorBorder: '#aeb8c0',
-            signalColor: '#4a5a6a',
-            signalTextColor: '#2d2d2d',
-          },
-        });
-
-        await mermaid.run();
-        addDiagramDownloadButtons();
+        await drawMermaidDiagrams();
+        matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawMermaidDiagrams);
       };
 
       prepareResponsiveTables();

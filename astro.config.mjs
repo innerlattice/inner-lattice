@@ -24,7 +24,9 @@ export default defineConfig({
   ],
   markdown: {
     shikiConfig: {
-      theme: 'rose-pine-dawn',
+      // Both themes ship as CSS variables; global.css picks one per colour scheme.
+      themes: { light: 'rose-pine-dawn', dark: 'rose-pine-moon' },
+      defaultColor: false,
     },
     remarkPlugins: [[remarkMath, { singleDollarTextMath: true }], remarkListBlockMath, remarkInlineSvg],
     rehypePlugins: [rehypeKatex],
