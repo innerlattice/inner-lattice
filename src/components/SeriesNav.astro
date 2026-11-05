@@ -1,0 +1,35 @@
+---
+import type { getSeriesForPost } from '../lib/series';
+
+interface Props {
+  context: NonNullable<Awaited<ReturnType<typeof getSeriesForPost>>>;
+}
+
+const { series, part, next } = Astro.props.context;
+---
+
+<nav class="series-nav" aria-labelledby="series-nav-label">
+  <p class="series-nav-label" id="series-nav-label">
+    part {part.number} of {series.parts.length} in <a href={`/series/${series.id}`}>{series.title}</a>
+  </p>
+  <ol class="series-parts">
+    {series.parts.map((entry) => (
+      <li class:list={['series-part', { 'is-planned': !entry.post }]}>
+        <span class="series-part-number">{entry.number}</span>
+        {entry.post ? (
+          <a
+            href={`/${entry.post.id}`}
+            aria-current={entry.post.id === part.post?.id ? 'page' : undefined}
+          >{entry.title}</a>
+        ) : (
+          <span>{entry.title} <span class="series-forthcoming">forthcoming</span></span>
+        )}
+      </li>
+    ))}
+  </ol>
+  {next?.post && (
+    <a class="series-next" href={`/${next.post.id}`}>
+      next: {next.title} <span aria-hidden="true">&rarr;</span>
+    </a>
+  )}
+</nav>

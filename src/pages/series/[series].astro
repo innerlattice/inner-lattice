@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import { formatDate } from '../../lib/dates';
+import { getAllSeries, type Series } from '../../lib/series';
+
+export async function getStaticPaths() {
+  return (await getAllSeries()).map((series) => ({
+    params: { series: series.id },
+    props: { series },
+  }));
+}
+
+const { series } = Astro.props as { series: Series };
+const published = series.parts.filter((part) => part.post).length;
+const description = `${series.description} ${published} of ${series.parts.length} parts published.`;
+---
+
+<Base title={series.title} description={description}>
+  <section class="posts series-page">
+    <header class="tag-header">
+      <p class="tag-label">series</p>
+      <h1>{series.title}</h1>
+      <p class="series-description">{series.description}</p>
+    </header>
+
+    <ol class="post-list series-list">
+      {series.parts.map((part) => (
+        part.post ? (
+          <li class="post-item">
+            <a href={`/${part.post.id}`} class="post-title">
+              <span class="series-part-number">{part.number}</span> {part.title}
+            </a>{" "}
+            <span class="post-meta">
+              <time datetime={part.post.data.date.toISOString()}>{formatDate(part.post.data.date)}</time>
+            </span>
+          </li>
+        ) : (
+          <li class="post-item is-planned">
+            <span class="post-title">
+              <span class="series-part-number">{part.number}</span> {part.title}
+            </span>{" "}
+            <span class="post-meta">forthcoming</span>
+          </li>
+        )
+      ))}
+    </ol>
+
+    <a class="back-link" href="/">&larr; Back to all posts</a>
+  </section>
+</Base>

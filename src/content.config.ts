@@ -14,4 +14,17 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+// A series lists its parts in reading order. A part is a published post or a
+// planned title that readers see as forthcoming.
+const series = defineCollection({
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/series' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().trim().min(1),
+    parts: z
+      .array(z.union([z.object({ post: z.string() }).strict(), z.object({ planned: z.string() }).strict()]))
+      .min(1),
+  }),
+});
+
+export const collections = { posts, series };

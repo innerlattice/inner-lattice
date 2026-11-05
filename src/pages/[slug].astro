@@ -1,9 +1,11 @@
 ---
 import { getCollection, render } from 'astro:content';
+import SeriesNav from '../components/SeriesNav.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import Base from '../layouts/Base.astro';
 import { formatDate } from '../lib/dates';
 import { getArticleDescription } from '../lib/descriptions.mjs';
+import { getSeriesForPost } from '../lib/series';
 import { getTagSlug } from '../lib/tags';
 
 export async function getStaticPaths() {
@@ -17,6 +19,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const description = getArticleDescription(post.data.description, post.body);
+const seriesContext = await getSeriesForPost(post.id);
 // Long essays get a table of contents: enough words to lose your place in,
 // and enough sections to make a map worth reading.
 const wordCount = post.body?.split(/\s+/).filter(Boolean).length ?? 0;
@@ -28,6 +31,12 @@ const showContents = wordCount >= 2000 && headings.filter((heading) => heading.d
 >
   <article class="post">
     <header class="post-header">
+      {seriesContext && (
+        <p class="post-series">
+          <a href={`/series/${seriesContext.series.id}`}>{seriesContext.series.title}</a>
+          <span aria-hidden="true">·</span> part {seriesContext.part.number}
+        </p>
+      )}
       <h1>{post.data.title}</h1>
       <div class="post-meta">
         <time datetime={post.data.date.toISOString()}>
@@ -44,6 +53,7 @@ const showContents = wordCount >= 2000 && headings.filter((heading) => heading.d
     <div class="post-content">
       <Content />
     </div>
+    {seriesContext && <SeriesNav context={seriesContext} />}
     <footer class="post-footer">
       <a href="/">&larr; Back to all posts</a>
     </footer>

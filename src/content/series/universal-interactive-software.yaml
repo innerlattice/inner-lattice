@@ -1,0 +1,15 @@
+# Parts are listed in reading order. A `planned` part shows as forthcoming;
+# when it is published, replace it with `post: <slug>` in the same place.
+title: universal interactive software
+description: >-
+  Interactive software is software that acts on values it does not control.
+  These essays describe it with one set of primitives, from the theory of
+  programs to their interfaces and the work of making them.
+parts:
+  - post: universal-theory-of-interactive-software
+  - post: universal-languages-for-interactive-software
+  - post: universal-runtime-for-interactive-software
+  - planned: Interface theory
+  - planned: Design language
+  - planned: Interface runtime
+  - planned: Making

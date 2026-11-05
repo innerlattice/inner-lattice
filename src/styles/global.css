@@ -934,6 +934,128 @@ time {
   color: var(--color-link-hover);
 }
 
+/* Series. A label above the title, and the full list of parts after the essay. */
+.post-series {
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: lowercase;
+}
+
+.post-series a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-series a:hover {
+  color: var(--color-link-hover);
+}
+
+.series-nav {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+.series-nav-label {
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: lowercase;
+}
+
+.series-nav-label a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+
+.series-nav-label a:hover {
+  color: var(--color-link-hover);
+}
+
+.series-parts {
+  margin-bottom: var(--spacing-md);
+  list-style: none;
+}
+
+.series-part {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding-block: 2px;
+  text-transform: lowercase;
+}
+
+.series-part-number {
+  min-width: 1.2em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.series-part a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.series-part a:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.series-part a[aria-current] {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.series-part a[aria-current]::after {
+  content: " ←";
+  color: var(--color-accent);
+  font-weight: 400;
+}
+
+.series-part.is-planned {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.series-forthcoming {
+  margin-left: var(--spacing-xs);
+  font-size: 0.75rem;
+}
+
+.series-next {
+  display: inline-block;
+  color: var(--color-link);
+  text-decoration: none;
+  text-transform: lowercase;
+}
+
+.series-next:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.series-description {
+  max-width: 40em;
+  margin-top: var(--spacing-sm);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.series-list .post-title .series-part-number {
+  margin-right: var(--spacing-xs);
+}
+
+.series-list .is-planned {
+  opacity: 0.55;
+}
+
+.series-list .is-planned:hover {
+  background-color: transparent;
+}
+
 /* Section links. The icon follows the heading's last word. */
 html {
   scroll-padding-top: var(--spacing-xl);
