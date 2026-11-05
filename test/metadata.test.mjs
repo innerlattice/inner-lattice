@@ -189,3 +189,22 @@ test('listing text keeps words apart when markup is stripped', async () => {
     assert.doesNotMatch(html, /class="post-title">[^<]*<\/a><span/, `${path || 'home'} runs the title into the date`);
   }
 });
+
+test('every page advertises the RSS feed, which lists every essay at its canonical URL', async () => {
+  const feedUrl = new URL('/rss.xml', siteUrl).href;
+  for (const path of ['', 'tags/future', 'turn-inward']) {
+    const html = await readPage(path);
+    assert.ok(
+      html.includes(`<link rel="alternate" type="application/rss+xml" title="inner lattice" href="${feedUrl}">`),
+      `${path || 'home'} should link to the feed`
+    );
+  }
+
+  const feed = await readFile(new URL('../dist/rss.xml', import.meta.url), 'utf8');
+  const posts = (await readdir(new URL('../src/content/posts/', import.meta.url))).filter((file) => file.endsWith('.md'));
+  assert.equal(feed.match(/<item>/g).length, posts.length);
+  for (const post of posts) {
+    const url = new URL(`/${post.replace(/\.md$/, '')}`, siteUrl).href;
+    assert.ok(feed.includes(`<link>${url}</link>`), `${url} should be in the feed`);
+  }
+});

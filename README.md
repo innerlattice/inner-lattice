@@ -53,3 +53,5 @@ npm run preview  # Preview production build
 Configured for Coolify auto-deploy on git push to main.
 
 URLs have no trailing slash. Pages still build to `slug/index.html`, and each page names its slashless URL as canonical.
+
+The RSS feed is at `/rss.xml`. Every page links to it from `<head>` for feed readers and from the footer for people. Items carry each post's description, so they follow the same fallback as the meta description.
