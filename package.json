@@ -21,11 +21,14 @@
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "astro": "^7.3.7",
+    "hast-util-from-html": "^2.0.3",
+    "hast-util-to-html": "^9.0.5",
     "katex": "^0.19.0",
     "mdast-util-from-markdown": "^2.0.3",
     "mermaid": "^11.17.2",
     "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "unist-util-visit": "^5.1.0"
   },
   "overrides": {
     "katex": "$katex",
