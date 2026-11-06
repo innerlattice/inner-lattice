@@ -262,3 +262,7 @@ test('articles name their author in metadata and the feed', async () => {
   assert.equal(feed.match(/<dc:creator>/g).length, feed.match(/<item>/g).length);
 });
 
+test('the not-found page has no site header or footer', async () => {
+  const html = await readFile(new URL('../dist/404.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(html, /class="site-header"|class="site-footer"/);
+});

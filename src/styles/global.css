@@ -404,6 +404,25 @@ footer {
   text-decoration-line: none;
 }
 
+/* The feed link leads; the copyright, least needed, sits at the far right. */
+.footer-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+/* A page without header or footer centres its content in the window. */
+.container-bare {
+  justify-content: center;
+  padding-block: var(--spacing-xxl);
+}
+
+.container-bare main {
+  flex: 0;
+  margin-bottom: 0;
+}
+
 /* Post List */
 .post-list {
   list-style: none;
@@ -1000,16 +1019,21 @@ time {
 }
 
 /* Not found */
-.not-found h1 {
-  margin-bottom: var(--spacing-md);
-  font-size: var(--title-size);
-  font-weight: var(--heading-weight);
-  line-height: round(up, 1.25em, var(--grid));
-  letter-spacing: -0.015em;
+.not-found-code {
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.not-found p:not(.tag-label) {
-  max-width: 32em;
+.not-found h1 {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--section-size);
+  font-weight: var(--heading-weight);
+  line-height: round(up, 1.25em, var(--grid));
+}
+
+.not-found p:not(.not-found-code) {
   margin-bottom: var(--spacing-lg);
   color: var(--color-text-muted);
 }
