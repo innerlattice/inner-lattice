@@ -40,8 +40,11 @@
  *    behind the code theme, and the type and spacing scales. Nothing outside
  *    this block uses a primitive colour directly.
  * 2. Semantic tokens say what a value is for (--color-text, --diagram-pine).
- *    Components read only these. Dark mode remaps the semantic layer and
- *    leaves the primitives and the components alone.
+ *    Components read only these. Each semantic colour is a light-dark() pair,
+ *    so one list serves both schemes.
+ *
+ * The scheme follows the system unless the theme toggle sets data-theme on
+ * <html>, which pins color-scheme and with it every light-dark() pair.
  */
 :root {
   color-scheme: light dark;
@@ -89,64 +92,111 @@
   --moon-highlight: #2a2837;
   --moon-highlight-text: #f2cf9d;
 
+  /* Primitives: diagram and Mermaid hues, Rosé Pine Dawn (light) and Moon (dark). */
+  --dawn-foam: #56949f;
+  --dawn-foam-ink: #2f6b75;
+  --dawn-foam-tint: #e6f0f1;
+  --dawn-pine: #286983;
+  --dawn-pine-ink: #1f5568;
+  --dawn-pine-tint: #e1ebef;
+  --dawn-iris: #907aa9;
+  --dawn-iris-ink: #66518a;
+  --dawn-iris-tint: #efebf4;
+  --dawn-gold: #ea9d34;
+  --dawn-gold-ink: #95601a;
+  --dawn-gold-tint: #fcf1e0;
+  --dawn-rose: #d7827e;
+  --dawn-rose-ink: #a4524f;
+  --dawn-rose-tint: #f9ebe8;
+  --dawn-love: #b4637a;
+  --dawn-love-ink: #8c4258;
+  --dawn-love-tint: #f5e6ea;
+  --dawn-mermaid-node-border: #aeb8c0;
+  --dawn-mermaid-cluster-border: #c8d1d8;
+  --dawn-mermaid-tertiary: #e8ecef;
+  --dawn-mermaid-note: #f7f8f4;
+  --dawn-mermaid-note-border: #d8d4bd;
+  --moon-foam: #9ccfd8;
+  --moon-foam-ink: #bfe1e7;
+  --moon-foam-tint: #1d2d31;
+  --moon-pine: #4a9cbd;
+  --moon-pine-ink: #95c6da;
+  --moon-pine-tint: #182a33;
+  --moon-iris: #c4a7e7;
+  --moon-iris-ink: #d9c6ef;
+  --moon-iris-tint: #29233a;
+  --moon-gold: #f6c177;
+  --moon-gold-ink: #f8d6a4;
+  --moon-gold-tint: #33291b;
+  --moon-rose: #ea9a97;
+  --moon-rose-ink: #f2bebc;
+  --moon-rose-tint: #362628;
+  --moon-love: #eb6f92;
+  --moon-love-ink: #f3a2b9;
+  --moon-love-tint: #37202a;
+  --moon-mermaid-node-border: #4b5561;
+  --moon-mermaid-cluster-border: #3b434d;
+  --moon-mermaid-note: #2a2a24;
+  --moon-mermaid-note-border: #4f4b38;
+
   /* Semantic: page. */
-  --color-bg: var(--neutral-25);
-  --color-text: var(--neutral-850);
-  --color-text-muted: var(--neutral-550);
-  --color-accent: var(--neutral-650);
-  --color-link: var(--neutral-700);
-  --color-link-hover: var(--neutral-750);
-  --color-tag-bg: var(--neutral-125);
-  --color-tag-text: var(--neutral-500);
-  --color-border: var(--neutral-200);
-  --color-surface: var(--neutral-75);
-  --color-surface-raised: var(--neutral-100);
-  --color-hover: rgb(0 0 0 / 0.03);
-  --color-code-bg: var(--dawn-base);
-  --color-code-text: var(--dawn-text);
-  --color-inline-code-bg: var(--dawn-highlight);
-  --color-inline-code-text: var(--dawn-highlight-text);
-  --color-table-border: var(--neutral-150);
-  --color-table-header-bg: var(--neutral-50);
-  --color-table-header-text: var(--neutral-600);
+  --color-bg: light-dark(var(--neutral-25), var(--night-25));
+  --color-text: light-dark(var(--neutral-850), var(--night-850));
+  --color-text-muted: light-dark(var(--neutral-550), var(--night-500));
+  --color-accent: light-dark(var(--neutral-650), var(--night-650));
+  --color-link: light-dark(var(--neutral-700), var(--night-700));
+  --color-link-hover: light-dark(var(--neutral-750), var(--night-750));
+  --color-tag-bg: light-dark(var(--neutral-125), var(--night-100));
+  --color-tag-text: light-dark(var(--neutral-500), var(--night-500));
+  --color-border: light-dark(var(--neutral-200), var(--night-200));
+  --color-surface: light-dark(var(--neutral-75), var(--night-75));
+  --color-surface-raised: light-dark(var(--neutral-100), var(--night-100));
+  --color-hover: light-dark(rgb(0 0 0 / 0.03), rgb(255 255 255 / 0.035));
+  --color-code-bg: light-dark(var(--dawn-base), var(--moon-base));
+  --color-code-text: light-dark(var(--dawn-text), var(--moon-text));
+  --color-inline-code-bg: light-dark(var(--dawn-highlight), var(--moon-highlight));
+  --color-inline-code-text: light-dark(var(--dawn-highlight-text), var(--moon-highlight-text));
+  --color-table-border: light-dark(var(--neutral-150), var(--night-150));
+  --color-table-header-bg: light-dark(var(--neutral-50), var(--night-50));
+  --color-table-header-text: light-dark(var(--neutral-600), var(--night-600));
   --shadow-inset:
-    inset 0 1px 3px rgb(45 45 45 / 0.05),
-    inset 0 -1px 1px rgb(255 255 255 / 0.56),
-    0 1px 1px rgb(45 45 45 / 0.02);
+    inset 0 1px 3px light-dark(rgb(45 45 45 / 0.05), rgb(0 0 0 / 0.25)),
+    inset 0 -1px 1px light-dark(rgb(255 255 255 / 0.56), transparent),
+    0 1px 1px light-dark(rgb(45 45 45 / 0.02), rgb(0 0 0 / 0.2));
 
   /* Semantic: diagrams. Hues come from Rosé Pine Dawn, the code theme. */
-  --diagram-bg: var(--neutral-0);
-  --diagram-line: var(--neutral-400);
-  --diagram-foam: #56949f;
-  --diagram-foam-ink: #2f6b75;
-  --diagram-foam-tint: #e6f0f1;
-  --diagram-pine: #286983;
-  --diagram-pine-ink: #1f5568;
-  --diagram-pine-tint: #e1ebef;
-  --diagram-iris: #907aa9;
-  --diagram-iris-ink: #66518a;
-  --diagram-iris-tint: #efebf4;
-  --diagram-gold: #ea9d34;
-  --diagram-gold-ink: #95601a;
-  --diagram-gold-tint: #fcf1e0;
-  --diagram-rose: #d7827e;
-  --diagram-rose-ink: #a4524f;
-  --diagram-rose-tint: #f9ebe8;
-  --diagram-love: #b4637a;
-  --diagram-love-ink: #8c4258;
-  --diagram-love-tint: #f5e6ea;
-  --diagram-slate: var(--neutral-650);
-  --diagram-slate-ink: var(--neutral-750);
-  --diagram-slate-tint: var(--neutral-100);
+  --diagram-bg: light-dark(var(--neutral-0), var(--night-50));
+  --diagram-line: light-dark(var(--neutral-400), var(--night-400));
+  --diagram-foam: light-dark(var(--dawn-foam), var(--moon-foam));
+  --diagram-foam-ink: light-dark(var(--dawn-foam-ink), var(--moon-foam-ink));
+  --diagram-foam-tint: light-dark(var(--dawn-foam-tint), var(--moon-foam-tint));
+  --diagram-pine: light-dark(var(--dawn-pine), var(--moon-pine));
+  --diagram-pine-ink: light-dark(var(--dawn-pine-ink), var(--moon-pine-ink));
+  --diagram-pine-tint: light-dark(var(--dawn-pine-tint), var(--moon-pine-tint));
+  --diagram-iris: light-dark(var(--dawn-iris), var(--moon-iris));
+  --diagram-iris-ink: light-dark(var(--dawn-iris-ink), var(--moon-iris-ink));
+  --diagram-iris-tint: light-dark(var(--dawn-iris-tint), var(--moon-iris-tint));
+  --diagram-gold: light-dark(var(--dawn-gold), var(--moon-gold));
+  --diagram-gold-ink: light-dark(var(--dawn-gold-ink), var(--moon-gold-ink));
+  --diagram-gold-tint: light-dark(var(--dawn-gold-tint), var(--moon-gold-tint));
+  --diagram-rose: light-dark(var(--dawn-rose), var(--moon-rose));
+  --diagram-rose-ink: light-dark(var(--dawn-rose-ink), var(--moon-rose-ink));
+  --diagram-rose-tint: light-dark(var(--dawn-rose-tint), var(--moon-rose-tint));
+  --diagram-love: light-dark(var(--dawn-love), var(--moon-love));
+  --diagram-love-ink: light-dark(var(--dawn-love-ink), var(--moon-love-ink));
+  --diagram-love-tint: light-dark(var(--dawn-love-tint), var(--moon-love-tint));
+  --diagram-slate: light-dark(var(--neutral-650), var(--night-650));
+  --diagram-slate-ink: light-dark(var(--neutral-750), var(--night-750));
+  --diagram-slate-tint: light-dark(var(--neutral-100), var(--night-100));
 
   /* Semantic: Mermaid diagrams, read by the script in Base.astro. */
-  --mermaid-node: var(--neutral-25);
-  --mermaid-node-border: #aeb8c0;
-  --mermaid-cluster: var(--neutral-100);
-  --mermaid-cluster-border: #c8d1d8;
-  --mermaid-tertiary: #e8ecef;
-  --mermaid-note: #f7f8f4;
-  --mermaid-note-border: #d8d4bd;
+  --mermaid-node: light-dark(var(--neutral-25), var(--night-75));
+  --mermaid-node-border: light-dark(var(--dawn-mermaid-node-border), var(--moon-mermaid-node-border));
+  --mermaid-cluster: light-dark(var(--neutral-100), var(--night-100));
+  --mermaid-cluster-border: light-dark(var(--dawn-mermaid-cluster-border), var(--moon-mermaid-cluster-border));
+  --mermaid-tertiary: light-dark(var(--dawn-mermaid-tertiary), var(--night-150));
+  --mermaid-note: light-dark(var(--dawn-mermaid-note), var(--moon-mermaid-note));
+  --mermaid-note-border: light-dark(var(--dawn-mermaid-note-border), var(--moon-mermaid-note-border));
 
   --font-sans: 'Instrument Sans', sans-serif;
   --font-serif: 'Newsreader', serif;
@@ -177,65 +227,14 @@
   --duration-slow: 0.3s;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: var(--night-25);
-    --color-text: var(--night-850);
-    --color-text-muted: var(--night-500);
-    --color-accent: var(--night-650);
-    --color-link: var(--night-700);
-    --color-link-hover: var(--night-750);
-    --color-tag-bg: var(--night-100);
-    --color-tag-text: var(--night-500);
-    --color-border: var(--night-200);
-    --color-surface: var(--night-75);
-    --color-surface-raised: var(--night-100);
-    --color-hover: rgb(255 255 255 / 0.035);
-    --color-code-bg: var(--moon-base);
-    --color-code-text: var(--moon-text);
-    --color-inline-code-bg: var(--moon-highlight);
-    --color-inline-code-text: var(--moon-highlight-text);
-    --color-table-border: var(--night-150);
-    --color-table-header-bg: var(--night-50);
-    --color-table-header-text: var(--night-600);
-    --shadow-inset:
-      inset 0 1px 3px rgb(0 0 0 / 0.25),
-      0 1px 1px rgb(0 0 0 / 0.2);
-
-    /* Diagram hues from Rosé Pine Moon: bright strokes, dark tints. */
-    --diagram-bg: var(--night-50);
-    --diagram-line: var(--night-400);
-    --diagram-foam: #9ccfd8;
-    --diagram-foam-ink: #bfe1e7;
-    --diagram-foam-tint: #1d2d31;
-    --diagram-pine: #4a9cbd;
-    --diagram-pine-ink: #95c6da;
-    --diagram-pine-tint: #182a33;
-    --diagram-iris: #c4a7e7;
-    --diagram-iris-ink: #d9c6ef;
-    --diagram-iris-tint: #29233a;
-    --diagram-gold: #f6c177;
-    --diagram-gold-ink: #f8d6a4;
-    --diagram-gold-tint: #33291b;
-    --diagram-rose: #ea9a97;
-    --diagram-rose-ink: #f2bebc;
-    --diagram-rose-tint: #362628;
-    --diagram-love: #eb6f92;
-    --diagram-love-ink: #f3a2b9;
-    --diagram-love-tint: #37202a;
-    --diagram-slate: var(--night-650);
-    --diagram-slate-ink: var(--night-750);
-    --diagram-slate-tint: var(--night-100);
-
-    --mermaid-node: var(--night-75);
-    --mermaid-node-border: #4b5561;
-    --mermaid-cluster: var(--night-100);
-    --mermaid-cluster-border: #3b434d;
-    --mermaid-tertiary: var(--night-150);
-    --mermaid-note: #2a2a24;
-    --mermaid-note-border: #4f4b38;
-  }
+:root[data-theme="light"] {
+  color-scheme: light;
 }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 
 *,
 *::before,
@@ -277,6 +276,80 @@ body {
 /* Header */
 header {
   margin-bottom: var(--spacing-xl);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+/* Theme toggle: three choices, quiet until the pointer or focus reaches it. */
+.theme-toggle {
+  display: flex;
+  gap: 2px;
+  margin-right: calc(-1 * var(--spacing-xs));
+  opacity: 0.35;
+  transition: opacity var(--duration-slow) ease;
+}
+
+.theme-toggle[hidden] {
+  display: none;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-within {
+  opacity: 1;
+}
+
+.theme-toggle button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  place-items: center;
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+
+.theme-toggle button:hover {
+  color: var(--color-link-hover);
+}
+
+.theme-toggle button[aria-checked="true"] {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+.theme-toggle button:focus-visible {
+  outline: 2px solid var(--color-border);
+  outline-offset: 1px;
+}
+
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle svg .fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+@media (hover: none) {
+  .theme-toggle {
+    opacity: 0.6;
+  }
 }
 
 .site-title {
@@ -572,17 +645,9 @@ time {
 
 /* Shiki emits both themes as variables; the colour scheme picks one. */
 .post-content .astro-code span {
-  color: var(--shiki-light);
+  color: light-dark(var(--shiki-light), var(--shiki-dark));
   font-style: var(--shiki-light-font-style);
   font-weight: var(--shiki-light-font-weight);
-}
-
-@media (prefers-color-scheme: dark) {
-  .post-content .astro-code span {
-    color: var(--shiki-dark);
-    font-style: var(--shiki-dark-font-style);
-    font-weight: var(--shiki-dark-font-weight);
-  }
 }
 
 .post-content pre code {
