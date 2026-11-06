@@ -1076,9 +1076,22 @@ html {
   scroll-padding-top: var(--spacing-xl);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
+/* In-page links jump rather than glide, so a long essay never takes the page
+   away from the reader. A brief tint marks where the jump landed. */
+.post-content :is(h2, h3, h4):target {
+  animation: target-landed 1.6s ease-out;
+}
+
+@keyframes target-landed {
+  from {
+    background-color: var(--color-surface-raised);
+    box-shadow: 0 0 0 var(--spacing-sm) var(--color-surface-raised);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-content :is(h2, h3, h4):target {
+    animation: none;
   }
 }
 
@@ -1226,11 +1239,14 @@ html {
   transform: none;
 }
 
-@media (min-width: 1360px) {
+/* The sidebar needs the left margin to itself: its width, a gap, and a gutter
+   on each side of the page. */
+@media (min-width: 1400px) {
   .toc {
     position: fixed;
     top: 50%;
-    left: calc((100vw - var(--max-width)) / 2 - var(--toc-width));
+    /* Percentages here are of the viewport without its scrollbar. */
+    left: calc(50% - var(--max-width) / 2 - var(--toc-width) - var(--spacing-md));
     width: var(--toc-width);
     margin: 0;
     padding: 0;
@@ -1269,6 +1285,25 @@ html {
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
+  }
+
+  /* Wide tables and diagrams normally break out on both sides. Beside the
+     sidebar they keep the text's left edge and grow to the right instead. */
+  .post:has(.toc) .post-content table,
+  .post:has(.toc) .post-content figure.diagram:has(svg.wide) {
+    left: 0;
+    transform: none;
+    max-width: min(
+      var(--wide-content-width),
+      calc(50vw + var(--max-width) / 2 - 3 * var(--page-gutter))
+    );
+  }
+
+  .post:has(.toc) .post-content figure.diagram:has(svg.wide) {
+    width: min(
+      var(--wide-content-width),
+      calc(50vw + var(--max-width) / 2 - 3 * var(--page-gutter))
+    );
   }
 }
 

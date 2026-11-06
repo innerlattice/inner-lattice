@@ -32,6 +32,22 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
     let active = -2;
     let pending = false;
 
+    // The list follows the reader, but never while the reader is using it: not
+    // under the pointer, not while it has focus, and not for a moment after the
+    // reader scrolls it by hand. It catches up at the next section change.
+    let pointerInside = false;
+    let handledAt = 0;
+    const HANDS_OFF_MS = 1500;
+    const inUse = () =>
+      // Keyboard focus only: a clicked link keeps focus, and should not freeze the list.
+      pointerInside || toc.querySelector(':focus-visible') !== null || Date.now() - handledAt < HANDS_OFF_MS;
+
+    toc.addEventListener('pointerenter', () => (pointerInside = true));
+    toc.addEventListener('pointerleave', () => (pointerInside = false));
+    for (const type of ['wheel', 'touchstart', 'touchmove']) {
+      list.addEventListener(type, () => (handledAt = Date.now()), { passive: true });
+    }
+
     // The current section is the last heading above a line a quarter of the way
     // down the viewport. At the very bottom of the page, the last heading wins.
     const currentIndex = () => {
@@ -49,13 +65,15 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
       return index;
     };
 
-    // Scroll only the list, never the page, so the inset contents box at the top
-    // of the article does not pull the reader back up.
-    const centre = (link: HTMLElement | undefined, smooth: boolean) => {
+    // Only the list scrolls, never the page. Short moves glide; long ones, as
+    // after a jump across the essay, happen at once.
+    const centre = (item: HTMLElement | undefined, first: boolean) => {
       if (list.scrollHeight <= list.clientHeight) return;
-      const top = link ? link.offsetTop - list.clientHeight / 2 + link.offsetHeight / 2 : 0;
+      const top = item ? item.offsetTop - list.clientHeight / 2 + item.offsetHeight / 2 : 0;
+      const distance = Math.abs(top - list.scrollTop);
       const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      list.scrollTo({ top, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+      const smooth = !first && !reduce && distance < list.clientHeight;
+      list.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
     };
 
     const update = () => {
@@ -69,7 +87,7 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
         if (i === index) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       });
-      centre(links[index]?.parentElement ?? undefined, !first);
+      if (first || !inUse()) centre(links[index]?.parentElement ?? undefined, first);
     };
 
     const schedule = () => {
