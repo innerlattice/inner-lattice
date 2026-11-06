@@ -251,3 +251,14 @@ test('the not-found page uses the site layout', async () => {
   assert.match(html, /<title>not found \| inner lattice<\/title>/);
   assert.match(html, /href="\/"/);
 });
+
+test('articles name their author in metadata and the feed', async () => {
+  const html = await readPage('turn-inward');
+  const feed = await readFile(new URL('../dist/rss.xml', import.meta.url), 'utf8');
+  const author = getMetaContent(html, 'name', 'author');
+
+  assert.ok(author);
+  assert.ok(html.includes(`"author":{"@type":"Person","name":"${author}"}`));
+  assert.equal(feed.match(/<dc:creator>/g).length, feed.match(/<item>/g).length);
+});
+

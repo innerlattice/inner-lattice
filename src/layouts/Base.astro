@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { siteDescription, siteTagline, siteTitle } from '../lib/site';
+import { authorName, siteDescription, siteTagline, siteTitle } from '../lib/site';
 
 interface Props {
   title: string;
@@ -33,6 +33,7 @@ const structuredData = type === 'article' ? {
   image: socialImage.href,
   datePublished: publishedTime?.toISOString(),
   dateModified: (modifiedTime ?? publishedTime)?.toISOString(),
+  author: { '@type': 'Person', name: authorName },
   publisher: { '@type': 'Organization', name: siteTitle, url: new URL('/', pageUrl).href },
 } : {
   '@context': 'https://schema.org',
@@ -52,6 +53,7 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16181b" />
     <meta name="description" content={description} />
+    {type === 'article' && <meta name="author" content={authorName} />}
     <link rel="canonical" href={pageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={siteTitle} href={new URL('/rss.xml', pageUrl)} />
