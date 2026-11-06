@@ -1,0 +1,13 @@
+# Parts are listed in reading order. A `planned` part shows as forthcoming;
+# when it is published, replace it with `post: <slug>` in the same place.
+title: the autonomous organization
+description: >-
+  A map of every function in a technology company, revised in stages: first
+  as a business ontology, then as a living system of subsystems and forms of
+  capital, and finally as four planes of organization.
+parts:
+  - post: comprehensive-orthogonal-business-ontology
+  - post: cobo-living-systems-edition
+  - post: cobo-capital-domain-pivot
+  - post: organizational-planes
+  - post: cobo-four-planes-of-organization
