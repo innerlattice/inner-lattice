@@ -9,6 +9,8 @@ export interface SeriesPart {
 export interface Series {
   id: string;
   title: string;
+  /** The title without a leading "the", for phrases like "the ___ series". */
+  name: string;
   description: string;
   parts: SeriesPart[];
 }
@@ -23,6 +25,7 @@ async function load(): Promise<Series[]> {
   return entries.map((entry) => ({
     id: entry.id,
     title: entry.data.title,
+    name: entry.data.title.replace(/^the\s+/i, ''),
     description: entry.data.description,
     parts: entry.data.parts.map((part, index) => {
       if ('planned' in part) return { number: index + 1, title: part.planned };

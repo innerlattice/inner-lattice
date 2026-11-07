@@ -5,12 +5,12 @@ interface Props {
   context: NonNullable<Awaited<ReturnType<typeof getSeriesForPost>>>;
 }
 
-const { series, part, next } = Astro.props.context;
+const { series, part } = Astro.props.context;
 ---
 
 <nav class="series-nav" aria-labelledby="series-nav-label">
   <p class="series-nav-label" id="series-nav-label">
-    part {part.number} of {series.parts.length} in <a href={`/series/${series.id}`}>{series.title}</a>
+    the <a href={`/series/${series.id}`}>{series.name}</a> series
   </p>
   <ol class="series-parts">
     {series.parts.map((entry) => (
@@ -27,9 +27,4 @@ const { series, part, next } = Astro.props.context;
       </li>
     ))}
   </ol>
-  {next?.post && (
-    <a class="series-next" href={`/${next.post.id}`}>
-      next: {next.title} <span aria-hidden="true">&rarr;</span>
-    </a>
-  )}
 </nav>

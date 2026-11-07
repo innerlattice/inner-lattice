@@ -33,8 +33,8 @@ const showContents = wordCount >= 2000 && headings.filter((heading) => heading.d
     <header class="post-header">
       {seriesContext && (
         <p class="post-series">
-          part {seriesContext.part.number} of{" "}
-          <a href={`/series/${seriesContext.series.id}`}>{seriesContext.series.title}</a>
+          part {seriesContext.part.number} of the{" "}
+          <a href={`/series/${seriesContext.series.id}`}>{seriesContext.series.name}</a> series
         </p>
       )}
       <h1>{post.data.title}</h1>
@@ -55,7 +55,12 @@ const showContents = wordCount >= 2000 && headings.filter((heading) => heading.d
     </div>
     {seriesContext && <SeriesNav context={seriesContext} />}
     <footer class="post-footer">
-      <a href="/">&larr; Back to all posts</a>
+      <a href="/">&larr; back to all posts</a>
+      {seriesContext?.next?.post && (
+        <a class="series-next" href={`/${seriesContext.next.post.id}`}>
+          next: {seriesContext.next.title} <span aria-hidden="true">&rarr;</span>
+        </a>
+      )}
     </footer>
   </article>
 </Base>

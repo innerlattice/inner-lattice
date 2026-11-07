@@ -240,10 +240,19 @@ test('a series post names its part and links its neighbours; planned parts show 
   const html = await readPage('universal-languages-for-interactive-software');
   const series = await readPage('series/universal-interactive-software');
 
-  assert.match(html, /<p class="post-series">/);
+  assert.match(html, /<p class="post-series">part 2 of the <a href="\/series\/universal-interactive-software">universal interactive software<\/a> series<\/p>/);
   assert.match(html, /aria-current="page"[^>]*>Toward a universal set of languages/);
-  assert.match(html, /class="series-next" href="\/universal-runtime-for-interactive-software"/);
+  // The next part sits in the post footer, beside the way back.
+  assert.match(html, /<footer class="post-footer">[\s\S]*class="series-next" href="\/universal-runtime-for-interactive-software"/);
   assert.match(series, /forthcoming/);
+});
+
+test('table cells are wrapped so a long cell can wrap; the feed drops the wrapper', async () => {
+  const html = await readPage('universal-theory-of-interactive-software');
+  const feed = await readFile(new URL('../dist/rss.xml', import.meta.url), 'utf8');
+
+  assert.match(html, /<td><div class="table-cell-content">/);
+  assert.doesNotMatch(feed, /table-cell-content|&#x3C;td>&#x3C;div/);
 });
 
 test('the not-found page uses the site layout', async () => {
