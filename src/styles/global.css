@@ -1236,19 +1236,13 @@ time {
 }
 
 /* The current part is marked with the same arrow as the current section in
-   the contents, hung in the margin to the left of the numbers. */
+   the contents, hung in the margin to its left. */
 .series-part {
   position: relative;
   display: flex;
   gap: var(--spacing-sm);
   padding-block: var(--spacing-xxs);
   text-transform: lowercase;
-}
-
-.series-part-number {
-  min-width: var(--spacing-md);
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
 }
 
 .series-part a[aria-current] {
@@ -1279,23 +1273,6 @@ time {
   margin-top: var(--spacing-sm);
   color: var(--color-text-muted);
   text-wrap: pretty;
-}
-
-.series-list .post-title {
-  position: relative;
-}
-
-/* The part numbers hang in the margin, outside the hover background, so each
-   title lines up with its date. Phones have no margin, so there they sit in
-   the item's padding. */
-.series-list .post-title .series-part-number {
-  position: absolute;
-  min-width: 0;
-  right: 100%;
-  margin-right: calc(var(--spacing-md) + var(--spacing-sm));
-  color: var(--color-text-muted);
-  font-weight: 400;
-  font-variant-numeric: tabular-nums;
 }
 
 .series-list .is-planned {
@@ -1609,10 +1586,6 @@ html {
 @media (max-width: 600px) {
   html {
     font-size: 16px;
-  }
-
-  .series-list .post-title .series-part-number {
-    margin-right: var(--spacing-xs);
   }
 
   :root {

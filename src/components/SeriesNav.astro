@@ -15,7 +15,6 @@ const { series, part } = Astro.props.context;
   <ol class="series-parts">
     {series.parts.map((entry) => (
       <li class:list={['series-part', { 'is-planned': !entry.post }]}>
-        <span class="series-part-number">{entry.number}</span>
         {entry.post ? (
           <a
             href={`/${entry.post.id}`}

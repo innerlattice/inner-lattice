@@ -28,7 +28,7 @@ const description = `${series.description} ${published} of ${series.parts.length
         part.post ? (
           <li class="post-item">
             <a href={`/${part.post.id}`} class="post-title">
-              <span class="series-part-number">{part.number}</span> {part.title}
+              {part.title}
             </a>{" "}
             <span class="post-meta">
               <time datetime={part.post.data.date.toISOString()}>{formatDate(part.post.data.date)}</time>
@@ -37,7 +37,7 @@ const description = `${series.description} ${published} of ${series.parts.length
         ) : (
           <li class="post-item is-planned">
             <span class="post-title">
-              <span class="series-part-number">{part.number}</span> {part.title}
+              {part.title}
             </span>{" "}
             <span class="post-meta">forthcoming</span>
           </li>
