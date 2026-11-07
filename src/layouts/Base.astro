@@ -457,7 +457,76 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
         });
       };
 
+      // In-page links glide, briefly, so the reader sees which way the page
+      // moved. A long jump cuts to within a screen of its target and glides
+      // the rest, so no jump takes longer than a moment. Any wheel, touch, key
+      // or click stops the glide where it is, and a reader who asks for less
+      // motion gets a plain jump.
+      const glideToSections = () => {
+        let frame = 0;
+        const stop = () => cancelAnimationFrame(frame);
+        for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown']) {
+          window.addEventListener(type, stop, { passive: true });
+        }
+
+        const easeOut = (t: number) => 1 - (1 - t) ** 3;
+
+        const land = (target: HTMLElement) => {
+          if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+          target.classList.remove('is-landed');
+          void target.offsetWidth; // Restart the tint if it is already showing.
+          target.classList.add('is-landed');
+          target.addEventListener('animationend', () => target.classList.remove('is-landed'), { once: true });
+        };
+
+        document.addEventListener('click', (event) => {
+          if (event.defaultPrevented || event.button !== 0) return;
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+          if (!link || link.classList.contains('heading-link')) return;
+          const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+          if (!target) return;
+
+          event.preventDefault();
+          stop();
+          history.pushState(null, '', link.hash);
+
+          const padding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const destination = Math.min(
+            maxScroll,
+            Math.max(0, target.getBoundingClientRect().top + window.scrollY - padding),
+          );
+
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            window.scrollTo(0, destination);
+            land(target);
+            return;
+          }
+
+          const screen = window.innerHeight;
+          if (Math.abs(destination - window.scrollY) > screen) {
+            window.scrollTo(0, destination - Math.sign(destination - window.scrollY) * screen);
+          }
+
+          const start = window.scrollY;
+          const distance = destination - start;
+          const duration = Math.min(450, 200 + Math.abs(distance) * 0.3);
+          const began = performance.now();
+
+          const step = (now: number) => {
+            const t = Math.min(1, (now - began) / duration);
+            window.scrollTo(0, start + distance * easeOut(t));
+            if (t < 1) frame = requestAnimationFrame(step);
+            else land(target);
+          };
+          frame = requestAnimationFrame(step);
+        });
+      };
+
       copySectionLinks();
+      glideToSections();
       prepareResponsiveTables();
 
       if (document.readyState === 'loading') {
