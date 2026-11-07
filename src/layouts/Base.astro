@@ -150,13 +150,6 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
           for (const row of table.tBodies[0]?.rows ?? []) {
             Array.from(row.cells).forEach((cell, index) => {
               cell.dataset.label = headers[index] ?? '';
-              // Keep mixed text, emphasis and math together in one grid cell.
-              if (!cell.querySelector(':scope > .table-cell-content')) {
-                const content = document.createElement('div');
-                content.className = 'table-cell-content';
-                content.append(...cell.childNodes);
-                cell.append(content);
-              }
             });
           }
         }

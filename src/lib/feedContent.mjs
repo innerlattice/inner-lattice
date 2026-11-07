@@ -67,8 +67,9 @@ export function feedContent(html, pageUrl) {
     }
 
     if (hasClass(node, 'heading-link')) return replace();
-    if (hasClass(node, 'heading-tail')) {
-      // Unwrap, then visit the unwrapped children so the icon link inside goes too.
+    if (hasClass(node, 'heading-tail') || hasClass(node, 'table-cell-content')) {
+      // Unwrap, then visit the unwrapped children so anything inside them,
+      // such as a heading's icon link, is handled too.
       parent.children.splice(index, 1, ...node.children);
       return index;
     }

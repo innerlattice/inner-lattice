@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import rehypeHeadingLinks from './src/plugins/rehypeHeadingLinks.mjs';
+import rehypeTableCells from './src/plugins/rehypeTableCells.mjs';
 import remarkInlineSvg from './src/plugins/remarkInlineSvg.mjs';
 import remarkListBlockMath from './src/plugins/remarkListBlockMath.mjs';
 import { readPostDates } from './src/lib/postDates.mjs';
@@ -32,6 +33,6 @@ export default defineConfig({
     },
     remarkPlugins: [[remarkMath, { singleDollarTextMath: true }], remarkListBlockMath, remarkInlineSvg],
     // Heading ids must exist before the heading links can point at them.
-    rehypePlugins: [rehypeKatex, rehypeHeadingIds, rehypeHeadingLinks],
+    rehypePlugins: [rehypeKatex, rehypeHeadingIds, rehypeHeadingLinks, rehypeTableCells],
   },
 });
