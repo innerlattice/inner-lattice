@@ -1439,7 +1439,7 @@ html {
 .toc-item a {
   position: relative;
   display: block;
-  padding-block: var(--spacing-xxs);
+  padding-block: var(--spacing-xs);
   padding-left: var(--spacing-md);
   color: var(--color-text-muted);
   text-decoration: none;
