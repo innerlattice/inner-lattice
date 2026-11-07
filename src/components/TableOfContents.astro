@@ -96,8 +96,16 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
       requestAnimationFrame(update);
     };
 
+    // The fade at the bottom of the inset box only shows when there is more to scroll to.
+    const markScrollable = () =>
+      list.classList.toggle('is-scrollable', list.scrollHeight > list.clientHeight + 1);
+
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', () => {
+      markScrollable();
+      schedule();
+    });
+    markScrollable();
     update();
   }
 </script>
