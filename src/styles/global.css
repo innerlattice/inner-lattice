@@ -272,6 +272,7 @@
   --duration-theme: 0.5s;
   --duration-landing: 1.6s;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* Diagram text, in SVG units. */
   --diagram-text-size: 13px;
@@ -415,8 +416,15 @@ header {
   transform-box: view-box;
   transform-origin: 12px 12px;
   transition:
-    transform var(--duration-theme) var(--ease-out),
-    opacity var(--duration-theme) var(--ease-out);
+    transform var(--duration-theme) var(--ease-in-out),
+    opacity calc(var(--duration-theme) / 2) ease;
+}
+
+/* Parts that leave fade in the first half of the morph; parts that arrive
+   wait for the second half, so the two never crowd each other. */
+[data-theme-current="light"] .theme-icon-rays,
+[data-theme-current="system"] .theme-icon-ring {
+  transition-delay: 0s, calc(var(--duration-theme) / 2);
 }
 
 .theme-icon-rays {
@@ -470,6 +478,10 @@ header {
   display: none;
 }
 
+/* The toggle's box takes its new size at once. Animating it would stretch the
+   live snapshot as the label changes length, swelling the icon and squeezing
+   the text. */
+::view-transition-group(theme-toggle),
 ::view-transition-new(theme-toggle) {
   animation: none;
 }
