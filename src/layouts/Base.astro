@@ -400,7 +400,15 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
           if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
             apply(choice);
           } else if (document.startViewTransition) {
-            document.startViewTransition(() => apply(choice));
+            // The transition's overlay takes the pointer, so the toggle would
+            // lose its hover look mid-change. Hold the look until the pointer
+            // or focus next moves, by which time hover is back in effect.
+            if (toggle.matches(':hover, :focus-visible')) toggle.dataset.held = '';
+            const release = () => delete toggle.dataset.held;
+            document.startViewTransition(() => apply(choice)).finished.finally(() => {
+              document.addEventListener('pointermove', release, { once: true });
+              toggle.addEventListener('focusout', release, { once: true });
+            });
           } else {
             const root = document.documentElement;
             root.classList.add('theme-switching');

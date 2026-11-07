@@ -373,7 +373,8 @@ header {
 }
 
 .theme-toggle:hover,
-.theme-toggle:focus-visible {
+.theme-toggle:focus-visible,
+.theme-toggle[data-held] {
   color: var(--color-text);
   opacity: 1;
 }
@@ -391,7 +392,8 @@ header {
 }
 
 .theme-toggle:hover .theme-toggle-label,
-.theme-toggle:focus-visible .theme-toggle-label {
+.theme-toggle:focus-visible .theme-toggle-label,
+.theme-toggle[data-held] .theme-toggle-label {
   opacity: 1;
   transform: none;
 }
