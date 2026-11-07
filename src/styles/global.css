@@ -82,6 +82,13 @@
   --night-750: #ccd7e1;
   --night-850: #e2e4e7;
 
+  /* Primitives: the link slate. The 700 and 750 neutrals with a little more
+     blue (1.6 times the chroma in OKLCH), at the same lightness and contrast. */
+  --slate-700: #415b74;
+  --slate-750: #304b64;
+  --night-slate-700: #a1b9d1;
+  --night-slate-750: #c6d8e8;
+
   /* Primitives: Rosé Pine Dawn (light) and Moon (dark). */
   --dawn-base: #faf4ed;
   --dawn-text: #575279;
@@ -144,8 +151,8 @@
   --color-text: light-dark(var(--neutral-850), var(--night-850));
   --color-text-muted: light-dark(var(--neutral-550), var(--night-500));
   --color-accent: light-dark(var(--neutral-650), var(--night-650));
-  --color-link: light-dark(var(--neutral-700), var(--night-700));
-  --color-link-hover: light-dark(var(--neutral-750), var(--night-750));
+  --color-link: light-dark(var(--slate-700), var(--night-slate-700));
+  --color-link-hover: light-dark(var(--slate-750), var(--night-slate-750));
   --color-tag-bg: light-dark(var(--neutral-125), var(--night-100));
   --color-tag-text: light-dark(var(--neutral-500), var(--night-500));
   --color-border: light-dark(var(--neutral-200), var(--night-200));
