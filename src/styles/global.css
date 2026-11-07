@@ -202,18 +202,40 @@
   --font-serif: 'Newsreader', serif;
   --font-mono: 'JetBrains Mono', monospace;
 
+  --shadow-raised: 0 var(--spacing-xs) var(--spacing-lg) light-dark(rgb(45 45 45 / 0.08), rgb(0 0 0 / 0.45));
+
+  /* Type. Essay sizes are fixed in px; interface sizes are in rem, so they
+     shrink with the root size on small screens. */
   --grid: 4px;
   --body-size: 20px;
   --body-line: 32px;
   --title-size: 40px;
   --section-size: 24px;
   --subsection-size: 20px;
+  --text-site-title: 24px;
+  --text-list-title: 1.1rem;
+  --text-ui: 0.875rem;
+  --text-small: 0.8rem;
+  --text-label: 0.75rem;
+  --text-meta: 14px;
+  --text-tag: 12px;
+  --line-site-title: 36px;
+  --line-ui: 24px;
+  --leading-snug: 1.4;
+  --leading-tight: 1.3;
+  --tracking-tight: -0.015em;
+  --tracking-tighter: -0.03em;
+  --tracking-wide: 0.01em;
   --heading-weight: 580;
   --emphasis-weight: 560;
   --sans-features: 'ss01' 1, 'ss05' 1, 'ss06' 1, 'ss10' 1, 'ss11' 1, 'ss12' 1;
 
-  --max-width: 864px;
+  /* Layout and spacing. */
+  --max-width: 828px;
   --wide-content-width: 62rem;
+  --measure: 40em;
+  --table-cell-max-width: 36rem;
+  --spacing-xxs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -223,8 +245,49 @@
   --spacing-xxxl: 64px;
   --page-gutter: var(--spacing-lg);
 
+  /* Shapes and controls. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  --radius-tag: 5px 3px 5px 3px;
+  --border-width: 1px;
+  --border-width-thick: 3px;
+  --focus-ring: 2px solid var(--color-border);
+  --focus-offset: 2px;
+  --underline-offset: 2px;
+  --control-size: 28px;
+  --icon-size: 16px;
+  --icon-stroke: 1.6;
+
+  /* Emphasis by opacity, for quiet interface elements. */
+  --opacity-disabled: 0.25;
+  --opacity-quiet: 0.4;
+  --opacity-muted: 0.6;
+  --opacity-strong: 0.9;
+
+  /* Motion. */
   --duration-fast: 0.15s;
   --duration-slow: 0.3s;
+  --duration-theme: 0.5s;
+  --duration-landing: 1.6s;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Diagram text, in SVG units. */
+  --diagram-text-size: 13px;
+  --diagram-head-size: 15px;
+  --diagram-note-size: 12px;
+
+  /* One-off sizes, named so they are set in one place. */
+  --diagram-wide-min-width: 60rem;
+  --diagram-narrow-min-width: 36rem;
+  --card-label-min-width: 6.5rem;
+
+  /* Stacking, lowest first. */
+  --z-raised: 1;
+  --z-above-link: 2;
+  --z-sidebar: 5;
+  --z-toast: 10;
 }
 
 :root[data-theme="light"] {
@@ -285,13 +348,23 @@ header {
   gap: var(--spacing-md);
 }
 
-/* Theme toggle: three choices, quiet until the pointer or focus reaches it. */
+/* Theme toggle: one button that steps through system, light and dark. It
+   stays quiet until the pointer or focus reaches it, then names the current
+   choice beside the icon. */
 .theme-toggle {
   display: flex;
-  gap: 2px;
+  align-items: center;
+  gap: var(--spacing-sm);
   margin-right: calc(-1 * var(--spacing-xs));
-  opacity: 0.35;
-  transition: opacity var(--duration-slow) ease;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  opacity: var(--opacity-quiet);
+  transition: opacity var(--duration-slow) ease, color var(--duration-fast) ease;
+  view-transition-name: theme-toggle;
 }
 
 .theme-toggle[hidden] {
@@ -299,66 +372,132 @@ header {
 }
 
 .theme-toggle:hover,
-.theme-toggle:focus-within {
+.theme-toggle:focus-visible {
+  color: var(--color-text);
   opacity: 1;
 }
 
-.theme-toggle button {
+.theme-toggle:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.theme-toggle-label {
+  font-size: var(--text-label);
+  opacity: 0;
+  transform: translateX(var(--spacing-xs));
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.theme-toggle:hover .theme-toggle-label,
+.theme-toggle:focus-visible .theme-toggle-label {
+  opacity: 1;
+  transform: none;
+}
+
+.theme-icon-frame {
   display: grid;
-  width: 28px;
-  height: 28px;
-  padding: 0;
+  width: var(--control-size);
+  height: var(--control-size);
   place-items: center;
-  color: var(--color-text-muted);
-  background: none;
-  border: 0;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease;
 }
 
-.theme-toggle button:hover {
-  color: var(--color-link-hover);
+.theme-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  overflow: visible;
 }
 
-.theme-toggle button[aria-checked="true"] {
-  color: var(--color-text);
-  background-color: var(--color-surface);
+/* The icon is one drawing in three poses. The sun is a small disc with rays;
+   the moon is a full disc with a bite taken out; system is a ring, half
+   filled. Each part moves between poses rather than swapping. */
+.theme-icon :is(.theme-icon-rays, .theme-icon-ring, .theme-icon-body, .theme-icon-bite, .theme-icon-shade) {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition:
+    transform var(--duration-theme) var(--ease-out),
+    opacity var(--duration-theme) var(--ease-out);
 }
 
-.theme-toggle button:focus-visible {
-  outline: 2px solid var(--color-border);
-  outline-offset: 1px;
-}
-
-.theme-toggle svg {
-  width: 16px;
-  height: 16px;
+.theme-icon-rays {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.6;
+  stroke-width: var(--icon-stroke);
   stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
-.theme-toggle svg .fill {
-  fill: currentColor;
-  stroke: none;
+.theme-icon-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke);
 }
+
+.theme-icon-body {
+  fill: currentColor;
+}
+
+/* Light: a small sun. */
+[data-theme-current="light"] .theme-icon-body { transform: scale(0.5); }
+[data-theme-current="light"] .theme-icon-ring { opacity: 0; transform: scale(0.5); }
+[data-theme-current="light"] .theme-icon-bite { transform: translate(8px, -8px); }
+[data-theme-current="light"] .theme-icon-shade { transform: translateX(-10px); }
+
+/* Dark: a crescent. */
+[data-theme-current="dark"] .theme-icon-rays { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+[data-theme-current="dark"] .theme-icon-ring { opacity: 0; }
+[data-theme-current="dark"] .theme-icon-shade { transform: translateX(-10px); }
+
+/* System: half light, half dark. */
+[data-theme-current="system"] .theme-icon-rays { opacity: 0; transform: rotate(90deg) scale(0.5); }
+[data-theme-current="system"] .theme-icon-bite { transform: translate(8px, -8px); }
 
 @media (hover: none) {
   .theme-toggle {
-    opacity: 0.6;
+    opacity: var(--opacity-muted);
+  }
+}
+
+/* The page crossfades between themes as one image, so every colour changes at
+   the same pace. The toggle is left out of the crossfade so its icon can
+   morph instead. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-theme);
+  animation-timing-function: ease;
+}
+
+::view-transition-old(theme-toggle) {
+  display: none;
+}
+
+::view-transition-new(theme-toggle) {
+  animation: none;
+}
+
+/* Without view transitions, colours change together on one timing instead. */
+.theme-switching,
+.theme-switching * {
+  transition:
+    color var(--duration-theme) ease,
+    background-color var(--duration-theme) ease,
+    border-color var(--duration-theme) ease,
+    fill var(--duration-theme) ease,
+    stroke var(--duration-theme) ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-icon * {
+    transition: none !important;
   }
 }
 
 .site-title {
-  font-size: 24px;
-  line-height: 36px;
+  font-size: var(--text-site-title);
+  line-height: var(--line-site-title);
   font-weight: 500;
   color: var(--color-text);
   text-decoration: none;
-  letter-spacing: -0.04rem;
+  letter-spacing: var(--tracking-tighter);
 }
 
 .site-title .ce-c {
@@ -379,7 +518,7 @@ main {
 footer {
   padding-top: var(--spacing-lg);
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-ui);
 }
 
 .site-footer {
@@ -389,19 +528,8 @@ footer {
 }
 
 .site-footer .support {
-  max-width: 40em;
+  max-width: var(--measure);
   text-wrap: pretty;
-}
-
-.site-footer a {
-  color: var(--color-link);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.site-footer a:hover {
-  color: var(--color-link-hover);
-  text-decoration-line: none;
 }
 
 /* The feed link leads; the copyright, least needed, sits at the far right. */
@@ -423,6 +551,28 @@ footer {
   margin-bottom: 0;
 }
 
+/* Links. A link within the site takes the link colour and no underline; a
+   link that leaves the site is underlined, so a reader can tell the two apart
+   before following one. Components may quieten internal links further. */
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color var(--duration-fast) ease;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+a[href^="http"]:not([href^="https://innerlattice.com"]) {
+  text-decoration: underline;
+  text-underline-offset: var(--underline-offset);
+}
+
+a[href^="http"]:not([href^="https://innerlattice.com"]):hover {
+  text-decoration-line: none;
+}
+
 /* Post List */
 .post-list {
   list-style: none;
@@ -434,7 +584,7 @@ footer {
   margin-left: calc(-1 * var(--spacing-md));
   margin-right: calc(-1 * var(--spacing-md));
   padding: var(--spacing-md);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   transition: background-color var(--duration-fast) ease;
 }
 
@@ -446,7 +596,7 @@ footer {
   margin-bottom: var(--spacing-xs);
   position: relative;
   display: block;
-  font-size: 1.1rem;
+  font-size: var(--text-list-title);
   font-weight: 500;
   color: var(--color-text);
   text-decoration: none;
@@ -457,13 +607,13 @@ footer {
   content: "";
   position: absolute;
   inset: calc(-1 * var(--spacing-md));
-  z-index: 1;
-  border-radius: 8px;
+  z-index: var(--z-raised);
+  border-radius: var(--radius-lg);
 }
 
 .post-title:focus-visible {
-  outline: 2px solid var(--color-border);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 .post-meta {
@@ -471,8 +621,8 @@ footer {
   align-items: center;
   gap: var(--spacing-md);
   flex-wrap: wrap;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: var(--text-meta);
+  line-height: var(--line-ui);
   color: var(--color-text-muted);
 }
 
@@ -488,14 +638,14 @@ time {
 
 .tag {
   position: relative;
-  z-index: 2;
+  z-index: var(--z-above-link);
   display: inline-block;
-  font-size: 12px;
-  line-height: 24px;
+  font-size: var(--text-tag);
+  line-height: var(--line-ui);
   padding-inline: var(--spacing-sm);
   background-color: var(--color-tag-bg);
   color: var(--color-tag-text);
-  border-radius: 5px 3px 5px 3px;
+  border-radius: var(--radius-tag);
   text-decoration: none;
   transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
 }
@@ -512,7 +662,7 @@ time {
 .tag-label {
   margin-bottom: var(--spacing-xs);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   text-transform: lowercase;
 }
 
@@ -520,7 +670,7 @@ time {
   display: inline-block;
   color: var(--color-text-muted);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: var(--text-ui);
 }
 
 .back-link:hover {
@@ -558,7 +708,7 @@ time {
 .tag-header h1,
 .post-content h1 {
   font-size: var(--title-size);
-  letter-spacing: -0.015em;
+  letter-spacing: var(--tracking-tight);
 }
 
 .post-content h2 {
@@ -615,24 +765,13 @@ time {
   margin-bottom: 0;
 }
 
-.post-content a {
-  color: var(--color-link);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.post-content a:hover {
-  color: var(--color-link-hover);
-  text-decoration-line: none;
-}
-
 .post-content :is(ul, ol, dl) {
   margin-bottom: var(--spacing-xl);
   padding-left: var(--spacing-lg);
 }
 
 .post-content blockquote {
-  border-left: 3px solid var(--color-border);
+  border-left: var(--border-width-thick) solid var(--color-border);
   padding-left: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
   color: var(--color-text-muted);
@@ -642,21 +781,21 @@ time {
 .post-content code {
   font-family: var(--font-mono);
   font-feature-settings: normal;
-  font-size: 0.8rem;
+  font-size: var(--text-small);
   color: var(--color-inline-code-text);
   background-color: var(--color-inline-code-bg);
-  padding-block: calc(var(--spacing-xs) / 2);
+  padding-block: var(--spacing-xxs);
   padding-inline: var(--spacing-xs);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .post-content pre {
   background-color: var(--color-code-bg);
   color: var(--color-code-text);
-  font-size: 0.8rem;
-  line-height: 1.43;
+  font-size: var(--text-small);
+  line-height: var(--leading-snug);
   padding: var(--spacing-md);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow-x: auto;
   margin-bottom: var(--spacing-xl);
   box-shadow: var(--shadow-inset);
@@ -688,7 +827,7 @@ time {
   overflow-y: hidden;
   padding-block: var(--spacing-sm);
   padding-inline: var(--spacing-md);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
 }
 
@@ -698,19 +837,19 @@ time {
 
 .post-content .katex-display::-webkit-scrollbar-thumb {
   background-color: var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .post-content .mermaid-container {
   position: relative;
   margin-bottom: var(--spacing-xl);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface-raised);
 }
 
 .post-content .mermaid {
   padding: var(--spacing-lg);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow-x: auto;
   overflow-y: hidden;
   display: flex;
@@ -728,34 +867,34 @@ time {
 
 .post-content .mermaid::-webkit-scrollbar-thumb {
   background-color: var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .post-content .mermaid-download {
   position: absolute;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
-  z-index: 1;
+  z-index: var(--z-raised);
   display: grid;
-  width: 1.8rem;
-  height: 1.8rem;
+  width: var(--control-size);
+  height: var(--control-size);
   padding: 0;
   place-items: center;
   color: var(--color-text-muted);
   background: color-mix(in srgb, var(--color-surface-raised) 82%, transparent);
   border: 0;
-  border-radius: 5px;
-  opacity: 0.48;
+  border-radius: var(--radius-md);
+  opacity: var(--opacity-quiet);
   cursor: pointer;
   transition: color var(--duration-fast) ease, opacity var(--duration-fast) ease, background-color var(--duration-fast) ease;
 }
 
 .post-content .mermaid-download svg {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-size);
+  height: var(--icon-size);
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.6;
+  stroke-width: var(--icon-stroke);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -764,17 +903,17 @@ time {
 .post-content .mermaid-download:focus-visible {
   color: var(--color-link-hover);
   background-color: var(--color-surface);
-  opacity: 0.9;
+  opacity: var(--opacity-strong);
 }
 
 .post-content .mermaid-download:focus-visible {
-  outline: 2px solid var(--color-border);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 .post-content .mermaid-download:disabled {
   cursor: wait;
-  opacity: 0.25;
+  opacity: var(--opacity-disabled);
 }
 
 /* Inline SVG diagrams. Each group sets a hue; shapes and text read it. */
@@ -792,7 +931,7 @@ time {
 }
 
 .post-content .diagram-frame svg.wide {
-  min-width: 60rem;
+  min-width: var(--diagram-wide-min-width);
 }
 
 .post-content .diagram-frame {
@@ -800,8 +939,8 @@ time {
   overflow-x: auto;
   overflow-y: hidden;
   background-color: var(--diagram-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -811,15 +950,15 @@ time {
 
 .post-content .diagram-frame::-webkit-scrollbar-thumb {
   background-color: var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .post-content figure.diagram figcaption {
   margin-top: var(--spacing-sm);
   font-family: var(--font-sans);
   font-feature-settings: var(--sans-features);
-  font-size: 0.83rem;
-  line-height: 1.45;
+  font-size: var(--text-small);
+  line-height: var(--leading-snug);
   color: var(--color-text-muted);
 }
 
@@ -906,18 +1045,18 @@ time {
 
 .diagram text {
   fill: var(--color-text);
-  font-size: 13px;
+  font-size: var(--diagram-text-size);
 }
 
 .diagram .head {
   fill: var(--hue-ink);
-  font-size: 15px;
+  font-size: var(--diagram-head-size);
   font-weight: var(--heading-weight);
 }
 
 .diagram .label {
   fill: var(--color-text);
-  font-size: 13px;
+  font-size: var(--diagram-text-size);
 }
 
 .diagram .strong {
@@ -930,14 +1069,14 @@ time {
 
 .diagram .note {
   fill: var(--color-text-muted);
-  font-size: 12px;
+  font-size: var(--diagram-note-size);
 }
 
 .diagram .axis {
   fill: var(--color-text-muted);
-  font-size: 12px;
+  font-size: var(--diagram-note-size);
   font-weight: 600;
-  letter-spacing: 0.01em;
+  letter-spacing: var(--tracking-wide);
 }
 
 .post-content table {
@@ -957,18 +1096,24 @@ time {
 .post-content td {
   padding-block: var(--spacing-xs);
   padding-inline: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-table-border);
+  border-bottom: var(--border-width) solid var(--color-table-border);
   text-align: left;
   vertical-align: top;
+}
+
+/* Each cell's content is wrapped at build time, because browsers ignore a
+   maximum width on the cell itself. A long cell wraps instead of stretching
+   its column across the page. */
+.post-content .table-cell-content {
+  max-width: var(--table-cell-max-width);
 }
 
 .post-content th {
   font-family: var(--font-sans);
   font-feature-settings: var(--sans-features);
-  font-size: 0.83rem;
+  font-size: var(--text-small);
   font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.005rem;
+  line-height: var(--leading-tight);
   text-transform: lowercase;
   color: var(--color-table-header-text);
   background-color: var(--color-table-header-bg);
@@ -985,12 +1130,12 @@ time {
 
 .post-content table::-webkit-scrollbar-thumb {
   background-color: var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .post-content hr {
   border: none;
-  border-top: 1px solid var(--color-border);
+  border-top: var(--border-width) solid var(--color-border);
   margin-bottom: var(--spacing-xl);
 }
 
@@ -1004,25 +1149,37 @@ time {
   margin-bottom: 0;
 }
 
+/* The end of an essay: the way back on the left, the next part of its series
+   on the right. */
 .post-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--spacing-sm) var(--spacing-lg);
   padding-top: var(--spacing-lg);
+  font-size: var(--text-ui);
 }
 
 .post-footer a {
   color: var(--color-text-muted);
-  text-decoration: none;
-  font-size: 0.875rem;
 }
 
 .post-footer a:hover {
   color: var(--color-link-hover);
 }
 
+.post-footer .series-next {
+  margin-left: auto;
+  color: var(--color-link);
+  text-align: right;
+  text-transform: lowercase;
+}
+
 /* Not found */
 .not-found-code {
   margin-bottom: var(--spacing-xs);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1042,69 +1199,42 @@ time {
 .post-series {
   margin-bottom: var(--spacing-xs);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   text-transform: lowercase;
-}
-
-.post-series a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.post-series a:hover {
-  color: var(--color-link-hover);
 }
 
 .series-nav {
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-border);
-  font-size: 0.875rem;
+  border-top: var(--border-width) solid var(--color-border);
+  font-size: var(--text-ui);
 }
 
 .series-nav-label {
   margin-bottom: var(--spacing-sm);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   text-transform: lowercase;
 }
 
-.series-nav-label a {
-  color: inherit;
-  text-underline-offset: 2px;
-}
-
-.series-nav-label a:hover {
-  color: var(--color-link-hover);
-}
-
 .series-parts {
-  margin-bottom: var(--spacing-md);
   list-style: none;
 }
 
+/* The current part is marked with the same arrow as the current section in
+   the contents, hung in the margin to the left of the numbers. */
 .series-part {
+  position: relative;
   display: flex;
   gap: var(--spacing-sm);
-  padding-block: 2px;
+  padding-block: var(--spacing-xxs);
   text-transform: lowercase;
 }
 
 .series-part-number {
-  min-width: 1.2em;
+  min-width: var(--spacing-md);
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
-}
-
-.series-part a {
-  color: var(--color-link);
-  text-decoration: none;
-}
-
-.series-part a:hover {
-  color: var(--color-link-hover);
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
 .series-part a[aria-current] {
@@ -1112,37 +1242,26 @@ time {
   font-weight: 500;
 }
 
-.series-part a[aria-current]::after {
-  content: " ←";
+.series-part:has(a[aria-current])::before {
+  content: "→";
+  position: absolute;
+  right: 100%;
+  margin-right: var(--spacing-sm);
   color: var(--color-accent);
-  font-weight: 400;
 }
 
 .series-part.is-planned {
   color: var(--color-text-muted);
-  opacity: 0.7;
+  opacity: var(--opacity-muted);
 }
 
 .series-forthcoming {
   margin-left: var(--spacing-xs);
-  font-size: 0.75rem;
-}
-
-.series-next {
-  display: inline-block;
-  color: var(--color-link);
-  text-decoration: none;
-  text-transform: lowercase;
-}
-
-.series-next:hover {
-  color: var(--color-link-hover);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  font-size: var(--text-label);
 }
 
 .series-description {
-  max-width: 40em;
+  max-width: var(--measure);
   margin-top: var(--spacing-sm);
   color: var(--color-text-muted);
   text-wrap: pretty;
@@ -1153,22 +1272,23 @@ time {
 }
 
 .series-list .is-planned {
-  opacity: 0.55;
+  opacity: var(--opacity-muted);
 }
 
 .series-list .is-planned:hover {
   background-color: transparent;
 }
 
-/* Section links. The icon follows the heading's last word. */
+/* In-page links. A jump glides briefly so the reader sees which way the page
+   moved; long jumps cut most of the distance first (see Base.astro). A brief
+   tint marks where the jump landed. */
 html {
   scroll-padding-top: var(--spacing-xl);
 }
 
-/* In-page links jump rather than glide, so a long essay never takes the page
-   away from the reader. A brief tint marks where the jump landed. */
-.post-content :is(h2, h3, h4):target {
-  animation: target-landed 1.6s ease-out;
+.post-content :is(h2, h3, h4):target,
+.post-content .is-landed {
+  animation: target-landed var(--duration-landing) ease-out;
 }
 
 @keyframes target-landed {
@@ -1178,19 +1298,27 @@ html {
   }
 }
 
+/* A heading takes focus when a link lands on it, for keyboard and screen
+   reader users; the tint already shows where it is. */
+.post-content [tabindex="-1"]:focus {
+  outline: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .post-content :is(h2, h3, h4):target {
+  .post-content :is(h2, h3, h4):target,
+  .post-content .is-landed {
     animation: none;
   }
 }
 
+/* Section links. The icon follows the heading's last word. */
 .post-content .heading-tail {
   white-space: nowrap;
 }
 
 .post-content .heading-link {
   display: inline-block;
-  margin-left: 0.3em;
+  margin-left: var(--spacing-sm);
   color: var(--color-text-muted);
   vertical-align: baseline;
   text-decoration: none;
@@ -1198,6 +1326,7 @@ html {
   transition: opacity var(--duration-fast) ease, color var(--duration-fast) ease;
 }
 
+/* The icon scales with its heading. */
 .post-content .heading-link svg {
   display: block;
   width: 0.7em;
@@ -1220,15 +1349,15 @@ html {
 }
 
 .post-content .heading-link:focus-visible {
-  outline: 2px solid var(--color-border);
-  outline-offset: 2px;
-  border-radius: 3px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
 }
 
 /* Touch screens have no hover, so the icon stays faintly visible. */
 @media (hover: none) {
   .post-content .heading-link {
-    opacity: 0.35;
+    opacity: var(--opacity-quiet);
   }
 }
 
@@ -1236,13 +1365,13 @@ html {
   position: fixed;
   bottom: var(--spacing-lg);
   left: 50%;
-  z-index: 10;
+  z-index: var(--z-toast);
   padding-block: var(--spacing-xs);
   padding-inline: var(--spacing-md);
-  font-size: 0.8rem;
+  font-size: var(--text-small);
   color: var(--color-bg);
   background-color: var(--color-text);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, var(--spacing-sm));
@@ -1250,55 +1379,76 @@ html {
 }
 
 .heading-link-toast[data-visible] {
-  opacity: 0.92;
+  opacity: var(--opacity-strong);
   transform: translate(-50%, 0);
 }
 
-/* Table of contents. Below the sidebar breakpoint it is an inset box that
-   scrolls on its own; above it, a quiet list in the left margin. */
-.toc {
-  --toc-width: 12rem;
-  margin-bottom: var(--spacing-xl);
-  padding-top: var(--spacing-sm);
-  padding-inline: var(--spacing-md);
-  background-color: var(--color-surface);
-  border-radius: 8px;
-  font-size: 0.8rem;
-  line-height: 1.4;
+/* Table of contents, in three layouts by the room in the left margin.
+   - Narrow windows: an inset box above the essay, as wide as its longest
+     entry, that scrolls on its own.
+   - Some room: the left edge of a sidebar, fading out towards the text.
+     Hovering it or focusing a link brings the full sidebar forward.
+   - Enough room: the full sidebar, quiet until hovered. */
+@property --toc-fade {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
 }
 
+.toc {
+  --toc-width: 12rem;
+  --toc-pad: var(--spacing-md);
+  --toc-gap: var(--spacing-xl);
+  --toc-inset-height: 13rem;
+  --toc-sidebar-height: 70vh;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: var(--spacing-xl);
+  padding-block: var(--spacing-sm);
+  padding-inline: var(--toc-pad);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-small);
+  line-height: var(--leading-snug);
+}
+
+/* The list names itself to assistive technology; sighted readers can tell
+   what it is. */
 .toc-label {
-  margin-bottom: var(--spacing-xs);
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .toc-list {
   position: relative;
-  max-height: 13rem;
+  max-height: var(--toc-inset-height);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-bottom: var(--spacing-sm);
   list-style: none;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
+}
+
+.toc-list.is-scrollable {
   mask-image: linear-gradient(to bottom, #000 calc(100% - var(--spacing-lg)), transparent);
 }
 
 .toc-item a {
   position: relative;
   display: block;
-  padding-block: 3px;
-  padding-left: 1.1em;
+  padding-block: var(--spacing-xxs);
+  padding-left: var(--spacing-md);
   color: var(--color-text-muted);
   text-decoration: none;
   text-transform: lowercase;
-  transition: color var(--duration-fast) ease;
 }
 
 .toc-depth-3 a {
-  padding-left: 2.1em;
-  font-size: 0.95em;
+  padding-left: calc(var(--spacing-md) + var(--spacing-lg));
 }
 
 .toc-item a:hover {
@@ -1315,12 +1465,12 @@ html {
   left: 0;
   color: var(--color-accent);
   opacity: 0;
-  transform: translateX(-0.3em);
+  transform: translateX(calc(-1 * var(--spacing-xs)));
   transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
 }
 
 .toc-depth-3 a::before {
-  left: 1em;
+  left: var(--spacing-lg);
 }
 
 .toc-item a[aria-current]::before {
@@ -1328,30 +1478,46 @@ html {
   transform: none;
 }
 
-/* The sidebar needs the left margin to itself: its width, a gap, and a gutter
-   on each side of the page. */
-@media (min-width: 1400px) {
+/* The margin layouts. The sidebar's text ends --toc-gap short of the essay's
+   text; the edge it starts from is the window's edge plus --toc-pad.
+   The breakpoints follow from the tokens, at an 18px root:
+   - 1068px leaves 96px of sidebar, the least worth showing.
+   - 1308px leaves the full 12rem. */
+@media (min-width: 1068px) {
   .toc {
+    --toc-end: calc(50% - var(--max-width) / 2 + var(--page-gutter) - var(--toc-gap));
     position: fixed;
     top: 50%;
-    /* Percentages here are of the viewport without its scrollbar. */
-    left: calc(50% - var(--max-width) / 2 - var(--toc-width) - var(--spacing-md));
-    width: var(--toc-width);
+    left: max(0px, calc(var(--toc-end) - var(--toc-width) - var(--toc-pad)));
+    z-index: var(--z-sidebar);
+    width: min(calc(var(--toc-width) + 2 * var(--toc-pad)), calc(var(--toc-end) + var(--toc-pad)));
+    max-width: none;
     margin: 0;
-    padding: 0;
-    background: none;
-    opacity: 0.4;
+    padding-block: 0;
+    overflow: hidden;
+    background-color: transparent;
+    opacity: var(--opacity-quiet);
     transform: translateY(-50%);
-    transition: opacity var(--duration-slow) ease;
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--toc-pad) - var(--toc-fade)), transparent calc(100% - var(--toc-pad)));
+    transition:
+      opacity var(--duration-slow) ease,
+      width var(--duration-slow) var(--ease-out),
+      background-color var(--duration-slow) ease,
+      box-shadow var(--duration-slow) ease,
+      --toc-fade var(--duration-slow) ease;
+    /* Leaving waits a moment, so a pointer that slips off does not collapse it. */
+    transition-delay: var(--duration-fast);
   }
 
   .toc:hover,
   .toc:focus-within {
     opacity: 1;
+    transition-delay: 0s;
   }
 
   .toc-list {
-    max-height: 70vh;
+    width: var(--toc-width);
+    max-height: var(--toc-sidebar-height);
     padding-block: var(--spacing-lg);
     scrollbar-width: none;
     mask-image: linear-gradient(
@@ -1365,15 +1531,6 @@ html {
 
   .toc-list::-webkit-scrollbar {
     display: none;
-  }
-
-  .toc-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 
   /* Wide tables and diagrams normally break out on both sides. Beside the
@@ -1396,6 +1553,30 @@ html {
   }
 }
 
+/* Only the edge of the sidebar fits: its entries fade out towards the text,
+   and the whole list comes forward over the margin when wanted. */
+@media (min-width: 1068px) and (max-width: 1307.98px) {
+  .toc {
+    --toc-fade: var(--spacing-xxl);
+  }
+
+  .toc:hover,
+  .toc:focus-within {
+    --toc-fade: 0px;
+    width: calc(var(--toc-width) + 2 * var(--toc-pad));
+    background-color: var(--color-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-raised);
+    transition-delay: var(--duration-fast);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc {
+    transition: opacity var(--duration-slow) ease;
+  }
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   html {
@@ -1412,13 +1593,18 @@ html {
 
   /* Wide diagrams scroll rather than shrinking their labels below 11px. */
   .post-content .diagram-frame svg {
-    min-width: 36rem;
+    min-width: var(--diagram-narrow-min-width);
   }
 
   .post-content table {
     width: 100%;
     max-width: 100%;
     white-space: nowrap;
+  }
+
+  /* A table too narrow to become cards scrolls sideways with unwrapped cells. */
+  .post-content table:not(.mobile-card-table) .table-cell-content {
+    max-width: none;
   }
 
   .post-content .mobile-card-table {
@@ -1455,13 +1641,13 @@ html {
     padding-block: var(--spacing-xs);
     padding-inline: var(--spacing-md);
     background-color: var(--color-table-header-bg);
-    border: 1px solid var(--color-table-border);
-    border-radius: 8px;
+    border: var(--border-width) solid var(--color-table-border);
+    border-radius: var(--radius-lg);
   }
 
   .post-content .mobile-card-table td {
     display: grid;
-    grid-template-columns: minmax(6.5rem, 38%) minmax(0, 1fr);
+    grid-template-columns: minmax(var(--card-label-min-width), 38%) minmax(0, 1fr);
     gap: calc(var(--spacing-sm) + var(--spacing-xs));
     padding-block: var(--spacing-sm);
     padding-inline: 0;
@@ -1475,9 +1661,9 @@ html {
   .post-content .mobile-card-table td::before {
     content: attr(data-label);
     font-family: var(--font-sans);
-    font-size: 0.78rem;
+    font-size: var(--text-small);
     font-weight: 600;
-    line-height: 1.35;
+    line-height: var(--leading-tight);
     color: var(--color-table-header-text);
     text-transform: lowercase;
   }
