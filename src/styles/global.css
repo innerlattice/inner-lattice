@@ -1279,8 +1279,21 @@ time {
   text-wrap: pretty;
 }
 
+.series-list .post-title {
+  position: relative;
+}
+
+/* The part numbers hang in the margin, outside the hover background, so each
+   title lines up with its date. Phones have no margin, so there they sit in
+   the item's padding. */
 .series-list .post-title .series-part-number {
-  margin-right: var(--spacing-xs);
+  position: absolute;
+  min-width: 0;
+  right: 100%;
+  margin-right: calc(var(--spacing-md) + var(--spacing-sm));
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
 }
 
 .series-list .is-planned {
@@ -1593,6 +1606,10 @@ html {
 @media (max-width: 600px) {
   html {
     font-size: 16px;
+  }
+
+  .series-list .post-title .series-part-number {
+    margin-right: var(--spacing-xs);
   }
 
   :root {
