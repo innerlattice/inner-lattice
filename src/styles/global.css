@@ -1503,19 +1503,20 @@ html {
   transform: none;
 }
 
-/* The margin layouts. The sidebar's text ends --toc-gap short of the essay's
-   text; the edge it starts from is the window's edge plus --toc-pad.
+/* The margin layouts. The sidebar sits against the window's left edge, at
+   the same gutter as the page, so the essay keeps the open space beside it.
+   Its text is never closer than --toc-gap to the essay's text.
    The breakpoints follow from the tokens, at an 18px root:
-   - 1068px leaves 96px of sidebar, the least worth showing.
-   - 1308px leaves the full 12rem. */
-@media (min-width: 1068px) {
+   - 1084px leaves 96px of sidebar, the least worth showing.
+   - 1324px leaves the full 12rem. */
+@media (min-width: 1084px) {
   .toc {
-    --toc-end: calc(50% - var(--max-width) / 2 + var(--page-gutter) - var(--toc-gap));
+    --toc-room: calc(50% - var(--max-width) / 2 - var(--toc-gap));
     position: fixed;
     top: 50%;
-    left: max(0px, calc(var(--toc-end) - var(--toc-width) - var(--toc-pad)));
+    left: calc(var(--page-gutter) - var(--toc-pad));
     z-index: var(--z-sidebar);
-    width: min(calc(var(--toc-width) + 2 * var(--toc-pad)), calc(var(--toc-end) + var(--toc-pad)));
+    width: calc(min(var(--toc-width), var(--toc-room)) + 2 * var(--toc-pad));
     max-width: none;
     margin: 0;
     padding-block: 0;
@@ -1580,7 +1581,7 @@ html {
 
 /* Only the edge of the sidebar fits: its entries fade out towards the text,
    and the whole list comes forward over the margin when wanted. */
-@media (min-width: 1068px) and (max-width: 1307.98px) {
+@media (min-width: 1084px) and (max-width: 1323.98px) {
   .toc {
     --toc-fade: var(--spacing-xxl);
   }
