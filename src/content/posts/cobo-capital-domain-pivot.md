@@ -1,8 +1,10 @@
 ---
-title: "COBO: Capital Domain Pivot"
-date: 2026-06-17T06:21:07-04:00
+title: "Five Forms of Capital"
+date: 2026-06-15T06:21:07-04:00
 tags: ["organizations", "ontology", "systems-thinking", "operations", "knowledge-base"]
 ---
+
+[The previous part](/cobo-living-systems-edition) groups functions by the subsystem each one belongs to. This part follows what the subsystems pass between them. It traces five forms of capital, and for each form it names the functions that bring the capital in, hold it, convert it into another form, and govern it.
 
 > **Thesis**: The organization operates by managing and transforming five distinct forms of Capital. This view reveals the ecosystem of value exchange.
 

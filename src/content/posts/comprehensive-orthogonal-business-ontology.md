@@ -1,10 +1,8 @@
 ---
-title: "Comprehensive Orthogonal Business Ontology"
-date: 2026-06-17T06:21:07-04:00
+title: "The Comprehensive Orthogonal Business Ontology (COBO)"
+date: 2026-06-13T06:21:07-04:00
 tags: ["ontology", "organizations", "systems-thinking", "operations", "knowledge-base", "agents"]
 ---
-
-	# The Comprehensive Orthogonal Business Ontology (COBO)
 
 > **Purpose**: To provide a mutually exclusive, collectively exhaustive (MECE) map of every function within a standard technology company. This ontology serves as the "source code" for automating the enterprise.
 

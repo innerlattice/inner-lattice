@@ -1,8 +1,10 @@
 ---
-title: "Organizational Planes: The Structure of the Autonomous Organization"
-date: 2026-06-17T06:21:07-04:00
+title: "The Four Planes of the Autonomous Organization"
+date: 2026-06-16T06:21:07-04:00
 tags: ["organizations", "systems-thinking", "ontology", "knowledge-base"]
 ---
+
+[The living-system version](/cobo-living-systems-edition) sorts its subsystems into four planes without defining the planes themselves. This part defines each plane by the kind of thing it contains, names the systems a technology company keeps in each, and ends with the order in which an autonomous organization has to build them.
 
 > **Thesis**: The autonomous organization is a living system composed of four interacting planes.
 > 1. **Infrastructure**: The physical/virtual space and channels (Where things happen).

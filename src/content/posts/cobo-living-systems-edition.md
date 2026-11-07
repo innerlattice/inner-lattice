@@ -1,8 +1,10 @@
 ---
-title: "COBO: Living Systems Edition"
-date: 2026-06-17T06:21:07-04:00
+title: "The Organization as a Living System"
+date: 2026-06-14T06:21:07-04:00
 tags: ["organizations", "ontology", "systems-thinking", "agents", "knowledge-base"]
 ---
+
+The [first version of COBO](/comprehensive-orthogonal-business-ontology) groups a company's functions by department, which says who performs each function. This version groups the same functions by what each one does for the company as a whole, using the subsystems that James Grier Miller proposed for every living system. The numbered headings are Miller's subsystems, and the bold numbers are the functions' nodes in the first version.
 
 > **Thesis**: The organization is a living system. Its capabilities are not "Departments" (like Marketing or Engineering) but **Biological Subsystems** (like Ingestor, Decider, Producer) operating across four planes.
 
