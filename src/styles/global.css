@@ -1216,7 +1216,7 @@ time {
   color: var(--color-text-muted);
 }
 
-/* Series. A label above the title, and the full list of parts after the essay. */
+/* Series. A label below the title, and the full list of parts after the essay. */
 .post-series {
   margin-bottom: var(--spacing-xs);
   color: var(--color-text-muted);
