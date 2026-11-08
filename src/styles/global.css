@@ -85,9 +85,9 @@
   /* Primitives: the link slate. The 700 and 750 neutrals with a little more
      blue (1.6 times the chroma in OKLCH), at the same lightness and contrast. */
   --slate-700: #415b74;
-  --slate-750: #304b64;
+  --slate-750: #004b7e;
   --night-slate-700: #a1b9d1;
-  --night-slate-750: #c6d8e8;
+  --night-slate-750: #b6dafa;
 
   /* Primitives: Rosé Pine Dawn (light) and Moon (dark). */
   --dawn-base: #faf4ed;
