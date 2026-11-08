@@ -1,35 +1,29 @@
 ---
-title: "Following Excitement Through Resistance"
+title: "Aya's Process: Following Excitement Through Resistance"
 description: "A four-step process for when you feel stuck: check your excitement, widen your options, meet the part of you that resists, and integrate what it holds."
 date: 2026-11-07T23:30:55-05:00
 tags: ["inner-work", "parts-work", "emotion", "personal-growth", "consciousness"]
 ---
 
-Feeling stuck is information. When you cannot bring yourself to do something you want, or when nothing you could do feels worth doing, the usual responses are to push harder or to look away. Either way, you treat the stuck feeling as an obstacle between you and the life you want. This essay describes it as a message from a part of you that believes it is protecting you, and it describes a process for finding that part, hearing what it has to say, and resolving the belief that keeps it on guard.
-
-The process is a loop. It starts from one question, whether you are following your highest excitement right now, and returns to that question after every round. Each pass through the loop either returns you to natural flow or makes one hidden belief conscious, and a belief you can feel and name is one you can change.
-
-Terms with a specific meaning in the process are defined in the [glossary](#glossary) at the end.
+Aya's process is a loop for the moments when you notice that you are not in [flow](#g-natural-flow), or that you feel stuck or frustrated. Each term with a specific meaning links to its definition in the [glossary](#glossary) at the end.
 
 ## 1. The process
 
-Use it whenever you notice that you are not in flow, or that you feel stuck or frustrated. This is version 1.6.
-
-1. **Check your excitement.** Ask: am I following my highest excitement right now?
-   - **a. No, and nothing resists.** Do the most exciting thing, from natural flow rather than from attachment or aversion. You are done.
-   - **b. No, because something resists.** Notice what resistance arises when you go to do it. Go to step 3.
-   - **c. Yes, but something bothers me.** Name the specific want that feels stuck or frustrated. Go to step 2.
-2. **Widen the options.** Use techniques for considering exciting potentials outside your possibility space.
-   - **a. You have no wish to consider anything new.** Ask: "What part of me feels it's beneficial to stay the same?" Go to step 3.
-   - **b. Nothing excites you.** Feel in your body for a hidden fear-based belief that limits you. Flatness here more often signals fear than a real lack of excitement. Go to step 3.
+1. **Check your excitement.** Ask: am I following my [highest excitement](#g-highest-excitement) right now?
+   - **a. No, and nothing resists.** Do the most exciting thing, from [natural flow](#g-natural-flow) rather than from [attachment](#g-attachment) or [aversion](#g-aversion). You are done.
+   - **b. No, because something resists.** Notice what [resistance](#g-resistance) arises when you go to do it. Go to step 3.
+   - **c. Yes, but something bothers me.** Name the specific want that feels [stuck or frustrated](#g-stuck-or-frustrated). Go to step 2.
+2. **Widen the options.** Use techniques for [considering exciting potentials](#g-considering-potentials) outside your [possibility space](#g-possibility-space).
+   - **a. You have no wish to consider anything new.** Ask: "What [part](#g-part) of me feels it's beneficial to stay the same?" Go to step 3.
+   - **b. Nothing excites you.** [Feel somatically](#g-feeling-somatically) for a [fear-based belief](#g-fear-based-belief) that limits you. Flatness here is more often [hidden fear](#g-hidden-fear) than a real lack of excitement. Go to step 3.
    - **c. A new potential excites you.** Do the most exciting one. Go to step 1.
-3. **Meet the part.** Thank the resisting part for doing its best to protect you. Then hold a curiosity-based dialogue with it to understand why it resists, or why its behavior seems beneficial to it. Continue until one of these comes up, then go to step 4.
-   - **a. A past traumatic memory.** Use an integration technique: memory reconsolidation, gentle reparenting, or both.
-   - **b. Anxiety.** If the anxiety is not distorted, listen to it and do what it indicates, and repeat step 3 with the part that resists doing it.
-   - **c. Fear.** Feel the fear fully. When it subsides, use an integration technique.
-4. **Check for integration.** Does the part feel acknowledged, and have you had a realization or an integration?
+3. **Meet the part.** Thank the resisting [part](#g-part) for [doing its best to protect you](#g-protective-intent). Then hold a [curiosity-based dialogue](#g-curiosity-based-dialogue) with it to understand why it resists, or why its behavior seems beneficial to it. Continue until one of these comes up, then go to step 4.
+   - **a. A [past traumatic memory](#g-past-traumatic-memory).** Use an [integration technique](#g-integration-technique): [memory reconsolidation](#g-memory-reconsolidation), [gentle reparenting](#g-gentle-reparenting), or both.
+   - **b. [Anxiety](#g-anxiety).** If the anxiety is not [distorted](#g-distorted-anxiety), listen to it and do what it indicates, and repeat step 3 with the part that resists doing it.
+   - **c. [Fear](#g-fear).** [Feel the fear fully](#g-feeling-the-fear-fully), and [titrate](#g-titration) if it is too strong to feel all at once. When it subsides, use an [integration technique](#g-integration-technique).
+4. **Check for integration.** Does the part feel [acknowledged](#g-acknowledged), and have you had a [realization](#g-realization) or an [integration](#g-integration)?
    - **a. Not yet.** Go to step 3.
-   - **b. Not yet, and you need to meet a direct need.** Thank the part, and commit to returning to it later if it still feels unresolved. Go to step 1.
+   - **b. Not yet, and you need to meet a [direct need](#g-direct-needs).** Thank the part, and [commit to return](#g-commit-to-return) to it later if it still feels unresolved. Go to step 1.
    - **c. Yes.** Go to step 2.
 
 ![The four steps of the process arranged in a loop, with natural flow as the only exit, and each branch drawn as an arrow from the step where it starts](../../assets/diagrams/resistance-process.svg "Natural flow is the only exit. Every other branch leads through a part, and every integration leads back to a wider set of options.")
@@ -87,6 +81,8 @@ Anxiety involves a prediction: either that something bad will happen in the futu
 The process listens to anxiety, but checks it first. Anxiety is distorted when it is out of proportion to a probable threat, and four questions test for distortion. Is the anxiety about this exact scenario, or about a similar scenario from the past? Does its intensity match the consequences if the bad scenario came true? Can you control the scenario at all? If you act to reduce the risk, does the anxiety fall in proportion?
 
 If the anxiety passes these tests, it usually concerns a concrete action you can take, such as checking the contract, making the call, or copying your files to a backup. Take that action. If some part of you resists doing it, that resistance is a new part to meet, and step 3 begins again with it. If the anxiety is distorted, its source is usually a memory rather than the present situation, and the part that holds it can be met like any other.
+
+Anxiety can turn into a powerful intuition if you cultivate a good relationship with it. Each time you listen to it, check it, and act on it when it is accurate, you learn more about what it is reporting. With practice, you can tell quickly which warnings concern the present and which concern the past, and the warnings that concern the present become guidance you can trust.
 
 ### Fear
 
@@ -148,75 +144,75 @@ The next time you feel stuck, ask the first question again.
 
 ### States and pulls
 
-**Highest excitement**: The option that, right now, carries the strongest natural pull of interest and aliveness, with no belief driving it. It's a felt signal, not a judgment about what you *should* do. Cleaning a toilet can be your highest excitement. So can rest.
+<a id="g-highest-excitement"></a>**Highest excitement**: The option that, right now, carries the strongest natural pull of interest and aliveness, with no belief driving it. It's a felt signal, not a judgment about what you *should* do. Cleaning a toilet can be your highest excitement. So can rest.
 
-**Natural flow**: Acting from highest excitement with no inner conflict. The default state when no part is resisting.
+<a id="g-natural-flow"></a>**Natural flow**: Acting from highest excitement with no inner conflict. The default state when no part is resisting.
 
-**Attachment**: A pull toward something that comes from a belief (for example, "I need this to be okay"), not from natural flow. It can feel like excitement, but it has a grasping or compulsive quality.
+<a id="g-attachment"></a>**Attachment**: A pull toward something that comes from a belief (for example, "I need this to be okay"), not from natural flow. It can feel like excitement, but it has a grasping or compulsive quality.
 
-**Aversion**: A push away from something that comes from a belief (for example, "this means I'm failing"). Choosing something to escape something else is aversion, not excitement.
+<a id="g-aversion"></a>**Aversion**: A push away from something that comes from a belief (for example, "this means I'm failing"). Choosing something to escape something else is aversion, not excitement.
 
-**Stuck or frustrated**: The state in which a specific want meets inner resistance, so energy goes toward the want but doesn't flow.
+<a id="g-stuck-or-frustrated"></a>**Stuck or frustrated**: The state in which a specific want meets inner resistance, so energy goes toward the want but doesn't flow.
 
 ### The inner landscape
 
-**Part**: A semi-autonomous subsystem of the psyche with its own beliefs, goals, and protective strategies. Talking about parts lets you relate to an inner conflict instead of identifying with it. See [Parts](#4-parts).
+<a id="g-part"></a>**Part**: A semi-autonomous subsystem of the psyche with its own beliefs, goals, and protective strategies. Talking about parts lets you relate to an inner conflict instead of identifying with it. See [Parts](#4-parts).
 
-**Resistance**: Any felt reluctance, contraction, avoidance, or loss of energy that comes up when you go to act on a want. The process treats it as information from a part, not as an obstacle to force past.
+<a id="g-resistance"></a>**Resistance**: Any felt reluctance, contraction, avoidance, or loss of energy that comes up when you go to act on a want. The process treats it as information from a part, not as an obstacle to force past.
 
-**Protective intent**: The positive purpose behind a part's resistance. The process assumes that every resisting part is doing its best to keep you safe, based on what it believes.
+<a id="g-protective-intent"></a>**Protective intent**: The positive purpose behind a part's resistance. The process assumes that every resisting part is doing its best to keep you safe, based on what it believes.
 
-**Belief**: A held assumption about how things are, what something means, or what will happen. Beliefs determine much of what you perceive, feel, and do, including which options seem possible. In this process, attachment, aversion, and resistance are all treated as coming from beliefs.
+<a id="g-belief"></a>**Belief**: A held assumption about how things are, what something means, or what will happen. Beliefs determine much of what you perceive, feel, and do, including which options seem possible. In this process, attachment, aversion, and resistance are all treated as coming from beliefs.
 
-**Unconscious belief**: A belief that affects your feelings and behavior without your awareness. It usually formed earlier in life, and you hold it as simply "how things are."
+<a id="g-unconscious-belief"></a>**Unconscious belief**: A belief that affects your feelings and behavior without your awareness. It usually formed earlier in life, and you hold it as simply "how things are."
 
-**Fear-based belief**: An unconscious belief whose core is a predicted threat, such as rejection, failure, loss, or harm. It makes possibilities feel dangerous or flat.
+<a id="g-fear-based-belief"></a>**Fear-based belief**: An unconscious belief whose core is a predicted threat, such as rejection, failure, loss, or harm. It makes possibilities feel dangerous or flat.
 
-**Hidden fear**: Fear you don't consciously feel, which appears indirectly, most often as numbness, flatness, or nothing feeling exciting.
+<a id="g-hidden-fear"></a>**Hidden fear**: Fear you don't consciously feel, which appears indirectly, most often as numbness, flatness, or nothing feeling exciting.
 
-**Past traumatic memory**: A memory that still carries an unresolved emotional charge and holds a protective belief in place. It doesn't have to be a major event. Often several memories together produce a belief.
+<a id="g-past-traumatic-memory"></a>**Past traumatic memory**: A memory that still carries an unresolved emotional charge and holds a protective belief in place. It doesn't have to be a major event. Often several memories together produce a belief.
 
-**Possibility space**: The set of options you currently perceive as available for getting what you want. Beliefs limit it, so resolving a belief can reveal options that weren't visible before. The essay on [consideration space](/consideration-space) covers it in depth.
+<a id="g-possibility-space"></a>**Possibility space**: The set of options you currently perceive as available for getting what you want. Beliefs limit it, so resolving a belief can reveal options that weren't visible before. The essay on [consideration space](/consideration-space) covers it in depth.
 
 ### Signals
 
-**Anxiety**: An uneasy signal that may hold useful information about an action you are resisting. It usually involves either a negative prediction about the future or a fear that a negative past scenario will happen again in the present. Either way, it directs your attention away from the present moment.
+<a id="g-anxiety"></a>**Anxiety**: An uneasy signal that may hold useful information about an action you are resisting. It usually involves either a negative prediction about the future or a fear that a negative past scenario will happen again in the present. Either way, it directs your attention away from the present moment.
 
-**Distorted anxiety**: Anxiety out of proportion to a probable threat. To check, ask whether the anxiety concerns this exact scenario or a similar one from the past, whether the anxiety's intensity matches the consequences if the bad scenario came true, whether you can control the scenario at all, and whether acting to reduce the risk reduces the anxiety in proportion.
+<a id="g-distorted-anxiety"></a>**Distorted anxiety**: Anxiety out of proportion to a probable threat. To check, ask whether the anxiety concerns this exact scenario or a similar one from the past, whether the anxiety's intensity matches the consequences if the bad scenario came true, whether you can control the scenario at all, and whether acting to reduce the risk reduces the anxiety in proportion.
 
-**Fear**: A more immediate felt sense of threat, often in the body, best met by letting it run its full course before you do integration.
+<a id="g-fear"></a>**Fear**: A more immediate felt sense of threat, often in the body, best met by letting it run its full course before you do integration.
 
 ### Techniques
 
-**Considering potentials outside the possibility space**: Deliberately generating options beyond your current assumptions, for example by asking "what would I do if this constraint weren't true?" or by imagining how someone very different from you would approach the situation.
+<a id="g-considering-potentials"></a>**Considering potentials outside the possibility space**: Deliberately generating options beyond your current assumptions, for example by asking "what would I do if this constraint weren't true?" or by imagining how someone very different from you would approach the situation.
 
-**Feeling somatically**: Paying attention to sensations in the body, such as tightness, heaviness, contraction, or temperature, to find emotions or beliefs before you can put them into words.
+<a id="g-feeling-somatically"></a>**Feeling somatically**: Paying attention to sensations in the body, such as tightness, heaviness, contraction, or temperature, to find emotions or beliefs before you can put them into words.
 
-**Feeling the fear fully**: Letting fear be present in the body, without resisting, analyzing, or acting on it, until its intensity peaks and subsides.
+<a id="g-feeling-the-fear-fully"></a>**Feeling the fear fully**: Letting fear be present in the body, without resisting, analyzing, or acting on it, until its intensity peaks and subsides.
 
-**Titration**: Feeling a strong emotion in small doses, alternating with attention to something that feels safe or calm, so that it doesn't overwhelm you.
+<a id="g-titration"></a>**Titration**: Feeling a strong emotion in small doses, alternating with attention to something that feels safe or calm, so that it doesn't overwhelm you.
 
-**Curiosity-based dialogue**: An inner conversation with a part in which you ask, without agenda or judgment, what it's protecting you from, what it expects would happen, and why its behavior seems beneficial.
+<a id="g-curiosity-based-dialogue"></a>**Curiosity-based dialogue**: An inner conversation with a part in which you ask, without agenda or judgment, what it's protecting you from, what it expects would happen, and why its behavior seems beneficial.
 
-**Integration technique**: Any method that resolves an emotional learning at its root, so that the part no longer needs its protective strategy. In this process: memory reconsolidation and gentle reparenting.
+<a id="g-integration-technique"></a>**Integration technique**: Any method that resolves an emotional learning at its root, so that the part no longer needs its protective strategy. In this process: memory reconsolidation and gentle reparenting.
 
-**Memory reconsolidation**: The brain's process for updating an emotional memory. When the memory and its belief are vividly active and you experience something that clearly contradicts them, the old learning can be rewritten, not just suppressed. Many techniques use this process.
+<a id="g-memory-reconsolidation"></a>**Memory reconsolidation**: The brain's process for updating an emotional memory. When the memory and its belief are vividly active and you experience something that clearly contradicts them, the old learning can be rewritten, not just suppressed. Many techniques use this process.
 
-**Gentle reparenting**: Giving a younger part of yourself, usually one tied to a past memory, the safety, attunement, and care it didn't get then, with your present adult self as the caregiver.
+<a id="g-gentle-reparenting"></a>**Gentle reparenting**: Giving a younger part of yourself, usually one tied to a past memory, the safety, attunement, and care it didn't get then, with your present adult self as the caregiver.
 
 ### Outcomes
 
-**Realization**: The moment an unconscious belief or protective intent becomes consciously understood and felt, not just figured out.
+<a id="g-realization"></a>**Realization**: The moment an unconscious belief or protective intent becomes consciously understood and felt, not just figured out.
 
-**Acknowledged (part)**: A part feels heard and understood, with its protective intent recognized. You usually feel this as relief or softening.
+<a id="g-acknowledged"></a>**Acknowledged (part)**: A part feels heard and understood, with its protective intent recognized. You usually feel this as relief or softening.
 
-**Integration**: The healing of fragmentation. A part that split off, holding feelings and beliefs at odds with the rest of you, rejoins the whole, so you act from one place instead of from inner conflict. It begins after a realization, when the part feels acknowledged. The real test comes later: when similar scenarios come up, does your behavior change?
+<a id="g-integration"></a>**Integration**: The healing of fragmentation. A part that split off, holding feelings and beliefs at odds with the rest of you, rejoins the whole, so you act from one place instead of from inner conflict. It begins after a realization, when the part feels acknowledged. The real test comes later: when similar scenarios come up, does your behavior change?
 
 ### Pausing
 
-**Direct needs**: Immediate practical or physical needs, such as sleep, food, obligations, or safety, that justify pausing the process.
+<a id="g-direct-needs"></a>**Direct needs**: Immediate practical or physical needs, such as sleep, food, obligations, or safety, that justify pausing the process.
 
-**Commit to return**: An explicit promise to the part that you will come back to it later, which keeps its trust when you pause before it's resolved.
+<a id="g-commit-to-return"></a>**Commit to return**: An explicit promise to the part that you will come back to it later, which keeps its trust when you pause before it's resolved.
 
 ## References
 
