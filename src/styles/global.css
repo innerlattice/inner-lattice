@@ -82,13 +82,12 @@
   --night-750: #ccd7e1;
   --night-850: #e2e4e7;
 
-  /* Primitives: the link blue. The 700 and 750 neutrals at three times the
-     chroma in OKLCH, with the link moved slightly away from the body text's
-     lightness so a link without an underline still reads as one. */
-  --slate-700: #306799;
-  --slate-750: #245b8c;
-  --night-slate-700: #83b2de;
-  --night-slate-750: #8dbbe8;
+  /* Primitives: the link slate. The 700 and 750 neutrals with a little more
+     blue (1.6 times the chroma in OKLCH), at the same lightness and contrast. */
+  --slate-700: #415b74;
+  --slate-750: #304b64;
+  --night-slate-700: #a1b9d1;
+  --night-slate-750: #c6d8e8;
 
   /* Primitives: Rosé Pine Dawn (light) and Moon (dark). */
   --dawn-base: #faf4ed;
@@ -589,6 +588,7 @@ a:hover {
 
 a[href^="http"]:not([href^="https://innerlattice.com"]) {
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: var(--underline-offset);
 }
 
