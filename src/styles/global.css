@@ -1666,12 +1666,18 @@ html {
   :root {
     --page-gutter: calc(var(--spacing-md) + var(--spacing-xs));
     --header-height: calc(var(--control-size) + 2 * var(--spacing-sm));
+    /* The space above the header at the top of the page, which puts the
+       title where the desktop puts it. */
+    --header-rest: calc(
+      var(--spacing-xxl) + var(--spacing-xs) - (var(--header-height) - var(--line-site-title)) / 2
+    );
   }
 
-  /* A thin header stays at the top of the window. The page fades out beneath
-     its lower edge rather than being cut off by it. */
+  /* A thin header stays at the top of the window once the space above it has
+     scrolled away. The page fades out beneath its lower edge rather than
+     being cut off by it. */
   .container {
-    padding-top: 0;
+    padding-top: var(--header-rest);
   }
 
   .site-header {
@@ -1693,7 +1699,7 @@ html {
   }
 
   /* The site title starts at its full size and shrinks to fit the thin
-     header over the first stretch of scrolling, following the scroll.
+     header while the space above it scrolls away, following the scroll.
      Browsers without scroll-driven animations show the small size. */
   .site-title {
     font-size: var(--text-list-title);
@@ -1705,7 +1711,7 @@ html {
       transform-origin: left center;
       animation: site-title-shrink linear both;
       animation-timeline: scroll(root);
-      animation-range: 0 var(--header-height);
+      animation-range: 0 var(--header-rest);
     }
   }
 
