@@ -1262,7 +1262,7 @@ time {
   position: absolute;
   right: 100%;
   margin-right: var(--spacing-sm);
-  color: var(--color-accent);
+  color: var(--color-text);
 }
 
 .series-part.is-planned {
