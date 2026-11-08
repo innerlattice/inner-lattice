@@ -10,7 +10,7 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
 ---
 
 {entries.length > 0 && (
-  <nav class="toc" aria-labelledby="toc-label">
+  <nav class="toc" id="page-contents" popover aria-labelledby="toc-label">
     <p class="toc-label" id="toc-label">contents</p>
     <ol class="toc-list">
       {entries.map((heading) => (
@@ -99,6 +99,18 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
     // The fade at the bottom of the inset box only shows when there is more to scroll to.
     const markScrollable = () =>
       list.classList.toggle('is-scrollable', list.scrollHeight > list.clientHeight + 1);
+
+    // On a phone the list opens from the header as a popover. It opens at the
+    // current section, and choosing a section closes it.
+    toc.addEventListener('toggle', (event) => {
+      if ((event as ToggleEvent).newState !== 'open') return;
+      markScrollable();
+      centre(links[active]?.parentElement ?? undefined, true);
+    });
+    toc.addEventListener('click', (event) => {
+      const link = (event.target as Element | null)?.closest('a');
+      if (link && 'hidePopover' in toc && toc.matches(':popover-open')) toc.hidePopover();
+    });
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', () => {

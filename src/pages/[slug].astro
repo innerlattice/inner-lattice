@@ -27,7 +27,7 @@ const showContents = wordCount >= 2000 && headings.filter((heading) => heading.d
 ---
 
 <Base title={post.data.title} description={description} type="article" publishedTime={post.data.date}
-  modifiedTime={post.data.updated}
+  modifiedTime={post.data.updated} contents={showContents}
 >
   <article class="post">
     <header class="post-header">

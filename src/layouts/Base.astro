@@ -10,6 +10,8 @@ interface Props {
   modifiedTime?: Date;
   /** Leave out the site header and footer, as on the not-found page. */
   bare?: boolean;
+  /** The page has a table of contents, which a phone opens from the header. */
+  contents?: boolean;
 }
 
 const {
@@ -19,6 +21,7 @@ const {
   publishedTime,
   modifiedTime,
   bare = false,
+  contents = false,
 } = Astro.props;
 const fullTitle = title === siteTitle ? `${siteTitle} | ${siteTagline}` : `${title} | ${siteTitle}`;
 // Pages build to /slug/index.html but are canonical without the trailing slash.
@@ -96,21 +99,33 @@ const socialImageAlt ='A light, open glass lattice catching pearlescent pink, la
       {!bare && (
         <header class="site-header">
           <a href="/" class="site-title">inner latti<span class="ce-c">c</span>e</a>
-          <button type="button" class="theme-toggle" data-theme-current="system" aria-label="Colour theme: match system" hidden>
-            <span class="theme-toggle-label" aria-hidden="true">system</span>
-            <span class="theme-icon-frame">
-              <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <mask id="theme-icon-mask">
-                  <rect width="24" height="24" fill="#fff" />
-                  <circle class="theme-icon-bite" cx="18" cy="6" r="6.5" fill="#000" />
-                  <rect class="theme-icon-shade" x="3" y="3" width="9" height="18" fill="#000" />
-                </mask>
-                <path class="theme-icon-rays" d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" />
-                <circle class="theme-icon-ring" cx="12" cy="12" r="7.2" />
-                <circle class="theme-icon-body" cx="12" cy="12" r="8" mask="url(#theme-icon-mask)" />
-              </svg>
-            </span>
-          </button>
+          <div class="site-actions">
+            <button type="button" class="theme-toggle" data-theme-current="system" aria-label="Colour theme: match system" hidden>
+              <span class="theme-toggle-label" aria-hidden="true">system</span>
+              <span class="theme-icon-frame">
+                <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <mask id="theme-icon-mask">
+                    <rect width="24" height="24" fill="#fff" />
+                    <circle class="theme-icon-bite" cx="18" cy="6" r="6.5" fill="#000" />
+                    <rect class="theme-icon-shade" x="3" y="3" width="9" height="18" fill="#000" />
+                  </mask>
+                  <path class="theme-icon-rays" d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" />
+                  <circle class="theme-icon-ring" cx="12" cy="12" r="7.2" />
+                  <circle class="theme-icon-body" cx="12" cy="12" r="8" mask="url(#theme-icon-mask)" />
+                </svg>
+              </span>
+            </button>
+            {contents && (
+              <button type="button" class="contents-toggle" popovertarget="page-contents" aria-label="Contents">
+                <svg class="contents-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 6h11M9 12h11M9 18h11" />
+                  <circle cx="4.5" cy="6" r="1.3" />
+                  <circle cx="4.5" cy="12" r="1.3" />
+                  <circle cx="4.5" cy="18" r="1.3" />
+                </svg>
+              </button>
+            )}
+          </div>
         </header>
       )}
       <main>

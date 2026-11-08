@@ -294,6 +294,7 @@
   /* Stacking, lowest first. */
   --z-raised: 1;
   --z-above-link: 2;
+  --z-header: 4;
   --z-sidebar: 5;
   --z-toast: 10;
 }
@@ -356,6 +357,13 @@ header {
   gap: var(--spacing-md);
 }
 
+.site-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-right: calc(-1 * var(--spacing-xs));
+}
+
 /* Theme toggle: one button that steps through system, light and dark. It
    stays quiet until the pointer or focus reaches it, then names the current
    choice beside the icon. */
@@ -363,7 +371,6 @@ header {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  margin-right: calc(-1 * var(--spacing-xs));
   padding: 0;
   color: var(--color-text-muted);
   background: none;
@@ -472,6 +479,48 @@ header {
   .theme-toggle {
     opacity: var(--opacity-muted);
   }
+}
+
+/* The contents button opens the essay's contents from the header. Only a
+   phone shows it (see the end of this file); wider windows show the contents
+   beside or above the essay. */
+.contents-toggle {
+  display: none;
+  place-items: center;
+  width: var(--control-size);
+  height: var(--control-size);
+  padding: 0;
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  opacity: var(--opacity-muted);
+  transition: opacity var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.contents-toggle:hover,
+.contents-toggle:focus-visible {
+  color: var(--color-text);
+  opacity: 1;
+}
+
+.contents-toggle:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.contents-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+}
+
+.contents-icon path {
+  fill: none;
 }
 
 /* The page crossfades between themes as one image, so every colour changes at
@@ -1406,15 +1455,25 @@ html {
   initial-value: 0px;
 }
 
+/* The contents are a popover so a phone can open them from the header. Until
+   then they lay out like any other block, so the browser's popover defaults
+   are undone here. */
 .toc {
   --toc-width: 12rem;
   --toc-pad: var(--spacing-md);
   --toc-gap: var(--spacing-xl);
   --toc-inset-height: 13rem;
   --toc-sidebar-height: 70vh;
+  position: static;
+  display: block;
+  inset: auto;
   width: fit-content;
+  height: auto;
   max-width: 100%;
-  margin-bottom: var(--spacing-xl);
+  margin: 0 0 var(--spacing-xl);
+  border: 0;
+  color: inherit;
+  overflow: visible;
   padding-block: var(--spacing-sm);
   padding-inline: var(--toc-pad);
   background-color: var(--color-surface);
@@ -1593,10 +1652,88 @@ html {
 @media (max-width: 600px) {
   html {
     font-size: 16px;
+    scroll-padding-top: calc(var(--header-height) + var(--spacing-lg));
   }
 
   :root {
     --page-gutter: calc(var(--spacing-md) + var(--spacing-xs));
+    --header-height: calc(var(--control-size) + 2 * var(--spacing-sm));
+  }
+
+  /* A thin header stays at the top of the window. The page fades out beneath
+     its lower edge rather than being cut off by it. */
+  .container {
+    padding-top: 0;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    height: var(--header-height);
+    margin-inline: calc(-1 * var(--page-gutter));
+    padding-inline: var(--page-gutter);
+  }
+
+  .site-header::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 calc(-1 * var(--spacing-lg));
+    z-index: -1;
+    background: linear-gradient(to bottom, var(--color-bg) var(--header-height), transparent);
+    pointer-events: none;
+  }
+
+  .site-title {
+    font-size: var(--text-list-title);
+  }
+
+  /* The contents leave the essay and open from the header instead, over the
+     page and scrollable on their own. Without popovers they stay in place. */
+  @supports selector(:popover-open) {
+    .contents-toggle {
+      display: grid;
+    }
+
+    .toc:not(:popover-open) {
+      display: none;
+    }
+
+    .toc:popover-open {
+      position: fixed;
+      inset: calc(var(--header-height) + var(--spacing-xs)) var(--page-gutter) auto auto;
+      width: min(20rem, 100vw - 2 * var(--page-gutter));
+      max-width: none;
+      margin: 0;
+      padding-block: var(--spacing-sm);
+      background-color: var(--color-bg);
+      border: var(--border-width) solid var(--color-border);
+      box-shadow: var(--shadow-raised);
+      font-size: var(--text-ui);
+      opacity: 1;
+      transform: none;
+      transition: opacity var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
+    }
+
+    @starting-style {
+      .toc:popover-open {
+        opacity: 0;
+        transform: translateY(calc(-1 * var(--spacing-xs)));
+      }
+    }
+
+    .toc:popover-open .toc-list {
+      max-height: calc(100dvh - var(--header-height) - var(--spacing-xxl));
+    }
+
+    .toc:popover-open .toc-item a {
+      padding-block: var(--spacing-sm);
+    }
+
+    body:has(.toc:popover-open) .contents-toggle {
+      color: var(--color-text);
+      opacity: 1;
+    }
   }
 
   .post-content .diagram-frame {
