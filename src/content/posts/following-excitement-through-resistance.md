@@ -106,11 +106,15 @@ For most of the twentieth century, neuroscientists assumed that a memory, once c
 
 Bruce Ecker, Robin Ticic, and Laurel Hulley turned these findings into a method. First, retrieve the emotional learning behind a symptom and make it vivid enough to feel. Then, while it is active, have an experience that clearly contradicts it, and repeat the contrast a few times. When this works, the old reaction stops arising in situations that used to trigger it, without any effort to suppress it.[[22]](#ref-22) Richard Lane and colleagues have proposed that reconsolidation is the common mechanism of change across many kinds of inner work: an old memory is reactivated, a new emotional experience is incorporated into it, and new behavior reinforces the result.[[23]](#ref-23) The hypothesis remains debated, and the human evidence is less settled than the animal evidence. The practical test is the one the process uses anyway. When a similar situation comes up again, does your behavior change?
 
+The most effective method I have found for memory reconsolidation is Teal Swan's Completion Process.[[24]](#ref-24) You start from an emotion you feel in the present and follow the emotion back to the past experience that holds it. Then you re-enter that experience, feel what you couldn't feel at the time, meet the needs that went unmet, and change how the memory goes.
+
+Other approaches stay in the present moment. You feel the emotion strongly in a safe environment and use titration and pendulation to keep the emotion bearable, as in Somatic Experiencing. This can release a great deal of charge, but it rarely reaches the core memories where the beliefs formed. When a core memory changes, the beliefs built on it update too, and the belief systems built on those beliefs follow. You find yourself behaving differently without trying. The change is large and long-lasting, often permanent. Clinical research has not yet studied the Completion Process.
+
 ### Gentle reparenting
 
 A protective belief is often held by a younger part of you, tied to a memory in which you needed something that no one gave you, such as safety, attunement, comfort, or someone on your side. Gentle reparenting gives that younger part what it needed, with your present adult self as the caregiver. In imagination, you enter the memory, stand with your younger self, and offer the care that was missing.
 
-Reparenting also creates the prediction error that reconsolidation needs. The memory predicts that no one will come, and someone comes. Teal Swan's Completion Process is one structured form of this. In it, you start from an emotion in the present, find the past experience that holds it, and resolve that experience by meeting the needs that went unmet.[[24]](#ref-24) Nicole Johnson describes another form in *Reparenting Your Inner Child*, combining inner child work with IFS and self-compassion.[[25]](#ref-25)
+Reparenting also creates the prediction error that reconsolidation needs. The memory predicts that no one will come, and someone comes. The Completion Process includes this step. Nicole Johnson describes another form in *Reparenting Your Inner Child*, combining inner child work with IFS and self-compassion.[[25]](#ref-25)
 
 ## 7. What to do with this
 
@@ -184,7 +188,7 @@ The next time you feel stuck, ask the first question again.
 
 ### Techniques
 
-<a id="g-considering-potentials"></a>**Considering potentials outside the possibility space**: Deliberately generating options beyond your current assumptions, for example by asking "what would I do if this constraint weren't true?" or by imagining how someone very different from you would approach the situation.
+<a id="g-considering-potentials"></a>**Considering potentials outside the possibility space**: Deliberately generating options beyond your current assumptions, for example by asking "what would I do if this constraint weren't true?" or by imagining how someone very different from you would approach the situation. The essay on [consideration space](/consideration-space#exploration) describes more ways to find options you hadn't considered.
 
 <a id="g-feeling-somatically"></a>**Feeling somatically**: Paying attention to sensations in the body, such as tightness, heaviness, contraction, or temperature, to find emotions or beliefs before you can put them into words.
 
@@ -239,7 +243,7 @@ The next time you feel stuck, ask the first question again.
 21. <a id="ref-21"></a>Dieuwke Sevenster, Tom Beckers, and Merel Kindt, "Prediction Error Governs Pharmacologically Induced Amnesia for Learned Fear," *Science* 339 (2013): 830–833. [doi:10.1126/science.1231357](https://doi.org/10.1126/science.1231357).
 22. <a id="ref-22"></a>Bruce Ecker, Robin Ticic, and Laurel Hulley, *Unlocking the Emotional Brain: Eliminating Symptoms at Their Roots Using Memory Reconsolidation* (Routledge, 2012). [Coherence Therapy](https://www.coherencetherapy.org).
 23. <a id="ref-23"></a>Richard D. Lane, Lee Ryan, Lynn Nadel, and Leslie Greenberg, "Memory Reconsolidation, Emotional Arousal, and the Process of Change in Psychotherapy: New Insights from Brain Science," *Behavioral and Brain Sciences* 38 (2015): e1. [doi:10.1017/S0140525X14000041](https://doi.org/10.1017/S0140525X14000041).
-24. <a id="ref-24"></a>Teal Swan, *The Completion Process: The Practice of Putting Yourself Back Together Again* (Hay House, 2016). [Penguin](https://www.penguin.co.nz/books/the-completion-process-9781401951443).
+24. <a id="ref-24"></a>Teal Swan, *The Completion Process: The Practice of Putting Yourself Back Together Again* (Hay House, 2016). [Penguin](https://www.penguin.co.nz/books/the-completion-process-9781401951443). Practitioner training: [tealswan.com](https://tealswan.com/completion-process).
 25. <a id="ref-25"></a>Nicole Johnson, *Reparenting Your Inner Child: Healing Unresolved Childhood Trauma and Reclaiming Wholeness through Self-Compassion* (New Harbinger, 2025). [New Harbinger](https://www.newharbinger.com/9781648485091/reparenting-your-inner-child/).
 26. <a id="ref-26"></a>Kaj Sotala, "Book summary: Unlocking the Emotional Brain," *LessWrong*, 2019. [LessWrong](https://www.lesswrong.com/posts/i9xyZBS3qzA8nFXNQ/book-summary-unlocking-the-emotional-brain).
 27. <a id="ref-27"></a>Jay Earley, *Self-Therapy: A Step-by-Step Guide to Creating Wholeness and Healing Your Inner Child Using IFS*, 2nd ed. (Pattern System Books, 2012).
