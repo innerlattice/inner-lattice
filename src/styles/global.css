@@ -526,7 +526,7 @@ header {
 }
 
 .site-title:hover {
-  color: var(--color-link-hover);
+  color: var(--color-text);
 }
 
 /* Main */
@@ -575,7 +575,8 @@ footer {
 /* Links. A link within the site takes the link colour and no underline; a
    link that leaves the site is underlined, so a reader can tell the two apart
    before following one. Navigation that is plainly clickable (the contents,
-   tags, post titles, the site title) keeps its own quieter colours. */
+   tags, post titles, the site title) keeps its own quieter colours, and the
+   site title and post titles keep them on hover too. */
 a {
   color: var(--color-link);
   text-decoration: none;
@@ -615,9 +616,12 @@ a[href^="http"]:not([href^="https://innerlattice.com"]):hover {
   background-color: var(--color-hover);
 }
 
+/* The whole card is one link: the title's link stretches over the card, so a
+   click anywhere on it opens the post, and the tags sit above that layer as
+   links of their own. Only the title is in the link's text, so a screen
+   reader still hears just the title. */
 .post-title {
   margin-bottom: var(--spacing-xs);
-  position: relative;
   display: block;
   font-size: var(--text-list-title);
   font-weight: 500;
@@ -626,15 +630,23 @@ a[href^="http"]:not([href^="https://innerlattice.com"]):hover {
   text-transform: lowercase;
 }
 
+.post-title:hover {
+  color: var(--color-text);
+}
+
 .post-title::after {
   content: "";
   position: absolute;
-  inset: calc(-1 * var(--spacing-md));
+  inset: 0;
   z-index: var(--z-raised);
   border-radius: var(--radius-lg);
 }
 
 .post-title:focus-visible {
+  outline: none;
+}
+
+.post-title:focus-visible::after {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
