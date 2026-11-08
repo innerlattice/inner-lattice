@@ -1649,6 +1649,14 @@ html {
 }
 
 /* Responsive */
+
+/* From the desktop title size to the list title size, at a 16px root. */
+@keyframes site-title-shrink {
+  to {
+    transform: scale(0.733);
+  }
+}
+
 @media (max-width: 600px) {
   html {
     font-size: 16px;
@@ -1684,8 +1692,21 @@ html {
     pointer-events: none;
   }
 
+  /* The site title starts at its full size and shrinks to fit the thin
+     header over the first stretch of scrolling, following the scroll.
+     Browsers without scroll-driven animations show the small size. */
   .site-title {
     font-size: var(--text-list-title);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .site-title {
+      font-size: var(--text-site-title);
+      transform-origin: left center;
+      animation: site-title-shrink linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 var(--header-height);
+    }
   }
 
   /* The contents leave the essay and open from the header instead, over the
