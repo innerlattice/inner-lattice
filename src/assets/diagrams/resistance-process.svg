@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="wide" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">The process as a loop of four steps</title>
+  <desc id="desc">Four steps arranged in a ring, with natural flow above the first. Step 1, check excitement, asks whether you are following your highest excitement. If nothing resists, you do the most exciting thing and are in natural flow. If resistance arises, you note it and go to step 3. If a specific want feels stuck, you name the want and go to step 2. Step 2, widen the options, imagines options outside your possibility space. A new exciting option returns you to step 1 to act on it. If you have no wish to consider options, you ask what part of you benefits from staying the same, and if nothing excites you, you feel for a hidden fear-based belief; both go to step 3. Step 3, meet the part, thanks the resisting part and asks with curiosity what it protects you from. If a memory surfaces, you reconsolidate it or reparent. If fear arises, you feel it fully and then integrate. If anxiety arises, you heed it if it is undistorted and then meet the part that resists that action, which repeats step 3. After the dialogue or an integration, you go to step 4, check integration, which asks whether the part feels heard and whether something has shifted. If not yet, you return to step 3. If a direct need comes first, you thank the part, commit to return, and go to step 1. If the part is integrated, you go to step 2 to look for new options.</desc>
+  <defs>
+    <marker id="arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path style="fill: var(--diagram-gold)" d="M1 1 L9 5 L1 9 Z"/></marker>
+    <marker id="arrow-iris" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path style="fill: var(--diagram-iris)" d="M1 1 L9 5 L1 9 Z"/></marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path style="fill: var(--diagram-rose)" d="M1 1 L9 5 L1 9 Z"/></marker>
+    <marker id="arrow-foam" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path style="fill: var(--diagram-foam)" d="M1 1 L9 5 L1 9 Z"/></marker>
+  </defs>
+
+  <!-- Natural flow, the exit from step 1 -->
+  <g class="pine">
+    <rect class="box" x="380" y="16" width="200" height="36" rx="18"/>
+    <text class="head" x="480" y="39" text-anchor="middle">Natural flow</text>
+  </g>
+
+  <!-- Edges, coloured by the step they leave -->
+  <g class="gold">
+    <path class="line-hue" marker-end="url(#arrow-gold)" d="M480 105 L480 56"/>
+    <path class="line-hue" marker-end="url(#arrow-gold)" d="M610 140 C710 140 800 205 800 301"/>
+    <path class="line-hue" marker-end="url(#arrow-gold)" d="M480 219 L480 350 M480 370 L480 486"/>
+    <text class="label strong ink" x="492" y="72">a · nothing resists</text>
+    <text class="note" x="492" y="88">do the most exciting thing</text>
+    <text class="label strong ink" x="770" y="156">c · a want feels stuck</text>
+    <text class="note" x="770" y="172">name the specific want</text>
+    <text class="label strong ink" x="468" y="258" text-anchor="end">b · resistance arises</text>
+    <text class="note" x="468" y="274" text-anchor="end">note what resists</text>
+  </g>
+  <g class="iris">
+    <path class="line-hue" marker-end="url(#arrow-iris)" d="M726 305 C716 254 660 234 596 221"/>
+    <path class="line-hue" marker-end="url(#arrow-iris)" d="M810 415 C810 500 730 565 634 565"/>
+    <text class="label strong ink" x="494" y="300">c · a new exciting option</text>
+    <text class="note" x="494" y="316">act on it</text>
+    <text class="label strong ink" x="650" y="598">a · no wish to consider</text>
+    <text class="note" x="650" y="614">ask what part benefits from staying the same</text>
+    <text class="label strong ink" x="650" y="636">b · nothing excites</text>
+    <text class="note" x="650" y="652">feel for a hidden fear-based belief</text>
+  </g>
+  <g class="rose">
+    <path class="line-hue" marker-end="url(#arrow-rose)" d="M330 570 C240 570 150 505 150 419"/>
+    <path class="line-hue" marker-end="url(#arrow-rose)" d="M455 640 C455 704 505 704 505 644"/>
+    <text class="label strong ink" x="40" y="604">after the dialogue</text>
+    <text class="note" x="40" y="620">or an integration</text>
+    <text class="label strong ink" x="526" y="680">b · anxiety</text>
+    <text class="note" x="526" y="696">heed it if undistorted, then meet the part resisting that action</text>
+  </g>
+  <g class="foam">
+    <path class="line-hue" marker-end="url(#arrow-foam)" d="M150 305 C150 205 240 160 346 160"/>
+    <path class="line-hue" marker-end="url(#arrow-foam)" d="M252 415 C262 468 292 506 326 516"/>
+    <path class="line-hue" marker-end="url(#arrow-foam)" d="M280 360 L676 360"/>
+    <text class="label strong ink" x="40" y="132">b · a direct need comes first</text>
+    <text class="note" x="40" y="148">thank the part; commit to return</text>
+    <text class="label strong ink" x="276" y="452">a · not yet</text>
+    <text class="note" x="276" y="468">keep listening</text>
+    <text class="label strong ink" x="300" y="336">c · integrated</text>
+    <text class="note" x="300" y="352">look for new options</text>
+  </g>
+
+  <!-- Steps -->
+  <g class="gold">
+    <rect class="box" x="350" y="105" width="260" height="114" rx="8"/>
+    <text class="head" x="368" y="136">1 · Check excitement</text>
+    <text class="label" x="368" y="164">Am I following my</text>
+    <text class="label" x="368" y="182">highest excitement?</text>
+  </g>
+  <g class="iris">
+    <rect class="box" x="680" y="305" width="260" height="110" rx="8"/>
+    <text class="head" x="698" y="336">2 · Widen the options</text>
+    <text class="label" x="698" y="364">Imagine options outside</text>
+    <text class="label" x="698" y="382">your possibility space.</text>
+  </g>
+  <g class="rose">
+    <rect class="box" x="330" y="490" width="300" height="150" rx="8"/>
+    <text class="head" x="348" y="520">3 · Meet the part</text>
+    <text class="label" x="348" y="546">Thank it. Ask with curiosity</text>
+    <text class="label" x="348" y="564">what it protects you from.</text>
+    <text class="label strong ink" x="348" y="598">a · memory</text>
+    <text class="note" x="432" y="598">reconsolidate it or reparent</text>
+    <text class="label strong ink" x="348" y="622">c · fear</text>
+    <text class="note" x="432" y="622">feel it fully, then integrate</text>
+  </g>
+  <g class="foam">
+    <rect class="box" x="20" y="305" width="260" height="110" rx="8"/>
+    <text class="head" x="38" y="336">4 · Check integration</text>
+    <text class="label" x="38" y="364">Does the part feel heard?</text>
+    <text class="label" x="38" y="382">Has something shifted?</text>
+  </g>
+</svg>
